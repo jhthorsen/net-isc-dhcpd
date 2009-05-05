@@ -47,7 +47,6 @@ has children => (
 has regex => (
     is => 'ro',
     isa => 'RegexpRef',
-    default => qr{},
 );
 
 =head2 endpoint
@@ -57,7 +56,7 @@ has regex => (
 has endpoint => (
     is => 'ro',
     isa => 'RegexpRef',
-    default => qr[ ^ \s* } \s* $ ],
+    default => sub { qr[ ^ \s* } \s* $ ] },
 );
 
 =head2 BUILD

@@ -33,7 +33,7 @@ has '+children' => (
 =cut
 
 has '+regex' => (
-    default => qr{subnet \s (\S+) \s netmask (\S+)}x,
+    default => sub { qr{subnet \s (\S+) \s netmask (\S+)}x },
 );
 
 =head1 AUTHOR

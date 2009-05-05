@@ -17,7 +17,7 @@ with 'Net::DHCPd::Config::Role';
 =cut
 
 has '+regex' => (
-    default => qr{^\s* option \s (\S+) \s (\S*)}x,
+    default => sub { qr{^\s* option \s (\S+) \s (\S*)}x },
 );
 
 =head1 AUTHOR

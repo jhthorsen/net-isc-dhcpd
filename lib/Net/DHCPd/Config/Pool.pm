@@ -30,7 +30,7 @@ has '+children' => (
 =cut
 
 has '+regex' => (
-    default => qr{^ \s* pool \s* {? $}x,
+    default => sub { qr{^ \s* pool \s* {? $}x },
 );
 
 =head1 AUTHOR

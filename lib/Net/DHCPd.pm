@@ -4,15 +4,36 @@ package Net::DHCPd;
 
 Net::DHCPd - Interacts with ISC DHCPd
 
+=head1 SYNOPSIS
+
+ my $dhcpd = Net::DHCPd->new(
+                 config_file => "path/to/config",
+                 leases_file => "path/to/leases",
+             );
+
+ my $config = $dhcpd->config;
+
+ $config->parse;
+
+ for my $child ($config->children) {
+    # ...
+ }
+
 =cut
 
 use Moose;
+use Net::DHCPd::Config;
+use Net::DHCPd::Leases;
 
 our $VERSION = "0.01";
 
 =head1 OBJECT ATTRIBUTES
 
 =head2 config
+
+Holds a DHCPd config object.
+
+Default: L<Net::DHCPd::Config>.
 
 =cut
 
@@ -24,6 +45,10 @@ has config => (
 );
 
 =head2 leases
+
+Holds a DHCPd leases object.
+
+Default: L<Net::DHCPd::Leases>.
 
 =cut
 
