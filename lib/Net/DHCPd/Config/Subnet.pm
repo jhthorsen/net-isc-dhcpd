@@ -7,6 +7,7 @@ Net::DHCPd::Config::Subnet - Subnet config parameter
 =cut
 
 use Moose;
+use NetAddr::IP;
 use Net::DHCPd::Config::Option;
 use Net::DHCPd::Config::Range;
 use Net::DHCPd::Config::Host;
@@ -16,6 +17,15 @@ use Net::DHCPd::Config::Pool;
 with 'Net::DHCPd::Config::Role';
 
 =head1 OBJECT ATTRIBUTES
+
+=head2 address
+
+=cut
+
+has address => (
+    is => 'ro',
+    isa => 'NetAddr::IP',
+);
 
 =head2 options
 
@@ -60,6 +70,16 @@ has '+_children' => (
 has '+regex' => (
     default => sub { qr{^ \s* subnet \s (\S+) \s netmask \s (\S+) }x },
 );
+
+=head1 METHODS
+
+=head2 captured_to_args
+
+=cut
+
+sub captured_to_args {
+    return { address => NetAddr::IP->new(join "/", @_[1,2]) };
+}
 
 =head1 AUTHOR
 
