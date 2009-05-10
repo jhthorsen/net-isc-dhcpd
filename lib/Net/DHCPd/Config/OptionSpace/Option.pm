@@ -1,8 +1,8 @@
-package Net::DHCPd::Config::OptionSpace::NameCodeValue;
+package Net::DHCPd::Config::OptionSpace::Option;
 
 =head1 NAME
 
-Net::DHCPd::Config::OptionSpace::NameCodeValue - option space data
+Net::DHCPd::Config::OptionSpace::Option - option space data
 
 =cut
 
@@ -21,8 +21,8 @@ See L<Net::DHCPd::Config::Role>.
 has '+regex' => (
     lazy => 1,
     default => sub {
-        my $name = shift->parent->name;
-        qr{^\s* option \s $name\.(\S+) \s code \s (\d+) \s = \s (.*) ;}x;
+        my $prefix = shift->parent->prefix;
+        qr{^\s* option \s $prefix\.(\S+) \s code \s (\d+) \s = \s (.*) ;}x;
     },
 );
 
