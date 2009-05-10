@@ -6,9 +6,9 @@ Net::DHCPd::Config::Host - Host config parameter
 
 =head1 SYNOPSIS
 
- $host = Net::DHCPd::Config::Host->new(hostname => "foo.com");
+ $host = Net::DHCPd::Config::Host->new(name => "foo.com");
 
- print $host->hostname;
+ print $host->name;
 
  for my $option ($host->options) {
     print "> ", $option->name, ":", $option->value, "\n";
@@ -27,13 +27,13 @@ with 'Net::DHCPd::Config::Role';
 
 =head1 OBJECT ATTRIBUTES
 
-=head2 hostname
+=head2 name
 
- $string = $self->hostname;
+ $string = $self->name;
 
 =cut
 
-has hostname => (
+has name => (
     is => 'ro',
     isa => 'Str',
 );
@@ -69,6 +69,18 @@ See L<Net::DHCPd::Config::Role>
 has '+regex' => (
     default => sub { qr{^ \s* host \s (\S+)}x },
 );
+
+=head2 captured_to_args
+
+=cut
+
+sub captured_to_args {
+    return { name => $_[1] };
+}
+
+=head1 METHODS
+
+=head2 
 
 =head1 AUTHOR
 
