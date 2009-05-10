@@ -102,8 +102,10 @@ sub parse {
         CHILD:
         for my $child ($self->_children) {
             my @captured = $line =~ $child->regex or next CHILD;
-            $self->add_child($child, @captured);
-            $n += $child->parse if(@_ = $child->_children);
+            my $new      = $self->append($child, @captured);
+
+            $n += $new->parse if(@_ = $new->_children);
+
             last CHILD;
         }
     }
@@ -111,9 +113,9 @@ sub parse {
     return $n ? $n : "0e0";
 }
 
-=head2 add_child
+=head2 append
 
- $obj = $self->add_child($child, @captured)
+ $new_child = $self->append($child, @captured)
 
 Called from L<parse()>, with the child object and the captured elements
 from the L<regex()>.
@@ -123,7 +125,26 @@ in each class.
 
 =cut
 
-sub add_child {
+sub append {
+    my $self  = shift;
+    my $child = shift;
+    my $args  = $child->captured_to_args(@_);
+    my $type  = lc +(ref($child) =~ /::(\w+)$/)[0] ."s";
+    my $new   = $child->meta->clone_object($child, %$args);
+
+    push @{ $self->$type }, $new;
+
+    return $new;
+}
+
+=head2 captured_to_args
+
+ $hash_ref = $self->captured_to_args(...);
+
+=cut
+
+sub captured_to_args {
+    return {};
 }
 
 =head2 create_children
@@ -134,13 +155,26 @@ sub add_child {
 
 sub create_children {
     my $self = shift;
-    my @obj  = @_;
+    my $meta = $self->meta;
+    my @list = @_;
 
-    for(@obj) {
-        $_ = $_->new(root => $self->root, parent => $self);
+    for my $obj (@list) {
+        my $name = lc +($obj =~ /::(\w+)$/)[0] ."s";
+
+        unless($meta->get_attribute($name)) {
+            $meta->add_attribute($name => (
+                is => "rw",
+                isa => "ArrayRef[$obj]",
+                lazy => 1,
+                auto_deref => 1,
+                default => sub { [] },
+            ));
+        }
+
+        $obj = $obj->new(root => $self->root, parent => $self);
     }
 
-    return \@obj;
+    return \@list;
 }
 
 =head1 AUTHOR

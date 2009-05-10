@@ -4,6 +4,20 @@ package Net::DHCPd::Config::Group;
 
 Net::DHCPd::Config::Group - Group config parameter
 
+=head1 SYNOPSIS
+
+ my $group = Net::DHCPd::Config::Group->new;
+
+ for($group->subnets) {
+    #...
+ }
+ for($group->hosts) {
+    #...
+ }
+ for($group->options) {
+    #...
+ }
+
 =cut
 
 use Moose;
@@ -14,6 +28,18 @@ use Net::DHCPd::Config::Option;
 with 'Net::DHCPd::Config::Role';
 
 =head1 OBJECT ATTRIBUTES
+
+=head2 subnets
+
+A list of parsed L<Net::DHCPd::Config::Subnet> objects.
+
+=head2 hosts
+
+A list of parsed L<Net::DHCPd::Config::Host> objects.
+
+=head2 options
+
+A list of parsed L<Net::DHCPd::Config::Option> objects.
 
 =cut
 
@@ -28,6 +54,8 @@ has '+_children' => (
 );
 
 =head2 regex
+
+See L<Net::DHCPd::Config::Role>
 
 =cut
 

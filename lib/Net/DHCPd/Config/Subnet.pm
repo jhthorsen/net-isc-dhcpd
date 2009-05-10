@@ -17,6 +17,28 @@ with 'Net::DHCPd::Config::Role';
 
 =head1 OBJECT ATTRIBUTES
 
+=head2 options
+
+A list of parsed L<Net::DHCPd::Config::Option> objects.
+
+=head2 ranges
+
+A list of parsed L<Net::DHCPd::Config::Range> objects.
+
+=head2 hosts
+
+A list of parsed L<Net::DHCPd::Config::Host> objects.
+
+=head2 filenames
+
+A list of parsed L<Net::DHCPd::Config::Filename> objects.
+
+Should only be one item in this list.
+
+=head2 pools
+
+A list of parsed L<Net::DHCPd::Config::Pool> objects.
+
 =cut
 
 has '+_children' => (

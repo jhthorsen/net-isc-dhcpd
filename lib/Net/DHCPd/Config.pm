@@ -41,10 +41,6 @@ has filehandle => (
     },
 );
 
-=head2 children
-
-=cut
-
 has '+_children' => (
     default => sub { 
         shift->create_children(qw/
@@ -55,13 +51,23 @@ has '+_children' => (
     },
 );
 
+=head2 subnets
+
+List of parsed L<Net::DHCPd::Config::Subnet> objects.
+
+=head2 hosts
+
+List of parsed L<Net::DHCPd::Config::Host> objects.
+
+=head2 options
+
+List of parsed L<Net::DHCPd::Config::Option> objects.
+
 =head1 METHODS
 
 =head2 new
 
  $obj = $self->new(...);
-
-=cut
 
 =head1 AUTHOR
 
