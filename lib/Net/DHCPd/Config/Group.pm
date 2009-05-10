@@ -7,21 +7,23 @@ Net::DHCPd::Config::Group - Group config parameter
 =cut
 
 use Moose;
+use Net::DHCPd::Config::Subnet;
+use Net::DHCPd::Config::Host;
+use Net::DHCPd::Config::Option;
 
 with 'Net::DHCPd::Config::Role';
 
 =head1 OBJECT ATTRIBUTES
 
-=head2 children
-
 =cut
 
-has '+children' => (
-    default => sub {
-        [
-            Net::DHCPd::Config::Subnet->new,
-            Net::DHCPd::Config::Host->new,
-        ],
+has '+_children' => (
+    default => sub { 
+        shift->create_children(qw/
+            Net::DHCPd::Config::Subnet
+            Net::DHCPd::Config::Host
+            Net::DHCPd::Config::Option
+        /);
     },
 );
 

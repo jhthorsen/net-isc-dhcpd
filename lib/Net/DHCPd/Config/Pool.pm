@@ -7,21 +7,21 @@ Net::DHCPd::Config::Pool - Pool config parameter
 =cut
 
 use Moose;
+use Net::DHCPd::Config::Option;
+use Net::DHCPd::Config::Range;
 
 with 'Net::DHCPd::Config::Role';
 
 =head1 OBJECT ATTRIBUTES
 
-=head2 children
-
 =cut
 
-has '+children' => (
+has '+_children' => (
     default => sub {
-        [
-            Net::DHCPd::Config::Option->new,
-            Net::DHCPd::Config::Range->new,
-        ],
+        shift->create_children(qw/
+            Net::DHCPd::Config::Option
+            Net::DHCPd::Config::Range
+        /);
     },
 );
 
@@ -30,7 +30,7 @@ has '+children' => (
 =cut
 
 has '+regex' => (
-    default => sub { qr{^ \s* pool \s* {? $}x },
+    default => sub { qr{^ \s* pool}x },
 );
 
 =head1 AUTHOR

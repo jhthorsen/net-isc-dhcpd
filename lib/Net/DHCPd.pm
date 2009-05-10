@@ -22,8 +22,6 @@ Net::DHCPd - Interacts with ISC DHCPd
 =cut
 
 use Moose;
-use Net::DHCPd::Config;
-use Net::DHCPd::Leases;
 
 our $VERSION = "0.01";
 
@@ -41,7 +39,10 @@ has config => (
     is => 'ro',
     lazy => 1,
     isa => 'Net::DHCPd::Config',
-    default => sub { Net::DHCPd::Config->new },
+    default => sub {
+        eval "require Net::DHCPd::Config" or confess $@;
+        Net::DHCPd::Config->new;
+    },
 );
 
 =head2 leases
@@ -56,7 +57,10 @@ has leases => (
     is => 'ro',
     lazy => 1,
     isa => 'Net::DHCPd::Leases',
-    default => sub { Net::DHCPd::Leases->new },
+    default => sub {
+        eval "require Net::DHCPd::Leases" or confess $@;
+        Net::DHCPd::Leases->new;
+    },
 );
 
 =head1 AUTHOR

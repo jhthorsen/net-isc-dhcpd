@@ -18,6 +18,8 @@ has parent => (
     is => 'ro',
     isa => 'Net::DHCPd::Config::Role',
     weak_ref => 1,
+    lazy => 1,
+    default => sub { shift }, # used when constructing Net::DHCPd::Config
 );
 
 =head2 root
@@ -26,8 +28,10 @@ has parent => (
 
 has root => (
     is => 'ro',
-    isa => 'Net::DHCPd::Config::Role',
+    isa => 'Net::DHCPd::Config',
     weak_ref => 1,
+    lazy => 1,
+    default => sub { shift }, # used when constructing Net::DHCPd::Config
 );
 
 =head2 children
@@ -35,9 +39,18 @@ has root => (
 =cut
 
 has children => (
-    is => 'ro',
+    is => 'rw',
     isa => 'ArrayRef',
     auto_deref => 1,
+    default => sub { [] },
+);
+
+has _children => (
+    is => 'ro',
+    isa => 'ArrayRef',
+    lazy => 1,
+    auto_deref => 1,
+    default => sub { [] },
 );
 
 =head2 regex
@@ -55,26 +68,15 @@ has regex => (
 
 has endpoint => (
     is => 'ro',
-    isa => 'RegexpRef',
-    default => sub { qr[ ^ \s* } \s* $ ] },
+    isa => 'Maybe[RegexpRef]',
+    default => sub { qr" ^ \s* } \s* $ "x },
 );
 
-=head2 BUILD
-
-=cut
-
-sub BUILD {
-    my $self = shift;
-    
-    for my $child ($self->children) {
-        $child->parent($self);
-        $child->root($self->root);
-    }
-
-    return 1;
-}
+=head1 METHODS
 
 =head2 parse
+
+ $int = $self->parse;
 
 =cut
 
@@ -82,7 +84,7 @@ sub parse {
     my $self     = shift;
     my $fh       = $self->root->filehandle;
     my $endpoint = $self->endpoint;
-    my $n;
+    my $n        = 0;
 
     LINE:
     while(++$n) {
@@ -90,6 +92,7 @@ sub parse {
         my $res;
 
         if(not defined $line) {
+            $n--;
             last LINE;
         }
         if($line =~ $endpoint) {
@@ -97,10 +100,10 @@ sub parse {
         }
 
         CHILD:
-        for my $child ($self->children) {
+        for my $child ($self->_children) {
             my @captured = $line =~ $child->regex or next CHILD;
-            $child->save(@captured);
-            $child->parse if($child->children);
+            $self->add_child($child, @captured);
+            $n += $child->parse if(@_ = $child->_children);
             last CHILD;
         }
     }
@@ -108,15 +111,36 @@ sub parse {
     return $n ? $n : "0e0";
 }
 
-=head2 save
+=head2 add_child
+
+ $obj = $self->add_child($child, @captured)
+
+Called from L<parse()>, with the child object and the captured elements
+from the L<regex()>.
+
+This role provides a default method that does nothing. Should be overriden
+in each class.
 
 =cut
 
-sub save {
-    my $self = shift;
-    my @data = @_;
+sub add_child {
+}
 
-    return 1;
+=head2 create_children
+
+ $objs = $self->create_children(@classnames)
+
+=cut
+
+sub create_children {
+    my $self = shift;
+    my @obj  = @_;
+
+    for(@obj) {
+        $_ = $_->new(root => $self->root, parent => $self);
+    }
+
+    return \@obj;
 }
 
 =head1 AUTHOR

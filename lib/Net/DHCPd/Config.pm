@@ -7,6 +7,9 @@ Net::DHCPd::Config - Parse and create ISC DHCPd config
 =cut
 
 use Moose;
+use Net::DHCPd::Config::Subnet;
+use Net::DHCPd::Config::Host;
+use Net::DHCPd::Config::Option;
 
 our $CONFIG_FILE = "/etc/dhcp3/dhcpd.conf";
 
@@ -24,31 +27,41 @@ has file => (
     default => $CONFIG_FILE,
 );
 
+=head2 filehandle
+
+=cut
+
+has filehandle => (
+    is => 'ro',
+    default => sub {
+        my $self = shift;
+        my $file = $self->file or return;
+        open(my $FH, "<", $file) or return;
+        $self->filehandle($FH);
+    },
+);
+
 =head2 children
 
 =cut
 
-has '+children' => (
-    default => sub {
-        [
-            Net::DHCPd::Config::Subnet->new,
-            Net::DHCPd::Config::Host->new,
-            Net::DHCPd::Config::Option->new,
-        ],
+has '+_children' => (
+    default => sub { 
+        shift->create_children(qw/
+            Net::DHCPd::Config::Subnet
+            Net::DHCPd::Config::Host
+            Net::DHCPd::Config::Option
+        /);
     },
 );
 
 =head1 METHODS
 
-=head2 BUILD
+=head2 new
+
+ $obj = $self->new(...);
 
 =cut
-
-sub BUILD {
-    my $self = shift;
-    $self->root($self);
-    $self->parent($self);
-}
 
 =head1 AUTHOR
 

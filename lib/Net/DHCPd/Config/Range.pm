@@ -1,8 +1,8 @@
-package Net::DHCPd::Config::Option;
+package Net::DHCPd::Config::Range;
 
 =head1 NAME
 
-Net::DHCPd::Config::Option - Option config parameter
+Net::DHCPd::Config::Range - IP range config parameter
 
 =cut
 
@@ -17,7 +17,7 @@ with 'Net::DHCPd::Config::Role';
 =cut
 
 has '+regex' => (
-    default => sub { qr{^\s* option \s (\S+) \s (.*) ;}x },
+    default => sub { qr{^\s* range \s (\S+) \s (\S*)}x },
 );
 
 =head1 AUTHOR

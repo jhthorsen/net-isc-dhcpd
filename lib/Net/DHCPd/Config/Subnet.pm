@@ -7,24 +7,27 @@ Net::DHCPd::Config::Subnet - Subnet config parameter
 =cut
 
 use Moose;
+use Net::DHCPd::Config::Option;
+use Net::DHCPd::Config::Range;
+use Net::DHCPd::Config::Host;
+use Net::DHCPd::Config::Filename;
+use Net::DHCPd::Config::Pool;
 
 with 'Net::DHCPd::Config::Role';
 
 =head1 OBJECT ATTRIBUTES
 
-=head2 children
-
 =cut
 
-has '+children' => (
+has '+_children' => (
     default => sub {
-        [
-            Net::DHCPd::Config::Option->new,
-            Net::DHCPd::Config::Range->new,
-            Net::DHCPd::Config::Host->new,
-            Net::DHCPd::Config::Filename->new,
-            Net::DHCPd::Config::Pool->new,
-        ],
+        shift->create_children(qw/
+            Net::DHCPd::Config::Option
+            Net::DHCPd::Config::Range
+            Net::DHCPd::Config::Host
+            Net::DHCPd::Config::Filename
+            Net::DHCPd::Config::Pool
+        /);
     },
 );
 
@@ -33,7 +36,7 @@ has '+children' => (
 =cut
 
 has '+regex' => (
-    default => sub { qr{subnet \s (\S+) \s netmask (\S+)}x },
+    default => sub { qr{^ \s* subnet \s (\S+) \s netmask \s (\S+) }x },
 );
 
 =head1 AUTHOR
