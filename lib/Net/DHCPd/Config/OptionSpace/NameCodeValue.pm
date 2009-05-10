@@ -1,0 +1,110 @@
+package Net::DHCPd::Config::OptionSpace::NameCodeValue;
+
+=head1 NAME
+
+Net::DHCPd::Config::OptionSpace::NameCodeValue - option space data
+
+=cut
+
+use Moose;
+
+with 'Net::DHCPd::Config::Role';
+
+=head1 OBJECT ATTRIBUTES
+
+=head2 regex
+
+See L<Net::DHCPd::Config::Role>.
+
+=cut
+
+has '+regex' => (
+    lazy => 1,
+    default => sub {
+        my $name = shift->parent->name;
+        qr{^\s* option \s $name\.(\S+) \s code \s (\d+) \s = \s (.*) ;}x;
+    },
+);
+
+=head2 name
+
+ $string = $self->name;
+
+Human readable name of this option, without parent name prefix
+
+=cut
+
+has name => (
+    is => 'ro',
+    isa => 'Str',
+);
+
+=head2 code
+
+ $int = $self->name;
+
+Computer readable code for this option.
+
+=cut
+
+has code => (
+    is => 'ro',
+    isa => 'Int',
+);
+
+=head2 value
+
+ $string = $self->value;
+
+Value of the option.
+
+=cut
+
+has value => (
+    is => 'ro',
+    isa => 'Str',
+);
+
+=head2 quoted
+
+ $bool = $self->quoted;
+
+This flag tells if the option value should be quoted or not.
+
+=cut
+
+has quoted => (
+    is => 'ro',
+    isa => 'Bool',
+);
+
+=head1 METHODS
+
+=head2 captured_to_args
+
+=cut
+
+sub captured_to_args {
+    my $self   = shift;
+    my $name   = shift;
+    my $code   = shift;
+    my $value  = shift;
+    my $quoted = 0;
+
+    $quoted = 1 if($value =~ s/^"(.*)"$/$1/g);
+
+    return {
+        name   => $name,
+        code   => $code,
+        value  => $value,
+        quoted => $quoted,
+    };
+}
+
+=head1 AUTHOR
+
+See L<Net::DHCPd>.
+
+=cut
+
+1;
