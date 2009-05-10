@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 use Net::DHCPd::Config;
-use Test::More tests => 23;
+use Test::More tests => 20;
 
 #$Net::DHCPd::Config::DEBUG = 1;
 
@@ -21,21 +21,16 @@ is(scalar(@_=$config->hosts), 1, "hosts");
 my $space = $config->optionspaces->[0];
 is(scalar(@_=$space->options), 2, "option space options");
 is($space->name, 'foo-enc', "option space name");
-is($space->code, 122, "option space name");
-is($space->prefix, 'foo', "option space name");
+is($space->code, 122, "option space code");
+is($space->prefix, 'foo', "option space prefix");
 
 my $subnet = $config->subnets->[0];
 my $subnet_opt = $subnet->options->[0];
 is($subnet->address, "10.0.0.96/27", "subnet address");
 is($subnet_opt->name, "domain-name", "subnet option name");
 is($subnet_opt->value, "isc.org", "subnet option value");
-ok($subnet_opt->quoted, "subnet option quoted");
-is(scalar(@_=$subnet->pools), 3, "three pools found");
-
-my $option = $subnet->options->[0];
-is($option->name, "domain-name", "domain name option found");
-is($option->value, "isc.org", "domain name value found");
-ok($option->quoted, "domain name value is quoted");
+ok($subnet_opt->quoted, "subnet option is quoted");
+is(scalar(@_=$subnet->pools), 3, "three subnet pools found");
 
 my $range = $subnet->pools->[0]->ranges->[0];
 is($range->lower, "10.0.0.98/32", "lower pool range");
