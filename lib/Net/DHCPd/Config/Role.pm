@@ -8,7 +8,7 @@ Net::DHCPd::Config::Role - Generic config methods and attributes
 
 use Moose::Role;
 
-our $DEBUG = 0;
+sub DEBUG { $Net::DHCPd::Config::DEBUG }
 
 =head1 OBJECT ATTRIBUTES
 
@@ -98,7 +98,9 @@ sub parse {
             last LINE;
         }
         if($line =~ $endpoint) {
-            warn "=endpoint\n" if $DEBUG;
+            warn "=endpoint\n" if DEBUG;
+
+            $self->captured_endpoint($1, $2, $3, $4); # urk...
 
             if($self->root == $self) {
                 next LINE;
@@ -108,14 +110,14 @@ sub parse {
             }
         }
 
-        warn ":$self: $line" if $DEBUG;
+        warn ":$self: $line" if DEBUG;
 
         CHILD:
         for my $child ($self->_children) {
             my @captured = $line =~ $child->regex or next CHILD;
             my $new      = $self->append($child, @captured);
 
-            warn ">$new: @captured\n" if $DEBUG;
+            warn ">$new: @captured\n" if DEBUG;
 
             $n += $new->parse if(@_ = $new->_children);
 
@@ -158,6 +160,14 @@ sub append {
 
 sub captured_to_args {
     return {};
+}
+
+=head2 captured_endpoint
+
+=cut
+
+sub captured_endpoint {
+    return;
 }
 
 =head2 create_children
