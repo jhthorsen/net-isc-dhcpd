@@ -21,6 +21,7 @@ Net::DHCPd::Config::Host - Host config parameter
 use Moose;
 use Net::DHCPd::Config::Option;
 use Net::DHCPd::Config::Filename;
+use Net::DHCPd::Config::KeyValue;
 
 with 'Net::DHCPd::Config::Role';
 
@@ -54,6 +55,7 @@ has '+_children' => (
         shift->create_children(qw/
             Net::DHCPd::Config::Option
             Net::DHCPd::Config::Filename
+            Net::DHCPd::Config::KeyValue
         /);
     },
 );
@@ -65,7 +67,7 @@ See L<Net::DHCPd::Config::Role>
 =cut
 
 has '+regex' => (
-    default => sub { qr{^ \s* host (\S+)}x },
+    default => sub { qr{^ \s* host \s (\S+)}x },
 );
 
 =head1 AUTHOR

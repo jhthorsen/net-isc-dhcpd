@@ -24,6 +24,7 @@ use Moose;
 use Net::DHCPd::Config::Subnet;
 use Net::DHCPd::Config::Host;
 use Net::DHCPd::Config::Option;
+use Net::DHCPd::Config::KeyValue;
 
 with 'Net::DHCPd::Config::Role';
 
@@ -49,6 +50,7 @@ has '+_children' => (
             Net::DHCPd::Config::Subnet
             Net::DHCPd::Config::Host
             Net::DHCPd::Config::Option
+            Net::DHCPd::Config::KeyValue
         /);
     },
 );
