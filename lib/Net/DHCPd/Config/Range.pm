@@ -59,13 +59,9 @@ has '+regex' => (
 =cut
 
 sub captured_to_args {
-    my $self = shift;
-    my $lower = shift;
-    my $upper = shift;
-
     return {
-        lower => NetAddr::IP->new($lower),
-        upper => NetAddr::IP->new($upper),
+        lower => NetAddr::IP->new($_[1]),
+        upper => NetAddr::IP->new($_[2]),
     };
 }
 
