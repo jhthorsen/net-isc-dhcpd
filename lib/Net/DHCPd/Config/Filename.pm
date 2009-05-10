@@ -37,12 +37,10 @@ has '+regex' => (
 
 =head2 captured_to_args
 
-See L<Net::DHCPd::Config::Role>.
-
 =cut
 
 sub captured_to_args {
-    return { filename => $_[1] };
+    return { file => $_[1] };
 }
 
 =head1 AUTHOR
