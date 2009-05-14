@@ -4,6 +4,15 @@ package Net::DHCPd::Config::Filename;
 
 Net::DHCPd::Config::Filename - Filename config parameter
 
+=head1 DESCRIPTION
+
+See L<Net::DHCPd::Config::Role> for methods and attributes without
+documentation.
+
+=head1 SYNOPSIS
+
+See L<Net::DHCPd::Config> for synopsis.
+
 =cut
 
 use Moose;
@@ -24,8 +33,6 @@ has file => (
 );
 
 =head2 regex
-
-See L<Net::DHCPd::Config::Role>.
 
 =cut
 

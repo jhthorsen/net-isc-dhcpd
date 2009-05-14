@@ -20,6 +20,10 @@ with 'Net::DHCPd::Config::Role';
 
 =head2 address
 
+The ip address of this subnet.
+
+ISA: L<NetAddr::IP>
+
 =cut
 
 has address => (
@@ -49,9 +53,11 @@ Should only be one item in this list.
 
 A list of parsed L<Net::DHCPd::Config::Pool> objects.
 
+=head2 children
+
 =cut
 
-has '+_children' => (
+has '+children' => (
     default => sub {
         shift->create_children(qw/
             Net::DHCPd::Config::Option

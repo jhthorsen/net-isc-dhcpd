@@ -4,19 +4,14 @@ package Net::DHCPd::Config::Group;
 
 Net::DHCPd::Config::Group - Group config parameter
 
+=head1 DESCRIPTION
+
+See L<Net::DHCPd::Config::Role> for methods and attributes without
+documentation.
+
 =head1 SYNOPSIS
 
- my $group = Net::DHCPd::Config::Group->new;
-
- for($group->subnets) {
-    #...
- }
- for($group->hosts) {
-    #...
- }
- for($group->options) {
-    #...
- }
+See L<Net::DHCPd::Config> for synopsis.
 
 =cut
 
@@ -42,12 +37,13 @@ A list of parsed L<Net::DHCPd::Config::Host> objects.
 
 A list of parsed L<Net::DHCPd::Config::Option> objects.
 
+=head2 children
+
 =cut
 
-has '+_children' => (
+has '+children' => (
     default => sub { 
         shift->create_children(qw/
-            Net::DHCPd::Config::Subnet
             Net::DHCPd::Config::Host
             Net::DHCPd::Config::Option
             Net::DHCPd::Config::KeyValue
@@ -56,8 +52,6 @@ has '+_children' => (
 );
 
 =head2 regex
-
-See L<Net::DHCPd::Config::Role>
 
 =cut
 

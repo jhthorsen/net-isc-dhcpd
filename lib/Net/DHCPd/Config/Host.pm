@@ -4,17 +4,14 @@ package Net::DHCPd::Config::Host;
 
 Net::DHCPd::Config::Host - Host config parameter
 
+=head1 DESCRIPTION
+
+See L<Net::DHCPd::Config::Role> for methods and attributes without
+documentation.
+
 =head1 SYNOPSIS
 
- $host = Net::DHCPd::Config::Host->new(name => "foo.com");
-
- print $host->name;
-
- for my $option ($host->options) {
-    print "> ", $option->name, ":", $option->value, "\n";
- }
-
- print "> filename: ", $host->filenames->[0]->file;
+See L<Net::DHCPd::Config> for synopsis.
 
 =cut
 
@@ -27,6 +24,16 @@ with 'Net::DHCPd::Config::Role';
 
 =head1 OBJECT ATTRIBUTES
 
+=head2 options
+
+A list of parsed L<Net::DHCPd::Config::Option> objects.
+
+=head2 filenames
+
+A list of parsed L<Net::DHCPd::Config::Filename> objects.
+
+Should only be one item in this list.
+
 =head2 name
 
  $string = $self->name;
@@ -38,19 +45,11 @@ has name => (
     isa => 'Str',
 );
 
-=head2 options
-
-A list of parsed L<Net::DHCPd::Config::Option> objects.
-
-=head2 filenames
-
-A list of parsed L<Net::DHCPd::Config::Filename> objects.
-
-Should only be one item in this list.
+=head2 children
 
 =cut
 
-has '+_children' => (
+has '+children' => (
     default => sub {
         shift->create_children(qw/
             Net::DHCPd::Config::Option
@@ -62,13 +61,13 @@ has '+_children' => (
 
 =head2 regex
 
-See L<Net::DHCPd::Config::Role>
-
 =cut
 
 has '+regex' => (
     default => sub { qr{^ \s* host \s (\S+)}x },
 );
+
+=head1 METHODS
 
 =head2 captured_to_args
 
@@ -77,10 +76,6 @@ has '+regex' => (
 sub captured_to_args {
     return { name => $_[1] };
 }
-
-=head1 METHODS
-
-=head2 
 
 =head1 AUTHOR
 

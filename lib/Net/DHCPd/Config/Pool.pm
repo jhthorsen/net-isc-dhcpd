@@ -4,16 +4,14 @@ package Net::DHCPd::Config::Pool;
 
 Net::DHCPd::Config::Pool - Pool config parameter
 
+=head1 DESCRIPTION
+
+See L<Net::DHCPd::Config::Role> for methods and attributes without
+documentation.
+
 =head1 SYNOPSIS
 
- $pool = Net::DHCPd::Config::Pool->new;
-
- for($pool->options) {
-    # ...
- }
- for($pool->ranges) {
-    # ...
- }
+See L<Net::DHCPd::Config> for synopsis.
 
 =cut
 
@@ -34,9 +32,11 @@ A list of parsed L<Net::DHCPd::Config::Option> objects.
 
 A list of parsed L<Net::DHCPd::Config::Range> objects.
 
+=head2 children
+
 =cut
 
-has '+_children' => (
+has '+children' => (
     default => sub {
         shift->create_children(qw/
             Net::DHCPd::Config::Option
@@ -47,8 +47,6 @@ has '+_children' => (
 );
 
 =head2 regex
-
-See L<Net::DHCPd::Config::Role>.
 
 =cut
 

@@ -4,10 +4,19 @@ package Net::DHCPd::Config::Range;
 
 Net::DHCPd::Config::Range - IP range config parameter
 
+=head1 DESCRIPTION
+
+See L<Net::DHCPd::Config::Role> for methods and attributes without
+documentation.
+
+=head1 SYNOPSIS
+
+See L<Net::DHCPd::Config> for synopsis.
+
 =head1 NOTES
 
-upper and lower attributes might change from L<NetAddr::IP> to plain strings
-in the future.
+L<upper> and L<lower> attributes might change from L<NetAddr::IP> to
+plain strings in the future.
 
 =cut
 

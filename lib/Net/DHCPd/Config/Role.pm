@@ -4,6 +4,10 @@ package Net::DHCPd::Config::Role;
 
 Net::DHCPd::Config::Role - Generic config methods and attributes
 
+=head1 SYNOPSIS
+
+See L<Net::DHCPd::Config> for synopsis.
+
 =cut
 
 use Moose::Role;
@@ -11,6 +15,8 @@ use Moose::Role;
 =head1 OBJECT ATTRIBUTES
 
 =head2 parent
+
+The parent node in the config tree.
 
 =cut
 
@@ -24,6 +30,8 @@ has parent => (
 
 =head2 root
 
+The root node in the config tree.
+
 =cut
 
 has root => (
@@ -36,16 +44,11 @@ has root => (
 
 =head2 children
 
+List of possible child nodes.
+
 =cut
 
 has children => (
-    is => 'rw',
-    isa => 'ArrayRef',
-    auto_deref => 1,
-    default => sub { [] },
-);
-
-has _children => (
     is => 'ro',
     isa => 'ArrayRef',
     lazy => 1,
@@ -54,6 +57,8 @@ has _children => (
 );
 
 =head2 regex
+
+Regex to match for the node to be added.
 
 =cut
 
@@ -64,6 +69,10 @@ has regex => (
 
 =head2 endpoint
 
+Regex to search for before ending the current node block.
+
+Will not be used if the node does not have any possible L<children>.
+
 =cut
 
 has endpoint => (
@@ -72,11 +81,26 @@ has endpoint => (
     default => sub { qr" ^ \s* } \s* $ "x },
 );
 
+=head2 pairs
+
+...
+
+=cut
+
+has pairs => (
+    is => 'ro',
+    isa => 'ArrayRef[RegexpRef]',
+);
+
 =head1 METHODS
 
 =head2 parse
 
  $int = $self->parse;
+
+Parses a current node recursively. Does this by reading line by line from
+L<$self-E<gt>root-E<gt>filehandle>, and use the rules from the possible
+child elements and endpoint.
 
 =cut
 
@@ -111,13 +135,13 @@ sub parse {
         warn ":$self: $line" if $Net::DHCPd::Config::DEBUG;
 
         CHILD:
-        for my $child ($self->_children) {
+        for my $child ($self->children) {
             my @captured = $line =~ $child->regex or next CHILD;
             my $new      = $self->append($child, @captured);
 
             warn ">$new: @captured\n" if $Net::DHCPd::Config::DEBUG;
 
-            $n += $new->parse if(@_ = $new->_children);
+            $n += $new->parse if(@_ = $new->children);
 
             last CHILD;
         }
@@ -152,7 +176,9 @@ sub append {
 
 =head2 captured_to_args
 
- $hash_ref = $self->captured_to_args(...);
+ $hash_ref = $self->captured_to_args(@list);
+
+Called when a L<regex> matches, with a list of captured strings.
 
 =cut
 
@@ -161,6 +187,10 @@ sub captured_to_args {
 }
 
 =head2 captured_endpoint
+ 
+ $self->captured_endpoint(@list)
+
+Called when a L<endpoint> matches, with a list of captured strings.
 
 =cut
 
@@ -171,6 +201,9 @@ sub captured_endpoint {
 =head2 create_children
 
  $objs = $self->create_children(@classnames)
+
+This method is used internally to create extra attributes in classes and
+construct the L<children> attribute.
 
 =cut
 

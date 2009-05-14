@@ -2,7 +2,16 @@ package Net::DHCPd::Config::OptionSpace;
 
 =head1 NAME
 
-Net::DHCPd::Config::OptionSpace - Option config parameter
+Net::DHCPd::Config::OptionSpace - Option space config parameter
+
+=head1 DESCRIPTION
+
+See L<Net::DHCPd::Config::Role> for methods and attributes without
+documentation.
+
+=head1 SYNOPSIS
+
+See L<Net::DHCPd::Config> for synopsis.
 
 =cut
 
@@ -13,19 +22,11 @@ with 'Net::DHCPd::Config::Role';
 
 =head1 OBJECT ATTRIBUTES
 
-=head2 namecodevalues
+=head2 options
 
 A list of parsed L<Net::DHCPd::Config::OptionSpace::Option> objects.
 
 =cut
-
-has '+_children' => (
-    default => sub {
-        shift->create_children(qw/
-            Net::DHCPd::Config::OptionSpace::Option
-        /);
-    },
-);
 
 =head2 name
 
@@ -61,9 +62,19 @@ has prefix => (
     isa => 'Str',
 );
 
-=head2 regex
+=head2 children
 
-See L<Net::DHCPd::Config::Role>.
+=cut
+
+has '+children' => (
+    default => sub {
+        shift->create_children(qw/
+            Net::DHCPd::Config::OptionSpace::Option
+        /);
+    },
+);
+
+=head2 regex
 
 =cut
 
@@ -72,8 +83,6 @@ has '+regex' => (
 );
 
 =head2 endpoint
-
-See L<Net::DHCPd::Config::Role>.
 
 =cut
 

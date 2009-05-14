@@ -4,6 +4,15 @@ package Net::DHCPd::Config::KeyValue;
 
 Net::DHCPd::Config::KeyValue - Misc option config parameter
 
+=head1 DESCRIPTION
+
+See L<Net::DHCPd::Config::Role> for methods and attributes without
+documentation.
+
+=head1 SYNOPSIS
+
+See L<Net::DHCPd::Config> for synopsis.
+
 =cut
 
 use Moose;
@@ -11,16 +20,6 @@ use Moose;
 with 'Net::DHCPd::Config::Role';
 
 =head1 OBJECT ATTRIBUTES
-
-=head2 regex
-
-See L<Net::DHCPd::Config::Role>.
-
-=cut
-
-has '+regex' => (
-    default => sub { qr{^\s* ([\w-]+) \s (.*) ;}x },
-);
 
 =head2 name
 
@@ -59,6 +58,14 @@ This flag tells if the option value should be quoted or not.
 has quoted => (
     is => 'ro',
     isa => 'Bool',
+);
+
+=head2 regex
+
+=cut
+
+has '+regex' => (
+    default => sub { qr{^\s* ([\w-]+) \s (.*) ;}x },
 );
 
 =head1 METHODS

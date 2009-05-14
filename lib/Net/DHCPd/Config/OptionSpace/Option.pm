@@ -4,6 +4,15 @@ package Net::DHCPd::Config::OptionSpace::Option;
 
 Net::DHCPd::Config::OptionSpace::Option - option space data
 
+=head1 DESCRIPTION
+
+See L<Net::DHCPd::Config::Role> for methods and attributes without
+documentation.
+
+=head1 SYNOPSIS
+
+See L<Net::DHCPd::Config> for synopsis.
+
 =cut
 
 use Moose;
@@ -11,20 +20,6 @@ use Moose;
 with 'Net::DHCPd::Config::Role';
 
 =head1 OBJECT ATTRIBUTES
-
-=head2 regex
-
-See L<Net::DHCPd::Config::Role>.
-
-=cut
-
-has '+regex' => (
-    lazy => 1,
-    default => sub {
-        my $prefix = shift->parent->prefix;
-        qr{^\s* option \s $prefix\.(\S+) \s code \s (\d+) \s = \s (.*) ;}x;
-    },
-);
 
 =head2 name
 
@@ -76,6 +71,18 @@ This flag tells if the option value should be quoted or not.
 has quoted => (
     is => 'ro',
     isa => 'Bool',
+);
+
+=head2 regex
+
+=cut
+
+has '+regex' => (
+    lazy => 1,
+    default => sub {
+        my $prefix = shift->parent->prefix;
+        qr{^\s* option \s $prefix\.(\S+) \s code \s (\d+) \s = \s (.*) ;}x;
+    },
 );
 
 =head1 METHODS

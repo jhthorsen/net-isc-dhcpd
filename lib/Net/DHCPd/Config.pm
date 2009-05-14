@@ -4,6 +4,49 @@ package Net::DHCPd::Config;
 
 Net::DHCPd::Config - Parse and create ISC DHCPd config
 
+=head1 POSSIBLE CONFIG TREE
+
+ Config
+  |- Config::Subnet
+  |  |- Config::Option
+  |  |- Config::Declaration
+  |  |- Config::Range
+  |  |- Config::Host
+  |  |  |- ...
+  |  |- Config::Filename
+  |  '- Config::Pool
+  |     |- Option
+  |     |- Range
+  |     '- KeyValue
+  |
+  |- Config::SharedNetwork
+  |  |- Config::Subnet
+  |  |  |- ...
+  |  |- Config::Declaration
+  |  '- Config::KeyValue
+  |
+  |- Config::Group
+  |  |- Config::Host
+  |  |  |- ...
+  |  |- Config::Option
+  |  |- Config::Declaration
+  |  '- Config::KeyValue
+  |
+  |- Config::Host
+  |  |- Config::Option
+  |  |- Config::Filename
+  |  |- Config::Declaration
+  |  '- Config::KeyValue
+  |
+  |- Config::OptionSpace
+  |  '- Config::OptionSpace::Option
+  |
+  |- Config::Option
+  |- Config::Declaration *
+  |- Config::Function    *
+  |- Config::KeyValue
+  '- Config::Single      *
+
 =cut
 
 use Moose;
@@ -44,7 +87,11 @@ has filehandle => (
     },
 );
 
-has '+_children' => (
+=head2 children
+
+=cut
+
+has '+children' => (
     default => sub { 
         shift->create_children(qw/
             Net::DHCPd::Config::Subnet
