@@ -1,4 +1,4 @@
-use Test::More tests => 3;
+use Test::More tests => 16;
 BEGIN { use_ok( 'Net::DHCPd' ) }
 BEGIN { use_ok( 'Net::DHCPd::Config' ) }
 BEGIN { use_ok( 'Net::DHCPd::Config::Role' ) }
