@@ -2,59 +2,69 @@
 
 use warnings;
 use strict;
-use Net::DHCPd::Config;
-use Test::More tests => 24;
+use Benchmark;
+use Test::More;
 
-#$Net::DHCPd::Config::DEBUG = 1;
+my $count    = $ENV{'COUNT'} || 1;
+my $data_pos = tell DATA;
+my $lines    = 49;
 
-my $config = Net::DHCPd::Config->new(filehandle => \*DATA);
+plan tests => 1 + 25 * $count;
 
-is(ref $config, "Net::DHCPd::Config", "config object constructed");
-is($config->parse, 49, "all config lines parsed");
+use_ok("Net::DHCPd::Config");
 
-is(scalar(@_=$config->keyvalues), 3, "key values");
-is(scalar(@_=$config->optionspaces), 1, "option space");
-is(scalar(@_=$config->options), 1, "options");
-is(scalar(@_=$config->subnets), 1, "subnets");
-is(scalar(@_=$config->hosts), 1, "hosts");
+my $time = timeit($count, sub {
+    seek DATA, $data_pos, 0;
+    my $config = Net::DHCPd::Config->new(filehandle => \*DATA);
 
-my $space = $config->optionspaces->[0];
-is(scalar(@_=$space->options), 2, "option space options");
-is($space->name, 'foo-enc', "option space name");
-is($space->code, 122, "option space code");
-is($space->prefix, 'foo', "option space prefix");
+    is(ref $config, "Net::DHCPd::Config", "config object constructed");
+    is($config->parse, $lines, "all config lines parsed");
 
-my $subnet = $config->subnets->[0];
-my $subnet_opt = $subnet->options->[0];
-is($subnet->address, "10.0.0.96/27", "subnet address");
-is($subnet_opt->name, "domain-name", "subnet option name");
-is($subnet_opt->value, "isc.org", "subnet option value");
-ok($subnet_opt->quoted, "subnet option is quoted");
-is(scalar(@_=$subnet->pools), 3, "three subnet pools found");
+    is(scalar(@_=$config->keyvalues), 3, "key values");
+    is(scalar(@_=$config->optionspaces), 1, "option space");
+    is(scalar(@_=$config->options), 1, "options");
+    is(scalar(@_=$config->subnets), 1, "subnets");
+    is(scalar(@_=$config->hosts), 1, "hosts");
 
-my $range = $subnet->pools->[0]->ranges->[0];
-is($range->lower, "10.0.0.98/32", "lower pool range");
-is($range->upper, "10.0.0.103/32", "upper pool range");
+    my $space = $config->optionspaces->[0];
+    is(scalar(@_=$space->options), 2, "option space options");
+    is($space->name, 'foo-enc', "option space name");
+    is($space->code, 122, "option space code");
+    is($space->prefix, 'foo', "option space prefix");
 
-my $host = $config->hosts->[0];
-is($host->name, "foo", "host foo found");
-is($host->keyvalues->[0]->value, "10.19.83.102", "fixed address found");
+    my $subnet = $config->subnets->[0];
+    my $subnet_opt = $subnet->options->[0];
+    is($subnet->address, "10.0.0.96/27", "subnet address");
+    is($subnet_opt->name, "domain-name", "subnet option name");
+    is($subnet_opt->value, "isc.org", "subnet option value");
+    ok($subnet_opt->quoted, "subnet option is quoted");
+    is(scalar(@_=$subnet->pools), 3, "three subnet pools found");
 
-my $shared_subnets = $config->sharednetworks->[0]->subnets;
-is(int(@$shared_subnets), 2, "shared subnets found");
+    my $range = $subnet->pools->[0]->ranges->[0];
+    is($range->lower, "10.0.0.98/32", "lower pool range");
+    is($range->upper, "10.0.0.103/32", "upper pool range");
 
-my $function_body = join("\n", map { "    $_" }
-    q(set leasetime = encode-int(lease-time, 32);),
-    q(if(1) {),
-    q(    set hw_addr   = substring(hardware, 1, 8);),
-    q(}),
-);
+    my $host = $config->hosts->[0];
+    is($host->name, "foo", "host foo found");
+    is($host->keyvalues->[0]->value, "10.19.83.102", "fixed address found");
 
-my $function = $config->functions->[0];
-ok($function, "function defined");
-is($function->name, "commit", "commit function found");
-is($function->body, $function_body, "commit body match");
+    my $shared_subnets = $config->sharednetworks->[0]->subnets;
+    is(int(@$shared_subnets), 2, "shared subnets found");
 
+    my $function_body = join("\n", map { "    $_" }
+        q(set leasetime = encode-int(lease-time, 32);),
+        q(if(1) {),
+        q(    set hw_addr   = substring(hardware, 1, 8);),
+        q(}),
+    );
+
+    my $function = $config->functions->[0];
+    ok($function, "function defined");
+    is($function->name, "commit", "commit function found");
+    is($function->body, $function_body, "commit body match");
+});
+
+diag(($lines * $count) .": " .timestr($time));
 
 __DATA__
 ddns-update-style none;
