@@ -52,6 +52,7 @@ Net::DHCPd::Config - Parse and create ISC DHCPd config
 use Moose;
 use Net::DHCPd::Config::Subnet;
 use Net::DHCPd::Config::Host;
+use Net::DHCPd::Config::SharedNetwork;
 use Net::DHCPd::Config::OptionSpace;
 use Net::DHCPd::Config::Option;
 use Net::DHCPd::Config::KeyValue;
@@ -96,6 +97,7 @@ has '+children' => (
         shift->create_children(qw/
             Net::DHCPd::Config::Subnet
             Net::DHCPd::Config::Host
+            Net::DHCPd::Config::SharedNetwork
             Net::DHCPd::Config::OptionSpace
             Net::DHCPd::Config::Option
             Net::DHCPd::Config::KeyValue

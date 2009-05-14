@@ -10,7 +10,7 @@ use Test::More tests => 20;
 my $config = Net::DHCPd::Config->new(filehandle => \*DATA);
 
 is(ref $config, "Net::DHCPd::Config", "config object constructed");
-is($config->parse, 35, "all config lines parsed");
+is($config->parse, 42, "all config lines parsed");
 
 is(scalar(@_=$config->keyvalues), 3, "key values");
 is(scalar(@_=$config->optionspaces), 1, "option space");
@@ -40,6 +40,11 @@ my $host = $config->hosts->[0];
 is($host->name, "foo", "host foo found");
 is($host->keyvalues->[0]->value, "10.19.83.102", "fixed address found");
 
+ok($config->sharednetworks, "shared network");
+my $shared_subnets = $config->sharednetworks->[0]->subnets;
+is(int(@$shared_subnets), 2, "shared subnets found");
+
+
 __DATA__
 ddns-update-style none;
 
@@ -68,6 +73,13 @@ subnet 10.0.0.96 netmask 255.255.255.224
     }
     pool {
         range 10.0.0.116 10.0.0.126;
+    }
+}
+
+shared-network {
+    subnet 10.0.0.1 netmask 255.255.255.0 {
+    }
+    subnet 10.0.1.1 netmask 255.255.255.0 {
     }
 }
 
