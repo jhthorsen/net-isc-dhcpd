@@ -81,17 +81,6 @@ has endpoint => (
     default => sub { qr" ^ \s* } \s* $ "x },
 );
 
-=head2 pairs
-
-...
-
-=cut
-
-has pairs => (
-    is => 'ro',
-    isa => 'ArrayRef[RegexpRef]',
-);
-
 =head1 METHODS
 
 =head2 parse
@@ -119,9 +108,14 @@ sub parse {
             $n--;
             last LINE;
         }
-        if($line =~ $endpoint) {
-            warn "=endpoint\n" if $Net::DHCPd::Config::DEBUG;
 
+        if($self->can('slurp')) {
+            my $action = $self->slurp($line); # next or last
+            no warnings;
+            eval $action;
+        }
+
+        if($line =~ $endpoint) {
             $self->captured_endpoint($1, $2, $3, $4); # urk...
 
             if($self->root == $self) {
@@ -132,14 +126,10 @@ sub parse {
             }
         }
 
-        warn ":$self: $line" if $Net::DHCPd::Config::DEBUG;
-
         CHILD:
         for my $child ($self->children) {
             my @captured = $line =~ $child->regex or next CHILD;
             my $new      = $self->append($child, @captured);
-
-            warn ">$new: @captured\n" if $Net::DHCPd::Config::DEBUG;
 
             $n += $new->parse if(@_ = $new->children);
 
