@@ -3,14 +3,14 @@
 use warnings;
 use strict;
 use Net::DHCPd::Config;
-use Test::More tests => 20;
+use Test::More tests => 24;
 
 #$Net::DHCPd::Config::DEBUG = 1;
 
 my $config = Net::DHCPd::Config->new(filehandle => \*DATA);
 
 is(ref $config, "Net::DHCPd::Config", "config object constructed");
-is($config->parse, 42, "all config lines parsed");
+is($config->parse, 49, "all config lines parsed");
 
 is(scalar(@_=$config->keyvalues), 3, "key values");
 is(scalar(@_=$config->optionspaces), 1, "option space");
@@ -40,9 +40,20 @@ my $host = $config->hosts->[0];
 is($host->name, "foo", "host foo found");
 is($host->keyvalues->[0]->value, "10.19.83.102", "fixed address found");
 
-ok($config->sharednetworks, "shared network");
 my $shared_subnets = $config->sharednetworks->[0]->subnets;
 is(int(@$shared_subnets), 2, "shared subnets found");
+
+my $function_body = join("\n", map { "    $_" }
+    q(set leasetime = encode-int(lease-time, 32);),
+    q(if(1) {),
+    q(    set hw_addr   = substring(hardware, 1, 8);),
+    q(}),
+);
+
+my $function = $config->functions->[0];
+ok($function, "function defined");
+is($function->name, "commit", "commit function found");
+is($function->body, $function_body, "commit body match");
 
 
 __DATA__
@@ -56,6 +67,13 @@ option foo-enc code 122 = encapsulate foo;
 option domain-name-servers 84.208.20.110, 84.208.20.111;
 default-lease-time 86400;
 max-lease-time 86400;
+
+on commit {
+    set leasetime = encode-int(lease-time, 32);
+    if(1) {
+        set hw_addr   = substring(hardware, 1, 8);
+    }
+}
 
 subnet 10.0.0.96 netmask 255.255.255.224
 {

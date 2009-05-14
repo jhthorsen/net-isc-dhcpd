@@ -43,7 +43,7 @@ Net::DHCPd::Config - Parse and create ISC DHCPd config
   |
   |- Config::Option
   |- Config::Declaration *
-  |- Config::Function    *
+  |- Config::Function
   |- Config::KeyValue
   '- Config::Single      *
 
@@ -53,6 +53,7 @@ use Moose;
 use Net::DHCPd::Config::Subnet;
 use Net::DHCPd::Config::Host;
 use Net::DHCPd::Config::SharedNetwork;
+use Net::DHCPd::Config::Function;
 use Net::DHCPd::Config::OptionSpace;
 use Net::DHCPd::Config::Option;
 use Net::DHCPd::Config::KeyValue;
@@ -98,6 +99,7 @@ has '+children' => (
             Net::DHCPd::Config::Subnet
             Net::DHCPd::Config::Host
             Net::DHCPd::Config::SharedNetwork
+            Net::DHCPd::Config::Function
             Net::DHCPd::Config::OptionSpace
             Net::DHCPd::Config::Option
             Net::DHCPd::Config::KeyValue
