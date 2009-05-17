@@ -17,11 +17,11 @@ use Net::DHCPd::Config::Pool;
 with 'Net::DHCPd::Config::Role';
 
 __PACKAGE__->create_children(qw/
-    Net::DHCPd::Config::Option
-    Net::DHCPd::Config::Range
     Net::DHCPd::Config::Host
-    Net::DHCPd::Config::Filename
     Net::DHCPd::Config::Pool
+    Net::DHCPd::Config::Range
+    Net::DHCPd::Config::Filename
+    Net::DHCPd::Config::Option
 /);
 
 =head1 OBJECT ATTRIBUTES

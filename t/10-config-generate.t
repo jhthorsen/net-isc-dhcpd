@@ -75,6 +75,13 @@ my $time = timeit($count, sub {
 diag($count .": " .timestr($time));
 
 __DATA__
+ddns-update-style none;
+option space foo;
+    option foo.bar code 1 = ip-address;
+option foo-enc code 122 = encapsulate foo;
+on commit {
+    set leasetime = encode-int(lease-time, 32);
+}
 subnet 10.0.0.96 netmask 255.255.255.224 {
     option routers 10.0.0.97;
     pool {
@@ -84,11 +91,3 @@ subnet 10.0.0.96 netmask 255.255.255.224 {
 host foo {
     fixed-address 10.19.83.102;
 }
-on commit {
-    set leasetime = encode-int(lease-time, 32);
-
-}
-option space foo;
-    option foo.bar code 1 = ip-address;
-option foo-enc code 122 = encapsulate foo;
-ddns-update-style none;

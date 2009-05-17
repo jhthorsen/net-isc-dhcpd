@@ -259,7 +259,7 @@ sub generate_config_from_children {
     my $indent = "    " x $self->depth;
     my @text;
 
-    for($self->children) {
+    for(reverse $self->children) {
         my($acc) = lc +((blessed $_) =~ /::(\w+)$/ )[0] ."s";
 
         for my $child ($self->$acc) {

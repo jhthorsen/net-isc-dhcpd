@@ -50,8 +50,8 @@ Net::DHCPd::Config - Parse and create ISC DHCPd config
 =cut
 
 use Moose;
-use Net::DHCPd::Config::Subnet;
 use Net::DHCPd::Config::Host;
+use Net::DHCPd::Config::Subnet;
 use Net::DHCPd::Config::SharedNetwork;
 use Net::DHCPd::Config::Function;
 use Net::DHCPd::Config::OptionSpace;
@@ -64,8 +64,8 @@ our $DEBUG       = 0;
 with 'Net::DHCPd::Config::Role';
 
 __PACKAGE__->create_children(qw/
-    Net::DHCPd::Config::Subnet
     Net::DHCPd::Config::Host
+    Net::DHCPd::Config::Subnet
     Net::DHCPd::Config::SharedNetwork
     Net::DHCPd::Config::Function
     Net::DHCPd::Config::OptionSpace
