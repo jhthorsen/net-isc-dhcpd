@@ -50,7 +50,7 @@ sub captured_to_args {
     return { file => $_[1] };
 }
 
-=head1 generate
+=head2 generate
 
 =cut
 
