@@ -63,13 +63,7 @@ has '+regex' => (
     default => sub { qr{^\s* on \s (\w+)}x },
 );
 
-=head2 depth
-
-Reference to a matching-curly-brackets-count. Used internally in L<slurp()>.
-
-=cut
-
-has depth => (
+has _depth => (
     is => 'rw',
     isa => 'ScalarRef',
     default => sub { my $i = 1; \$i },
@@ -82,14 +76,14 @@ has depth => (
 =cut
 
 sub slurp {
-    my $self = shift;
-    my $line = shift;
-    my $n    = $self->depth;
+    my $self  = shift;
+    my $line  = shift;
+    my $depth = $self->_depth;
 
-    $$n++ if($line =~ /{/);
-    $$n-- if($line =~ /}/);
+    $$depth++ if($line =~ /{/);
+    $$depth-- if($line =~ /}/);
 
-    if($$n) {
+    if($$depth) {
         $self->{'body'} .= $line;
         return "next";
     }
@@ -105,6 +99,20 @@ sub slurp {
 
 sub captured_to_args {
     return { name => $_[1] }
+}
+
+=head2 generate
+
+=cut
+
+sub generate {
+    my $self = shift;
+
+    return(
+        sprintf('on %s {', $self->name),
+        $self->body,
+        '}',
+    );
 }
 
 =head1 AUTHOR

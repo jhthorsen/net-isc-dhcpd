@@ -20,6 +20,10 @@ use Net::DHCPd::Config::OptionSpace::Option;
 
 with 'Net::DHCPd::Config::Role';
 
+__PACKAGE__->create_children(qw/
+    Net::DHCPd::Config::OptionSpace::Option
+/);
+
 =head1 OBJECT ATTRIBUTES
 
 =head2 options
@@ -43,6 +47,10 @@ has name => (
 
 =head2 code
 
+ $dhcp_option_code = $self->code
+
+DHCP option number/code.
+
 =cut
 
 has code => (
@@ -60,18 +68,6 @@ L<Net::DHCPd::Config::OptionsSpace::Option> objects.
 has prefix => (
     is => 'ro',
     isa => 'Str',
-);
-
-=head2 children
-
-=cut
-
-has '+children' => (
-    default => sub {
-        shift->create_children(qw/
-            Net::DHCPd::Config::OptionSpace::Option
-        /);
-    },
 );
 
 =head2 regex
@@ -119,6 +115,24 @@ sub captured_endpoint {
 
     $self->name($_[0]);
     $self->code($_[1]);
+}
+
+=head2 generate
+
+=cut
+
+sub generate {
+    my $self = shift;
+
+    return(
+        sprintf('option space %s;', $self->prefix),
+        $self->generate_config_from_children,
+        sprintf('option %s code %i = encapsulate %s;',
+            $self->name,
+            $self->code,
+            $self->prefix,
+        ),
+    );
 }
 
 =head1 AUTHOR

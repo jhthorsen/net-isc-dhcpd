@@ -23,6 +23,12 @@ use Net::DHCPd::Config::KeyValue;
 
 with 'Net::DHCPd::Config::Role';
 
+__PACKAGE__->create_children(qw/
+    Net::DHCPd::Config::Host
+    Net::DHCPd::Config::Option
+    Net::DHCPd::Config::KeyValue
+/);
+
 =head1 OBJECT ATTRIBUTES
 
 =head2 subnets
@@ -37,20 +43,6 @@ A list of parsed L<Net::DHCPd::Config::Host> objects.
 
 A list of parsed L<Net::DHCPd::Config::Option> objects.
 
-=head2 children
-
-=cut
-
-has '+children' => (
-    default => sub { 
-        shift->create_children(qw/
-            Net::DHCPd::Config::Host
-            Net::DHCPd::Config::Option
-            Net::DHCPd::Config::KeyValue
-        /);
-    },
-);
-
 =head2 regex
 
 =cut
@@ -58,6 +50,18 @@ has '+children' => (
 has '+regex' => (
     default => sub { qr{^ \s* group}x },
 );
+
+=head2 generate
+
+=cut
+
+sub generate {
+    return(
+        'group {',
+        shift->generate_config_from_children,
+        '}',
+    );
+}
 
 =head1 AUTHOR
 

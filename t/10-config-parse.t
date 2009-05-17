@@ -9,7 +9,7 @@ my $count    = $ENV{'COUNT'} || 1;
 my $data_pos = tell DATA;
 my $lines    = 49;
 
-plan tests => 1 + 25 * $count;
+plan tests => 1 + 24 * $count;
 
 use_ok("Net::DHCPd::Config");
 

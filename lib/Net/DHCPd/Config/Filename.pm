@@ -50,6 +50,14 @@ sub captured_to_args {
     return { file => $_[1] };
 }
 
+=head1 generate
+
+=cut
+
+sub generate {
+    return sprintf q(filename %s;), shift->name;
+}
+
 =head1 AUTHOR
 
 See L<Net::DHCPd>.

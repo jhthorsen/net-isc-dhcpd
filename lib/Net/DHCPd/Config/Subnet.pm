@@ -16,6 +16,14 @@ use Net::DHCPd::Config::Pool;
 
 with 'Net::DHCPd::Config::Role';
 
+__PACKAGE__->create_children(qw/
+    Net::DHCPd::Config::Option
+    Net::DHCPd::Config::Range
+    Net::DHCPd::Config::Host
+    Net::DHCPd::Config::Filename
+    Net::DHCPd::Config::Pool
+/);
+
 =head1 OBJECT ATTRIBUTES
 
 =head2 address
@@ -53,22 +61,6 @@ Should only be one item in this list.
 
 A list of parsed L<Net::DHCPd::Config::Pool> objects.
 
-=head2 children
-
-=cut
-
-has '+children' => (
-    default => sub {
-        shift->create_children(qw/
-            Net::DHCPd::Config::Option
-            Net::DHCPd::Config::Range
-            Net::DHCPd::Config::Host
-            Net::DHCPd::Config::Filename
-            Net::DHCPd::Config::Pool
-        /);
-    },
-);
-
 =head2 regex
 
 =cut
@@ -85,6 +77,21 @@ has '+regex' => (
 
 sub captured_to_args {
     return { address => NetAddr::IP->new(join "/", @_[1,2]) };
+}
+
+=head2 generate
+
+=cut
+
+sub generate {
+    my $self = shift;
+    my $addr = $self->address;
+
+    return(
+        sprintf("subnet %s netmask %s {", $addr->addr, $addr->mask),
+        $self->generate_config_from_children,
+        "}",
+    );
 }
 
 =head1 AUTHOR

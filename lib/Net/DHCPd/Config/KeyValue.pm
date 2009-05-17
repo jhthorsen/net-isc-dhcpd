@@ -89,6 +89,21 @@ sub captured_to_args {
     };
 }
 
+=head2 generate
+
+=cut
+
+sub generate {
+    my $self  = shift;
+
+    if($self->quoted) {
+        return sprintf qq(%s "%s";), $self->name, $self->value;
+    }
+    else {
+        return sprintf qq(%s %s;), $self->name, $self->value;
+    }
+}
+
 =head1 AUTHOR
 
 See L<Net::DHCPd>.

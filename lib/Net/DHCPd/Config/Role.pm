@@ -21,11 +21,9 @@ The parent node in the config tree.
 =cut
 
 has parent => (
-    is => 'ro',
+    is => 'rw',
     isa => 'Net::DHCPd::Config::Role',
     weak_ref => 1,
-    lazy => 1,
-    default => sub { shift }, # used when constructing Net::DHCPd::Config
 );
 
 =head2 root
@@ -37,9 +35,30 @@ The root node in the config tree.
 has root => (
     is => 'ro',
     isa => 'Net::DHCPd::Config',
-    weak_ref => 1,
     lazy => 1,
-    default => sub { shift }, # used when constructing Net::DHCPd::Config
+    weak_ref => 1,
+    default => sub {
+        my $self = shift;
+        my $obj  = $self;
+
+        while(my $tmp = $obj->parent) {
+            ref($obj = $tmp) eq "Net::DHCPd::Config" and last;
+        }
+
+        return $obj;
+    },
+);
+
+=head2 depth
+
+How far this node is from the root node.
+
+=cut
+
+has depth => (
+    is => 'rw',
+    isa => 'Int',
+    default => 0,
 );
 
 =head2 children
@@ -128,8 +147,9 @@ sub parse {
 
         CHILD:
         for my $child ($self->children) {
-            my @captured = $line =~ $child->regex or next CHILD;
-            my $new      = $self->append($child, @captured);
+            my @c   = $line =~ $child->regex or next CHILD;
+            my $add = "add_" .lc +(ref($child) =~ /::(\w+)$/)[0];
+            my $new = $self->$add( $child->captured_to_args(@c) );
 
             $n += $new->parse if(@_ = $new->children);
 
@@ -138,30 +158,6 @@ sub parse {
     }
 
     return $n ? $n : "0e0";
-}
-
-=head2 append
-
- $new_child = $self->append($child, @captured)
-
-Called from L<parse()>, with the child object and the captured elements
-from the L<regex()>.
-
-This role provides a default method that does nothing. Should be overriden
-in each class.
-
-=cut
-
-sub append {
-    my $self  = shift;
-    my $child = shift;
-    my $args  = $child->captured_to_args(@_);
-    my $type  = lc +(ref($child) =~ /::(\w+)$/)[0] ."s";
-    my $new   = $child->meta->clone_object($child, %$args);
-
-    push @{ $self->$type }, $new;
-
-    return $new;
 }
 
 =head2 captured_to_args
@@ -190,7 +186,7 @@ sub captured_endpoint {
 
 =head2 create_children
 
- $objs = $self->create_children(@classnames)
+ My::Class->create_children(@classnames)
 
 This method is used internally to create extra attributes in classes and
 construct the L<children> attribute.
@@ -203,22 +199,75 @@ sub create_children {
     my @list = @_;
 
     for my $obj (@list) {
-        my $name = lc +($obj =~ /::(\w+)$/)[0] ."s";
+        my $class = $obj; # bareword classname
+        my $name  = lc +($class =~ /::(\w+)$/)[0];
+        my $acc   = $name ."s";
 
-        unless($meta->get_attribute($name)) {
-            $meta->add_attribute($name => (
+        unless($meta->get_attribute($acc)) {
+            $meta->add_attribute($acc => (
                 is => "rw",
-                isa => "ArrayRef[$obj]",
+                isa => "ArrayRef[$class]",
                 lazy => 1,
                 auto_deref => 1,
                 default => sub { [] },
             ));
+            $meta->add_method("add_${name}" => sub {
+                my $self = shift;
+                my $args = @_ == 1 ? $_[0] : {@_};
+                my $new  = $class->new($args);
+
+                $new->parent($self);
+                $new->depth($self->depth + 1);
+
+                for my $e (values %$args) {
+                    next unless(ref $e eq 'ARRAY');
+                    for my $o (@$e) {
+                        $o->does(__PACKAGE__) or next;
+                        $o->parent or $o->parent($new);
+                        $o->depth  or $o->depth($new->depth);
+                    }
+                }
+
+                push @{ $self->$acc }, $new;
+                return $new;
+            });
         }
 
-        $obj = $obj->new(root => $self->root, parent => $self);
+        # replace class bareword with object in @list
+        $obj = $obj->new;
+    }
+
+    unless(blessed $self) {
+        $meta->add_attribute($meta->get_attribute('children')->clone(
+            default => sub { \@list },
+        ));
     }
 
     return \@list;
+}
+
+=head2 generate_config_from_children
+
+ $config_text = $self->generate_config_from_children;
+
+Loops all child node and calls L<generate()>.
+
+=cut
+
+sub generate_config_from_children {
+    my $self   = shift;
+    my $indent = "    " x $self->depth;
+    my @text;
+
+    for($self->children) {
+        my($acc) = lc +((blessed $_) =~ /::(\w+)$/ )[0] ."s";
+
+        for my $child ($self->$acc) {
+            push @text, map { "$indent$_" } $child->generate;
+        }
+    }
+
+    return join "\n", @text;
 }
 
 =head1 AUTHOR

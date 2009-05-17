@@ -63,6 +63,16 @@ our $DEBUG       = 0;
 
 with 'Net::DHCPd::Config::Role';
 
+__PACKAGE__->create_children(qw/
+    Net::DHCPd::Config::Subnet
+    Net::DHCPd::Config::Host
+    Net::DHCPd::Config::SharedNetwork
+    Net::DHCPd::Config::Function
+    Net::DHCPd::Config::OptionSpace
+    Net::DHCPd::Config::Option
+    Net::DHCPd::Config::KeyValue
+/);
+
 =head1 OBJECT ATTRIBUTES
 
 =head2 file
@@ -89,22 +99,20 @@ has filehandle => (
     },
 );
 
-=head2 children
+=head2 root
 
 =cut
 
-has '+children' => (
-    default => sub { 
-        shift->create_children(qw/
-            Net::DHCPd::Config::Subnet
-            Net::DHCPd::Config::Host
-            Net::DHCPd::Config::SharedNetwork
-            Net::DHCPd::Config::Function
-            Net::DHCPd::Config::OptionSpace
-            Net::DHCPd::Config::Option
-            Net::DHCPd::Config::KeyValue
-        /);
-    },
+has '+root' => (
+    default => sub { shift },
+);
+
+=head2 parent
+
+=cut
+
+has '+parent' => (
+    default => sub { shift },
 );
 
 =head2 subnets
@@ -124,6 +132,18 @@ List of parsed L<Net::DHCPd::Config::Option> objects.
 =head2 new
 
  $obj = $self->new(...);
+
+=head2 generate
+
+ $config_text = $self->generate;
+
+Will turn object tree into a actual config, which can be written to file.
+
+=cut
+
+sub generate {
+    shift->generate_config_from_children ."\n";
+}
 
 =head1 AUTHOR
 

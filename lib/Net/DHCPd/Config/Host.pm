@@ -22,6 +22,12 @@ use Net::DHCPd::Config::KeyValue;
 
 with 'Net::DHCPd::Config::Role';
 
+__PACKAGE__->create_children(qw/
+    Net::DHCPd::Config::Option
+    Net::DHCPd::Config::Filename
+    Net::DHCPd::Config::KeyValue
+/);
+
 =head1 OBJECT ATTRIBUTES
 
 =head2 options
@@ -45,20 +51,6 @@ has name => (
     isa => 'Str',
 );
 
-=head2 children
-
-=cut
-
-has '+children' => (
-    default => sub {
-        shift->create_children(qw/
-            Net::DHCPd::Config::Option
-            Net::DHCPd::Config::Filename
-            Net::DHCPd::Config::KeyValue
-        /);
-    },
-);
-
 =head2 regex
 
 =cut
@@ -75,6 +67,20 @@ has '+regex' => (
 
 sub captured_to_args {
     return { name => $_[1] };
+}
+
+=head2 generate
+
+=cut
+
+sub generate {
+    my $self = shift;
+
+    return(
+        sprintf('host %s {', $self->name),
+        $self->generate_config_from_children,
+        "}",
+    );
 }
 
 =head1 AUTHOR

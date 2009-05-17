@@ -19,6 +19,11 @@ use Moose;
 
 with 'Net::DHCPd::Config::Role';
 
+__PACKAGE__->create_children(qw/
+    Net::DHCPd::Config::Subnet
+    Net::DHCPd::Config::KeyValue
+/);
+
 =head1 OBJECT ATTRIBUTES
 
 =head2 subnets
@@ -37,18 +42,19 @@ has '+regex' => (
     default => sub { qr{^\s* shared-network}x },
 );
 
-=head2 children
+=head1 METHODS
+
+=head2 generate
 
 =cut
 
-has '+children' => (
-    default => sub {
-        shift->create_children(qw/
-            Net::DHCPd::Config::Subnet
-            Net::DHCPd::Config::KeyValue
-        /);
-    },
-);
+sub generate {
+    return(
+        "shared-network {",
+        shift->generate_config_from_children,
+        "}",
+    );
+}
 
 =head1 AUTHOR
 

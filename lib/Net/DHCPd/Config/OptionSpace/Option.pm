@@ -80,8 +80,7 @@ has quoted => (
 has '+regex' => (
     lazy => 1,
     default => sub {
-        my $prefix = shift->parent->prefix;
-        qr{^\s* option \s $prefix\.(\S+) \s code \s (\d+) \s = \s (.*) ;}x;
+        qr{^\s* option \s (\S+)\.(\S+) \s code \s (\d+) \s = \s (.*) ;}x;
     },
 );
 
@@ -93,6 +92,7 @@ has '+regex' => (
 
 sub captured_to_args {
     my $self   = shift;
+    my $prefix = shift;
     my $name   = shift;
     my $code   = shift;
     my $value  = shift;
@@ -106,6 +106,21 @@ sub captured_to_args {
         value  => $value,
         quoted => $quoted,
     };
+}
+
+=head2 generate
+
+=cut
+
+sub generate {
+    my $self = shift;
+
+    sprintf("option %s.%s code %i = %s;",
+        $self->parent->prefix,
+        $self->name,
+        $self->code,
+        $self->value,
+    );
 }
 
 =head1 AUTHOR

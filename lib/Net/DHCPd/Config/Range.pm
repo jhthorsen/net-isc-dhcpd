@@ -74,6 +74,14 @@ sub captured_to_args {
     };
 }
 
+=head2 generate
+
+=cut
+
+sub generate {
+    return sprintf("range %s %s;", $_[0]->lower->addr, $_[0]->upper->addr);
+}
+
 =head1 AUTHOR
 
 See L<Net::DHCPd>.
