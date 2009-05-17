@@ -38,13 +38,14 @@ has name => (
 
  $text = $self->body
 
-The body text of the function.
+The body text of the function, without trailing newline.
 
 =cut
 
 has body => (
     is => 'rw',
     isa => 'Str',
+    trigger => sub { chomp shift->{'body'} },
 );
 
 =head2 children
