@@ -19,6 +19,8 @@ Net::DHCPd - Interacts with ISC DHCPd
     # ...
  }
 
+See tests for more documentation.
+
 =cut
 
 use Moose;

@@ -1,0 +1,33 @@
+NAME
+    Net::DHCPd - Interacts with ISC DHCPd
+
+SYNOPSIS
+     my $dhcpd = Net::DHCPd->new(
+                     config_file => "path/to/config",
+                     leases_file => "path/to/leases",
+                 );
+
+     my $config = $dhcpd->config;
+
+     $config->parse;
+
+     for my $child ($config->children) {
+        # ...
+     }
+
+    See tests for more documentation.
+
+OBJECT ATTRIBUTES
+  config
+    Holds a DHCPd config object.
+
+    Default: Net::DHCPd::Config.
+
+  leases
+    Holds a DHCPd leases object.
+
+    Default: Net::DHCPd::Leases.
+
+AUTHOR
+    Jan Henning Thorsen
+

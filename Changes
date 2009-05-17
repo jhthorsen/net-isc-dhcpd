@@ -1,5 +1,6 @@
 Revision history for Net-DHCPd
 
-0.00    Tue May 6  00:10:00 CET 2007
-      * fist commit
+0.01    Sun May 17 23:45:00 CET 2007
+      * parsing of config works
+      * generating config works
 
