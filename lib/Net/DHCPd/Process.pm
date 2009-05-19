@@ -30,11 +30,10 @@ Args:
 sub new {
     my $class = shift;
     my $args  = @_ == 1 ? $_[0] : {@_};
-    my $self  = bless $args, $class;
 
     # spawn...
 
-    return $self;
+    return;
 }
 
 =head2 pid
