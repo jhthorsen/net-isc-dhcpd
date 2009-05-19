@@ -15,7 +15,7 @@ use Moose;
 =cut
 
 has file => (
-    is => 'ro',
+    is => 'rw',
     isa => 'Str',
     default => "/var/lib/dhcp3/dhcpd.leases",
 );

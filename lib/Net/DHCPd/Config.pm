@@ -77,7 +77,7 @@ __PACKAGE__->create_children(qw/
 =cut
 
 has file => (
-    is => 'ro',
+    is => 'rw',
     isa => 'Str',
     default => '/etc/dhcp3/dhcpd.conf',
 );
