@@ -18,6 +18,7 @@ See tests for more documentation.
 use Moose;
 use File::Basename;
 use File::Path;
+use File::Temp;
 
 our $VERSION = "0.01";
 
@@ -156,9 +157,9 @@ sub BUILD {
     my $args = shift;
 
     for my $attr (%$args) {
-        next unless(ref $attr->{$key} eq 'HASH');
-        next unless($key =~ s/^-//);
-        next unless($self->has_attribute($key));
+        next unless(ref $args->{$attr} eq 'HASH');
+        next unless($attr =~ s/^-//);
+        next unless($self->has_attribute($attr));
 
         for my $key (%$attr) {
             $self->$attr->$key($attr->{$key});
@@ -192,12 +193,12 @@ TODO: Enable it to start the server as a differnet user/group.
 
 sub start {
     my $self       = shift;
-    my $args       = shift;
+    my $args       = shift || {};
     my $proc       = $self->process;
     my $proc_class = $self->process_class;
     my($user, $group);
 
-    if($proc and $proc->kill(0))) {
+    if($proc and $proc->kill(0)) {
         $self->errstr('allready running');
         return 0;
     }
@@ -322,6 +323,47 @@ sub status {
     }
 
     return "not_running";
+}
+
+=head2 test
+
+ $bool = $self->test('config')
+
+Will test the config.
+
+ 1:     OK
+ undef: Failed. Check errstr()
+
+=cut
+
+sub test {
+    my $self = shift;
+    my $what = shift || q();
+    my $ret;
+
+    if($what eq 'config') {
+        my $file = File::Temp->new;
+        print $file $self->config->generate;
+        system $self->binary, '-t', '-cf', $file->filename;
+    }
+    elsif($what eq 'leases') {
+        system $self->binary, '-t', '-cf', $self->leases->file;
+    }
+    else {
+        $self->errstr('Invalid argument');
+        return;
+    }
+
+    if($? == -1) {
+        $self->errstr($!);
+        return;
+    }
+    else {
+        $self->errstr($? >> 8);
+        return;
+    }
+
+    return 1;
 }
 
 =head1 AUTHOR
