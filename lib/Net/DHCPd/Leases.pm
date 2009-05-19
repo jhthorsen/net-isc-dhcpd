@@ -8,8 +8,6 @@ Net::DHCPd::Leases - Parse ISC DHCPd leases
 
 use Moose;
 
-our $LEASES_FILE = "/var/lib/dhcp3/dhcpd.leases";
-
 =head1 OBJECT ATTRIBUTES
 
 =head2 file
@@ -19,7 +17,7 @@ our $LEASES_FILE = "/var/lib/dhcp3/dhcpd.leases";
 has file => (
     is => 'ro',
     isa => 'Str',
-    default => $LEASES_FILE,
+    default => "/var/lib/dhcp3/dhcpd.leases",
 );
 
 =head1 AUTHOR

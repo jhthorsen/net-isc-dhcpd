@@ -58,9 +58,6 @@ use Net::DHCPd::Config::OptionSpace;
 use Net::DHCPd::Config::Option;
 use Net::DHCPd::Config::KeyValue;
 
-our $CONFIG_FILE = "/etc/dhcp3/dhcpd.conf";
-our $DEBUG       = 0;
-
 with 'Net::DHCPd::Config::Role';
 
 __PACKAGE__->create_children(qw/
@@ -82,7 +79,7 @@ __PACKAGE__->create_children(qw/
 has file => (
     is => 'ro',
     isa => 'Str',
-    default => $CONFIG_FILE,
+    default => '/etc/dhcp3/dhcpd.conf',
 );
 
 =head2 filehandle
