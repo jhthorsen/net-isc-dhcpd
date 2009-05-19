@@ -69,7 +69,7 @@ Default: "dhcpd3"
 =cut
 
 has binary => (
-    is => 'rw',
+    is => 'ro',
     isa => 'Str',
     default => 'dhcpd3',
 );
@@ -84,7 +84,7 @@ Default: /var/run/dhcp3-server/dhcpd.pid
 =cut
 
 has pidfile => (
-    is => 'rw',
+    is => 'ro',
     isa => 'Str',
     default => '/var/run/dhcp3-server/dhcpd.pid',
 );
@@ -111,7 +111,7 @@ the minimum api of L<Net::DHCPd::Process>.
 =cut
 
 has process_class => (
-    is => 'rw',
+    is => 'ro',
     isa => 'Str',
     default => 'Net::DHCPd::Process',
 );
@@ -169,7 +169,7 @@ sub BUILD {
 
 =head2 start
 
- $bool = $self->start_server($args)
+ $bool = $self->start($args)
 
 Will start the dhcpd server, as long as there is no existing process.
 
@@ -192,10 +192,9 @@ TODO: Enable it to start the server as a differnet user/group.
 =cut
 
 sub start {
-    my $self       = shift;
-    my $args       = shift || {};
-    my $proc       = $self->process;
-    my $proc_class = $self->process_class;
+    my $self = shift;
+    my $args = shift || {};
+    my $proc = $self->process;
     my($user, $group);
 
     if($proc and $proc->kill(0)) {
@@ -233,7 +232,7 @@ sub start {
         }
     }
 
-    $self->process($proc_class->new(
+    $self->process($self->process_class->new(
         program => $self->binary,
         args    => $args,
         user    => $user,
@@ -257,17 +256,14 @@ Return:
 sub stop {
     my $self = shift;
     my $proc = $self->process;
-    my $pid;
 
     unless($proc) {
         $self->errstr("no such process");
         return undef;
     }
 
-    $pid = $proc->pid;
-
     unless($proc->kill('TERM')) {
-        $self->errstr("Could not kill $pid");
+        $self->errstr("Could not send signal to process");
         return undef;
     }
 
@@ -305,10 +301,11 @@ sub restart {
 
 =head2 status
 
+ $string = $self->status
+
 Returns the status of the DHCPd server:
 
- not_running
- restarting
+ stopped
  running
 
 =cut
@@ -322,14 +319,15 @@ sub status {
         }
     }
 
-    return "not_running";
+    return "stopped";
 }
 
 =head2 test
 
- $bool = $self->test('config')
+ $bool = $self->test("config")
+ $bool = $self->test("leases")
 
-Will test the config.
+Will test either config or leases file.
 
  1:     OK
  undef: Failed. Check errstr()
@@ -347,7 +345,7 @@ sub test {
         system $self->binary, '-t', '-cf', $file->filename;
     }
     elsif($what eq 'leases') {
-        system $self->binary, '-t', '-cf', $self->leases->file;
+        system $self->binary, '-t', '-lf', $self->leases->file;
     }
     else {
         $self->errstr('Invalid argument');
