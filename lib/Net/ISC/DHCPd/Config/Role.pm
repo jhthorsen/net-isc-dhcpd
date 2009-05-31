@@ -1,12 +1,12 @@
-package Net::DHCPd::Config::Role;
+package Net::ISC::DHCPd::Config::Role;
 
 =head1 NAME
 
-Net::DHCPd::Config::Role - Generic config methods and attributes
+Net::ISC::DHCPd::Config::Role - Generic config methods and attributes
 
 =head1 SYNOPSIS
 
-See L<Net::DHCPd::Config> for synopsis.
+See L<Net::ISC::DHCPd::Config> for synopsis.
 
 =cut
 
@@ -22,7 +22,7 @@ The parent node in the config tree.
 
 has parent => (
     is => 'rw',
-    isa => 'Net::DHCPd::Config::Role',
+    isa => 'Net::ISC::DHCPd::Config::Role',
     weak_ref => 1,
 );
 
@@ -34,7 +34,7 @@ The root node in the config tree.
 
 has root => (
     is => 'ro',
-    isa => 'Net::DHCPd::Config',
+    isa => 'Net::ISC::DHCPd::Config',
     lazy => 1,
     weak_ref => 1,
     default => sub {
@@ -42,7 +42,7 @@ has root => (
         my $obj  = $self;
 
         while(my $tmp = $obj->parent) {
-            ref($obj = $tmp) eq "Net::DHCPd::Config" and last;
+            ref($obj = $tmp) eq "Net::ISC::DHCPd::Config" and last;
         }
 
         return $obj;
@@ -272,7 +272,7 @@ sub generate_config_from_children {
 
 =head1 AUTHOR
 
-See L<Net::DHCPd>.
+See L<Net::ISC::DHCPd>.
 
 =cut
 

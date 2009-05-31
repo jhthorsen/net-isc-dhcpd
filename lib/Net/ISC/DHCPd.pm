@@ -1,12 +1,12 @@
-package Net::DHCPd;
+package Net::ISC::DHCPd;
 
 =head1 NAME 
 
-Net::DHCPd - Interacts with ISC DHCPd
+Net::ISC::DHCPd - Interacts with ISC DHCPd
 
 =head1 SYNOPSIS
 
- my $dhcpd = Net::DHCPd->new(
+ my $dhcpd = Net::ISC::DHCPd->new(
                  -config => { file => "path/to/config" },
                  -leases => { file => "path/to/leases" },
              );
@@ -28,17 +28,17 @@ our $VERSION = "0.01";
 
  $config_obj = $self->config
 
-Default: L<Net::DHCPd::Config>.
+Default: L<Net::ISC::DHCPd::Config>.
 
 =cut
 
 has config => (
     is => 'ro',
     lazy => 1,
-    isa => 'Net::DHCPd::Config',
+    isa => 'Net::ISC::DHCPd::Config',
     default => sub {
-        eval "require Net::DHCPd::Config" or confess $@;
-        Net::DHCPd::Config->new;
+        eval "require Net::ISC::DHCPd::Config" or confess $@;
+        Net::ISC::DHCPd::Config->new;
     },
 );
 
@@ -46,17 +46,17 @@ has config => (
 
  $leases_obj = $self->leases
 
-Default: L<Net::DHCPd::Leases>.
+Default: L<Net::ISC::DHCPd::Leases>.
 
 =cut
 
 has leases => (
     is => 'ro',
     lazy => 1,
-    isa => 'Net::DHCPd::Leases',
+    isa => 'Net::ISC::DHCPd::Leases',
     default => sub {
-        eval "require Net::DHCPd::Leases" or confess $@;
-        Net::DHCPd::Leases->new;
+        eval "require Net::ISC::DHCPd::Leases" or confess $@;
+        Net::ISC::DHCPd::Leases->new;
     },
 );
 
@@ -106,14 +106,14 @@ has process => (
  $classname = $self->process_class
 
 The class that should spawn the L<process> object. Needs to support
-the minimum api of L<Net::DHCPd::Process>.
+the minimum api of L<Net::ISC::DHCPd::Process>.
 
 =cut
 
 has process_class => (
     is => 'ro',
     isa => 'Str',
-    default => 'Net::DHCPd::Process',
+    default => 'Net::ISC::DHCPd::Process',
 );
 
 =head2 errstr
@@ -176,9 +176,9 @@ Will start the dhcpd server, as long as there is no existing process.
 C<$args>:
 
  {
-  user       || getpwuid $<
-  group      || getgrgid $<
-  interfaces || ""
+   user       || getpwuid $<
+   group      || getgrgid $<
+   interfaces || ""
  }
 
 Returns:

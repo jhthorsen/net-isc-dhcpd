@@ -1,8 +1,8 @@
-package Net::DHCPd::Config;
+package Net::ISC::DHCPd::Config;
 
 =head1 NAME 
 
-Net::DHCPd::Config - Parse and create ISC DHCPd config
+Net::ISC::DHCPd::Config - Parse and create ISC DHCPd config
 
 =head1 POSSIBLE CONFIG TREE
 
@@ -50,24 +50,24 @@ Net::DHCPd::Config - Parse and create ISC DHCPd config
 =cut
 
 use Moose;
-use Net::DHCPd::Config::Host;
-use Net::DHCPd::Config::Subnet;
-use Net::DHCPd::Config::SharedNetwork;
-use Net::DHCPd::Config::Function;
-use Net::DHCPd::Config::OptionSpace;
-use Net::DHCPd::Config::Option;
-use Net::DHCPd::Config::KeyValue;
+use Net::ISC::DHCPd::Config::Host;
+use Net::ISC::DHCPd::Config::Subnet;
+use Net::ISC::DHCPd::Config::SharedNetwork;
+use Net::ISC::DHCPd::Config::Function;
+use Net::ISC::DHCPd::Config::OptionSpace;
+use Net::ISC::DHCPd::Config::Option;
+use Net::ISC::DHCPd::Config::KeyValue;
 
-with 'Net::DHCPd::Config::Role';
+with 'Net::ISC::DHCPd::Config::Role';
 
 __PACKAGE__->create_children(qw/
-    Net::DHCPd::Config::Host
-    Net::DHCPd::Config::Subnet
-    Net::DHCPd::Config::SharedNetwork
-    Net::DHCPd::Config::Function
-    Net::DHCPd::Config::OptionSpace
-    Net::DHCPd::Config::Option
-    Net::DHCPd::Config::KeyValue
+    Net::ISC::DHCPd::Config::Host
+    Net::ISC::DHCPd::Config::Subnet
+    Net::ISC::DHCPd::Config::SharedNetwork
+    Net::ISC::DHCPd::Config::Function
+    Net::ISC::DHCPd::Config::OptionSpace
+    Net::ISC::DHCPd::Config::Option
+    Net::ISC::DHCPd::Config::KeyValue
 /);
 
 =head1 OBJECT ATTRIBUTES
@@ -114,15 +114,15 @@ has '+parent' => (
 
 =head2 subnets
 
-List of parsed L<Net::DHCPd::Config::Subnet> objects.
+List of parsed L<Net::ISC::DHCPd::Config::Subnet> objects.
 
 =head2 hosts
 
-List of parsed L<Net::DHCPd::Config::Host> objects.
+List of parsed L<Net::ISC::DHCPd::Config::Host> objects.
 
 =head2 options
 
-List of parsed L<Net::DHCPd::Config::Option> objects.
+List of parsed L<Net::ISC::DHCPd::Config::Option> objects.
 
 =head1 METHODS
 

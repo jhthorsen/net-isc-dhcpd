@@ -1,23 +1,23 @@
-package Net::DHCPd::Config::Function;
+package Net::ISC::DHCPd::Config::Function;
 
 =head1 NAME
 
-Net::DHCPd::Config::Function - parse a function
+Net::ISC::DHCPd::Config::Function - parse a function
 
 =head1 DESCRIPTION
 
-See L<Net::DHCPd::Config::Role> for methods and attributes without
+See L<Net::ISC::DHCPd::Config::Role> for methods and attributes without
 documentation.
 
 =head1 SYNOPSIS
 
-See L<Net::DHCPd::Config> for synopsis.
+See L<Net::ISC::DHCPd::Config> for synopsis.
 
 =cut
 
 use Moose;
 
-with 'Net::DHCPd::Config::Role';
+with 'Net::ISC::DHCPd::Config::Role';
 
 =head1 OBJECT ATTRIBUTES
 
@@ -118,7 +118,7 @@ sub generate {
 
 =head1 AUTHOR
 
-See L<Net::DHCPd>.
+See L<Net::ISC::DHCPd>.
 
 =cut
 

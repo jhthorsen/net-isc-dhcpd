@@ -1,27 +1,27 @@
-package Net::DHCPd::Config::Subnet;
+package Net::ISC::DHCPd::Config::Subnet;
 
 =head1 NAME
 
-Net::DHCPd::Config::Subnet - Subnet config parameter
+Net::ISC::DHCPd::Config::Subnet - Subnet config parameter
 
 =cut
 
 use Moose;
 use NetAddr::IP;
-use Net::DHCPd::Config::Option;
-use Net::DHCPd::Config::Range;
-use Net::DHCPd::Config::Host;
-use Net::DHCPd::Config::Filename;
-use Net::DHCPd::Config::Pool;
+use Net::ISC::DHCPd::Config::Option;
+use Net::ISC::DHCPd::Config::Range;
+use Net::ISC::DHCPd::Config::Host;
+use Net::ISC::DHCPd::Config::Filename;
+use Net::ISC::DHCPd::Config::Pool;
 
-with 'Net::DHCPd::Config::Role';
+with 'Net::ISC::DHCPd::Config::Role';
 
 __PACKAGE__->create_children(qw/
-    Net::DHCPd::Config::Host
-    Net::DHCPd::Config::Pool
-    Net::DHCPd::Config::Range
-    Net::DHCPd::Config::Filename
-    Net::DHCPd::Config::Option
+    Net::ISC::DHCPd::Config::Host
+    Net::ISC::DHCPd::Config::Pool
+    Net::ISC::DHCPd::Config::Range
+    Net::ISC::DHCPd::Config::Filename
+    Net::ISC::DHCPd::Config::Option
 /);
 
 =head1 OBJECT ATTRIBUTES
@@ -41,25 +41,25 @@ has address => (
 
 =head2 options
 
-A list of parsed L<Net::DHCPd::Config::Option> objects.
+A list of parsed L<Net::ISC::DHCPd::Config::Option> objects.
 
 =head2 ranges
 
-A list of parsed L<Net::DHCPd::Config::Range> objects.
+A list of parsed L<Net::ISC::DHCPd::Config::Range> objects.
 
 =head2 hosts
 
-A list of parsed L<Net::DHCPd::Config::Host> objects.
+A list of parsed L<Net::ISC::DHCPd::Config::Host> objects.
 
 =head2 filenames
 
-A list of parsed L<Net::DHCPd::Config::Filename> objects.
+A list of parsed L<Net::ISC::DHCPd::Config::Filename> objects.
 
 Should only be one item in this list.
 
 =head2 pools
 
-A list of parsed L<Net::DHCPd::Config::Pool> objects.
+A list of parsed L<Net::ISC::DHCPd::Config::Pool> objects.
 
 =head2 regex
 
@@ -96,7 +96,7 @@ sub generate {
 
 =head1 AUTHOR
 
-See L<Net::DHCPd>.
+See L<Net::ISC::DHCPd>.
 
 =cut
 

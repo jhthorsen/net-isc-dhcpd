@@ -8,11 +8,11 @@ my $count    = $ENV{'COUNT'} || 1;
 my $data_pos = tell DATA;
 my $lines    = 49;
 
-use Net::DHCPd::Config;
+use Net::ISC::DHCPd::Config;
 
 my $time = timeit($count, sub {
     seek DATA, $data_pos, 0;
-    my $config = Net::DHCPd::Config->new(filehandle => \*DATA);
+    my $config = Net::ISC::DHCPd::Config->new(filehandle => \*DATA);
     $config->parse;
 });
 

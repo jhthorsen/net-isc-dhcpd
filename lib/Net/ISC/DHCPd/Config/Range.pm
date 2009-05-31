@@ -1,17 +1,17 @@
-package Net::DHCPd::Config::Range;
+package Net::ISC::DHCPd::Config::Range;
 
 =head1 NAME
 
-Net::DHCPd::Config::Range - IP range config parameter
+Net::ISC::DHCPd::Config::Range - IP range config parameter
 
 =head1 DESCRIPTION
 
-See L<Net::DHCPd::Config::Role> for methods and attributes without
+See L<Net::ISC::DHCPd::Config::Role> for methods and attributes without
 documentation.
 
 =head1 SYNOPSIS
 
-See L<Net::DHCPd::Config> for synopsis.
+See L<Net::ISC::DHCPd::Config> for synopsis.
 
 =head1 NOTES
 
@@ -23,7 +23,7 @@ plain strings in the future.
 use Moose;
 use NetAddr::IP;
 
-with 'Net::DHCPd::Config::Role';
+with 'Net::ISC::DHCPd::Config::Role';
 
 =head1 OBJECT ATTRIBUTES
 
@@ -84,7 +84,7 @@ sub generate {
 
 =head1 AUTHOR
 
-See L<Net::DHCPd>.
+See L<Net::ISC::DHCPd>.
 
 =cut
 

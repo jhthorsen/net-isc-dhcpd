@@ -1,8 +1,8 @@
-package Net::DHCPd::Leases;
+package Net::ISC::DHCPd::Leases;
 
 =head1 NAME 
 
-Net::DHCPd::Leases - Parse ISC DHCPd leases
+Net::ISC::DHCPd::Leases - Parse ISC DHCPd leases
 
 =cut
 

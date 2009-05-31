@@ -1,42 +1,42 @@
-package Net::DHCPd::Config::Host;
+package Net::ISC::DHCPd::Config::Host;
 
 =head1 NAME
 
-Net::DHCPd::Config::Host - Host config parameter
+Net::ISC::DHCPd::Config::Host - Host config parameter
 
 =head1 DESCRIPTION
 
-See L<Net::DHCPd::Config::Role> for methods and attributes without
+See L<Net::ISC::DHCPd::Config::Role> for methods and attributes without
 documentation.
 
 =head1 SYNOPSIS
 
-See L<Net::DHCPd::Config> for synopsis.
+See L<Net::ISC::DHCPd::Config> for synopsis.
 
 =cut
 
 use Moose;
-use Net::DHCPd::Config::Option;
-use Net::DHCPd::Config::Filename;
-use Net::DHCPd::Config::KeyValue;
+use Net::ISC::DHCPd::Config::Option;
+use Net::ISC::DHCPd::Config::Filename;
+use Net::ISC::DHCPd::Config::KeyValue;
 
-with 'Net::DHCPd::Config::Role';
+with 'Net::ISC::DHCPd::Config::Role';
 
 __PACKAGE__->create_children(qw/
-    Net::DHCPd::Config::Option
-    Net::DHCPd::Config::Filename
-    Net::DHCPd::Config::KeyValue
+    Net::ISC::DHCPd::Config::Option
+    Net::ISC::DHCPd::Config::Filename
+    Net::ISC::DHCPd::Config::KeyValue
 /);
 
 =head1 OBJECT ATTRIBUTES
 
 =head2 options
 
-A list of parsed L<Net::DHCPd::Config::Option> objects.
+A list of parsed L<Net::ISC::DHCPd::Config::Option> objects.
 
 =head2 filenames
 
-A list of parsed L<Net::DHCPd::Config::Filename> objects.
+A list of parsed L<Net::ISC::DHCPd::Config::Filename> objects.
 
 Should only be one item in this list.
 
@@ -85,7 +85,7 @@ sub generate {
 
 =head1 AUTHOR
 
-See L<Net::DHCPd>.
+See L<Net::ISC::DHCPd>.
 
 =cut
 

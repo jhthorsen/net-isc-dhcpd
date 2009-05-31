@@ -1,23 +1,23 @@
-package Net::DHCPd::Config::OptionSpace::Option;
+package Net::ISC::DHCPd::Config::KeyValue;
 
 =head1 NAME
 
-Net::DHCPd::Config::OptionSpace::Option - option space data
+Net::ISC::DHCPd::Config::KeyValue - Misc option config parameter
 
 =head1 DESCRIPTION
 
-See L<Net::DHCPd::Config::Role> for methods and attributes without
+See L<Net::ISC::DHCPd::Config::Role> for methods and attributes without
 documentation.
 
 =head1 SYNOPSIS
 
-See L<Net::DHCPd::Config> for synopsis.
+See L<Net::ISC::DHCPd::Config> for synopsis.
 
 =cut
 
 use Moose;
 
-with 'Net::DHCPd::Config::Role';
+with 'Net::ISC::DHCPd::Config::Role';
 
 =head1 OBJECT ATTRIBUTES
 
@@ -25,26 +25,13 @@ with 'Net::DHCPd::Config::Role';
 
  $string = $self->name;
 
-Human readable name of this option, without parent name prefix
+Name of the option.
 
 =cut
 
 has name => (
     is => 'ro',
     isa => 'Str',
-);
-
-=head2 code
-
- $int = $self->name;
-
-Computer readable code for this option.
-
-=cut
-
-has code => (
-    is => 'ro',
-    isa => 'Int',
 );
 
 =head2 value
@@ -78,10 +65,7 @@ has quoted => (
 =cut
 
 has '+regex' => (
-    lazy => 1,
-    default => sub {
-        qr{^\s* option \s (\S+)\.(\S+) \s code \s (\d+) \s = \s (.*) ;}x;
-    },
+    default => sub { qr{^\s* ([\w-]+) \s (.*) ;}x },
 );
 
 =head1 METHODS
@@ -92,9 +76,7 @@ has '+regex' => (
 
 sub captured_to_args {
     my $self   = shift;
-    my $prefix = shift;
     my $name   = shift;
-    my $code   = shift;
     my $value  = shift;
     my $quoted = 0;
 
@@ -102,7 +84,6 @@ sub captured_to_args {
 
     return {
         name   => $name,
-        code   => $code,
         value  => $value,
         quoted => $quoted,
     };
@@ -113,19 +94,19 @@ sub captured_to_args {
 =cut
 
 sub generate {
-    my $self = shift;
+    my $self  = shift;
 
-    sprintf("option %s.%s code %i = %s;",
-        $self->parent->prefix,
-        $self->name,
-        $self->code,
-        $self->value,
-    );
+    if($self->quoted) {
+        return sprintf qq(%s "%s";), $self->name, $self->value;
+    }
+    else {
+        return sprintf qq(%s %s;), $self->name, $self->value;
+    }
 }
 
 =head1 AUTHOR
 
-See L<Net::DHCPd>.
+See L<Net::ISC::DHCPd>.
 
 =cut
 

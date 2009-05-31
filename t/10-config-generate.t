@@ -11,12 +11,12 @@ my $text = do { local $/; <DATA> };
 
 plan tests => 1 + 2 * $count;
 
-use_ok("Net::DHCPd::Config");
+use_ok("Net::ISC::DHCPd::Config");
 
 my $time = timeit($count, sub {
-    my $config = Net::DHCPd::Config->new;
+    my $config = Net::ISC::DHCPd::Config->new;
 
-    is(ref $config, "Net::DHCPd::Config", "config object constructed");
+    is(ref $config, "Net::ISC::DHCPd::Config", "config object constructed");
 
     $config->add_keyvalue(
         name => 'ddns-update-style',
@@ -27,7 +27,7 @@ my $time = timeit($count, sub {
         prefix => 'foo',
         code => 122,
         options => [
-            Net::DHCPd::Config::OptionSpace::Option->new(
+            Net::ISC::DHCPd::Config::OptionSpace::Option->new(
                 name => 'bar',
                 code => 1,
                 value => 'ip-address',
@@ -41,15 +41,15 @@ my $time = timeit($count, sub {
     $config->add_subnet(
         address => NetAddr::IP->new('10.0.0.96/27'),
         options => [
-            Net::DHCPd::Config::Option->new(
+            Net::ISC::DHCPd::Config::Option->new(
                 name => 'routers',
                 value => '10.0.0.97',
             ),
         ],
         pools => [
-            Net::DHCPd::Config::Pool->new(
+            Net::ISC::DHCPd::Config::Pool->new(
                 ranges => [
-                    Net::DHCPd::Config::Range->new(
+                    Net::ISC::DHCPd::Config::Range->new(
                         upper => NetAddr::IP->new("10.0.0.116"),
                         lower => NetAddr::IP->new("10.0.0.126"),
                     ),
@@ -60,7 +60,7 @@ my $time = timeit($count, sub {
     $config->add_host(
         name => 'foo',
         keyvalues => [
-            Net::DHCPd::Config::KeyValue->new(
+            Net::ISC::DHCPd::Config::KeyValue->new(
                 name => 'fixed-address',
                 value => '10.19.83.102',
             ),

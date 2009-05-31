@@ -1,34 +1,34 @@
-package Net::DHCPd::Config::OptionSpace;
+package Net::ISC::DHCPd::Config::OptionSpace;
 
 =head1 NAME
 
-Net::DHCPd::Config::OptionSpace - Option space config parameter
+Net::ISC::DHCPd::Config::OptionSpace - Option space config parameter
 
 =head1 DESCRIPTION
 
-See L<Net::DHCPd::Config::Role> for methods and attributes without
+See L<Net::ISC::DHCPd::Config::Role> for methods and attributes without
 documentation.
 
 =head1 SYNOPSIS
 
-See L<Net::DHCPd::Config> for synopsis.
+See L<Net::ISC::DHCPd::Config> for synopsis.
 
 =cut
 
 use Moose;
-use Net::DHCPd::Config::OptionSpace::Option;
+use Net::ISC::DHCPd::Config::OptionSpace::Option;
 
-with 'Net::DHCPd::Config::Role';
+with 'Net::ISC::DHCPd::Config::Role';
 
 __PACKAGE__->create_children(qw/
-    Net::DHCPd::Config::OptionSpace::Option
+    Net::ISC::DHCPd::Config::OptionSpace::Option
 /);
 
 =head1 OBJECT ATTRIBUTES
 
 =head2 options
 
-A list of parsed L<Net::DHCPd::Config::OptionSpace::Option> objects.
+A list of parsed L<Net::ISC::DHCPd::Config::OptionSpace::Option> objects.
 
 =cut
 
@@ -61,7 +61,7 @@ has code => (
 =head2 prefix
 
 Human readable prefix of all child
-L<Net::DHCPd::Config::OptionsSpace::Option> objects.
+L<Net::ISC::DHCPd::Config::OptionsSpace::Option> objects.
 
 =cut
 
@@ -137,7 +137,7 @@ sub generate {
 
 =head1 AUTHOR
 
-See L<Net::DHCPd>.
+See L<Net::ISC::DHCPd>.
 
 =cut
 

@@ -1,8 +1,8 @@
-package Net::DHCPd::Process;
+package Net::ISC::DHCPd::Process;
 
 =head1 NAME
 
-Net::DHCPd::Process
+Net::ISC::DHCPd::Process
 
 =cut
 
@@ -58,7 +58,7 @@ sub kill {
 
 =head1 AUTHOR
 
-See L<Net::DHCPd>.
+See L<Net::ISC::DHCPd>.
 
 =cut
 

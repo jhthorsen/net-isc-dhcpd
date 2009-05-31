@@ -11,13 +11,13 @@ my $lines    = 49;
 
 plan tests => 1 + 24 * $count;
 
-use_ok("Net::DHCPd::Config");
+use_ok("Net::ISC::DHCPd::Config");
 
 my $time = timeit($count, sub {
     seek DATA, $data_pos, 0;
-    my $config = Net::DHCPd::Config->new(filehandle => \*DATA);
+    my $config = Net::ISC::DHCPd::Config->new(filehandle => \*DATA);
 
-    is(ref $config, "Net::DHCPd::Config", "config object constructed");
+    is(ref $config, "Net::ISC::DHCPd::Config", "config object constructed");
     is($config->parse, $lines, "all config lines parsed");
 
     is(scalar(@_=$config->keyvalues), 3, "key values");

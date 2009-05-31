@@ -1,23 +1,23 @@
-package Net::DHCPd::Config::KeyValue;
+package Net::ISC::DHCPd::Config::OptionSpace::Option;
 
 =head1 NAME
 
-Net::DHCPd::Config::KeyValue - Misc option config parameter
+Net::ISC::DHCPd::Config::OptionSpace::Option - option space data
 
 =head1 DESCRIPTION
 
-See L<Net::DHCPd::Config::Role> for methods and attributes without
+See L<Net::ISC::DHCPd::Config::Role> for methods and attributes without
 documentation.
 
 =head1 SYNOPSIS
 
-See L<Net::DHCPd::Config> for synopsis.
+See L<Net::ISC::DHCPd::Config> for synopsis.
 
 =cut
 
 use Moose;
 
-with 'Net::DHCPd::Config::Role';
+with 'Net::ISC::DHCPd::Config::Role';
 
 =head1 OBJECT ATTRIBUTES
 
@@ -25,13 +25,26 @@ with 'Net::DHCPd::Config::Role';
 
  $string = $self->name;
 
-Name of the option.
+Human readable name of this option, without parent name prefix
 
 =cut
 
 has name => (
     is => 'ro',
     isa => 'Str',
+);
+
+=head2 code
+
+ $int = $self->name;
+
+Computer readable code for this option.
+
+=cut
+
+has code => (
+    is => 'ro',
+    isa => 'Int',
 );
 
 =head2 value
@@ -65,7 +78,10 @@ has quoted => (
 =cut
 
 has '+regex' => (
-    default => sub { qr{^\s* ([\w-]+) \s (.*) ;}x },
+    lazy => 1,
+    default => sub {
+        qr{^\s* option \s (\S+)\.(\S+) \s code \s (\d+) \s = \s (.*) ;}x;
+    },
 );
 
 =head1 METHODS
@@ -76,7 +92,9 @@ has '+regex' => (
 
 sub captured_to_args {
     my $self   = shift;
+    my $prefix = shift;
     my $name   = shift;
+    my $code   = shift;
     my $value  = shift;
     my $quoted = 0;
 
@@ -84,6 +102,7 @@ sub captured_to_args {
 
     return {
         name   => $name,
+        code   => $code,
         value  => $value,
         quoted => $quoted,
     };
@@ -94,19 +113,19 @@ sub captured_to_args {
 =cut
 
 sub generate {
-    my $self  = shift;
+    my $self = shift;
 
-    if($self->quoted) {
-        return sprintf qq(%s "%s";), $self->name, $self->value;
-    }
-    else {
-        return sprintf qq(%s %s;), $self->name, $self->value;
-    }
+    sprintf("option %s.%s code %i = %s;",
+        $self->parent->prefix,
+        $self->name,
+        $self->code,
+        $self->value,
+    );
 }
 
 =head1 AUTHOR
 
-See L<Net::DHCPd>.
+See L<Net::ISC::DHCPd>.
 
 =cut
 

@@ -1,7 +1,7 @@
 use inc::Module::Install;
 
-name     q(Net-DHCPd);
-all_from q(lib/Net/DHCPd.pm);
+name     q(Net-ISC-DHCPd);
+all_from q(lib/Net/ISC/DHCPd.pm);
 
 requires      q(Moose)              => 0;
 requires      q(NetAddr::IP)        => 0;
