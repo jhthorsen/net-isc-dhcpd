@@ -366,7 +366,7 @@ sub test {
         return;
     }
     elsif($exit) {
-        $self->errstr($? >> 8);
+        $self->errstr($exit >> 8);
         return;
     }
 
@@ -385,7 +385,7 @@ sub _run {
     close STDERR;
     close STDOUT;
 
-    $exit = system $self->binary, @_;
+    $exit = system $self->binary, @args;
 
     open STDERR, ">&", \*OLDERR;
     open STDOUT, ">&", \*OLDOUT;

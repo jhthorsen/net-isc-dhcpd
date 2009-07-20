@@ -1,0 +1,14 @@
+#!/usr/bin/perl
+
+if($ARGV[0] eq '-t') {
+    if($ARGV[1] eq '-cf') {
+        exit +(-e $ARGV[2] ? 0 : 2);
+    }
+    elsif($ARGV[1] eq '-lf') {
+        exit +(-e $ARGV[2] ? 0 : 3);
+    }
+}
+else {
+    exit 254;
+}
+
