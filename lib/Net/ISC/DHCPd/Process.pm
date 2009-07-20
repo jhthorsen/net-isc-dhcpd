@@ -33,7 +33,7 @@ sub new {
 
     # spawn...
 
-    return;
+    return bless $args, $class;
 }
 
 =head2 pid

@@ -16,11 +16,28 @@ See tests for more documentation.
 =cut
 
 use Moose;
+use Moose::Util::TypeConstraints;
 use File::Basename;
 use File::Path;
 use File::Temp;
+use Net::ISC::DHCPd::Process;
+
+=head1 VARIABLES
+
+=head2 $PROCESS_CLASS
+
+The class that should spawn the L<process> object. Needs to support
+the minimum api of L<Net::ISC::DHCPd::Process>.
+
+=cut
 
 our $VERSION = "0.01";
+our $PROCESS_CLASS = "Net::ISC::DHCPd::Process";
+
+subtype NetISCDHCPdProcObject => as 'Object';
+coerce NetISCDHCPdProcObject => (
+    from HashRef => via { $PROCESS_CLASS->new(%$_) },
+);
 
 =head1 OBJECT ATTRIBUTES
 
@@ -62,7 +79,7 @@ has leases => (
 
 =head2 binary
 
- $path_to_binary = $self->binary
+ $path_to_binary = $self->binary;
 
 Default: "dhcpd3"
 
@@ -76,8 +93,7 @@ has binary => (
 
 =head2 pidfile
 
- $self->pidfile($path_to_pidfile)
- $path_to_pidfile = $self->pidfile
+ $path_to_pidfile = $self->pidfile;
 
 Default: /var/run/dhcp3-server/dhcpd.pid
 
@@ -91,7 +107,11 @@ has pidfile => (
 
 =head2 process
 
- $proc_obj = $self->process
+ $proc_obj = $self->process;
+ $self->process($proc_obj);
+ $self->process(\%args); # will use $PROCESS_CLASS to create object
+ $self->has_process;
+ $self->clear_process;
 
 The object holding the dhcpd process.
 
@@ -99,28 +119,20 @@ The object holding the dhcpd process.
 
 has process => (
     is => 'rw',
+    isa => 'NetISCDHCPdProcObject',
+    lazy_build => 1,
+    coerce => 1,
 );
 
-=head2 process_class
-
- $classname = $self->process_class
-
-The class that should spawn the L<process> object. Needs to support
-the minimum api of L<Net::ISC::DHCPd::Process>.
-
-=cut
-
-has process_class => (
-    is => 'ro',
-    isa => 'Str',
-    default => 'Net::ISC::DHCPd::Process',
-);
+sub _build_process {
+    confess 'process() cannot be build. Usage: $self->process($process_obj)';
+}
 
 =head2 errstr
 
- $string = $self->errstr
+ $string = $self->errstr;
 
-Holds the last know errorr.
+Holds the last know error.
 
 =cut
 
@@ -169,7 +181,7 @@ sub BUILD {
 
 =head2 start
 
- $bool = $self->start($args)
+ $bool = $self->start($args);
 
 Will start the dhcpd server, as long as there is no existing process.
 
@@ -194,10 +206,9 @@ TODO: Enable it to start the server as a differnet user/group.
 sub start {
     my $self = shift;
     my $args = shift || {};
-    my $proc = $self->process;
     my($user, $group);
 
-    if($proc and $proc->kill(0)) {
+    if($self->has_process and $self->process->kill(0)) {
         $self->errstr('allready running');
         return 0;
     }
@@ -220,31 +231,34 @@ sub start {
     for my $file ($self->config->file, $self->leases->file, $self->pidfile) {
         my $dir = dirname $file;
         next if -d $dir;
-        eval { File::Path::mkpath($dir) };
 
-        if($@) {
+        eval {
+            File::Path::mkpath($dir);
+            1;
+        } or do {
             $self->errstr("could not mkpath($dir): $@");
             return;
-        }
+        };
+
         unless(chown $user, $group, $dir) {
             $self->errstr("could not chown($user, $group $dir): $!");
             return;
         }
     }
 
-    $self->process($self->process_class->new(
+    $self->process({
         program => $self->binary,
         args    => $args,
         user    => $user,
         group   => $group,
-    ));
+    });
 
     return $self->process ? 1 : undef;
 }
 
 =head2 stop
 
- $bool = $self->stop
+ $bool = $self->stop;
 
 Return:
 
@@ -255,14 +269,13 @@ Return:
 
 sub stop {
     my $self = shift;
-    my $proc = $self->process;
 
-    unless($proc) {
+    unless($self->has_process) {
         $self->errstr("no such process");
         return undef;
     }
 
-    unless($proc->kill('TERM')) {
+    unless($self->process->kill('TERM')) {
         $self->errstr("Could not send signal to process");
         return undef;
     }
@@ -285,11 +298,7 @@ sub restart {
     my $self = shift;
     my $proc;
     
-    unless($proc = $self->process) {
-        $self->errstr("no such process");
-        return undef;
-    }
-    unless($self->stop) {
+    if($self->has_process and !$self->stop) {
         return undef;
     }
     unless($self->start) {
@@ -301,7 +310,7 @@ sub restart {
 
 =head2 status
 
- $string = $self->status
+ $string = $self->status;
 
 Returns the status of the DHCPd server:
 
@@ -313,8 +322,8 @@ Returns the status of the DHCPd server:
 sub status {
     my $self = shift;
 
-    if(my $proc = $self->process) {
-        if($proc->kill(0)) {
+    if($self->has_process) {
+        if($self->process->kill(0)) {
             return "running";
         }
     }
@@ -324,8 +333,8 @@ sub status {
 
 =head2 test
 
- $bool = $self->test("config")
- $bool = $self->test("leases")
+ $bool = $self->test("config");
+ $bool = $self->test("leases");
 
 Will test either config or leases file.
 
@@ -337,26 +346,26 @@ Will test either config or leases file.
 sub test {
     my $self = shift;
     my $what = shift || q();
-    my $ret;
+    my $exit;
 
     if($what eq 'config') {
-        my $file = File::Temp->new;
-        print $file $self->config->generate;
-        system $self->binary, '-t', '-cf', $file->filename;
+        my $tmp = File::Temp->new;
+        print $tmp $self->config->generate;
+        $exit = $self->_run('-t', '-cf', $tmp->filename);
     }
     elsif($what eq 'leases') {
-        system $self->binary, '-t', '-lf', $self->leases->file;
+        $exit = $self->_run('-t', '-lf', $self->leases->file);
     }
     else {
         $self->errstr('Invalid argument');
         return;
     }
 
-    if($? == -1) {
+    if($exit and $exit == -1) {
         $self->errstr($!);
         return;
     }
-    else {
+    elsif($exit) {
         $self->errstr($? >> 8);
         return;
     }
@@ -364,9 +373,44 @@ sub test {
     return 1;
 }
 
+sub _run {
+    my $self = shift;
+    my @args = @_;
+    my $exit;
+
+    local *OLDERR;
+    local *OLDOUT;
+    open OLDERR, ">&", \*STDERR;
+    open OLDOUT, ">&", \*STDOUT;
+    close STDERR;
+    close STDOUT;
+
+    $exit = system $self->binary, @_;
+
+    open STDERR, ">&", \*OLDERR;
+    open STDOUT, ">&", \*OLDOUT;
+
+    return $exit;
+}
+
+=head1 BUGS
+
+Please report any bugs or feature requests to
+C<bug-net-isc-dhcpd at rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Net-ISC-DHCPd>.
+I will be notified, and then you'll automatically be notified of progress on
+your bug as I make changes.
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2007 Jan Henning Thorsen, all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
 =head1 AUTHOR
 
-Jan Henning Thorsen
+Jan Henning Thorsen, C<< <jhthorsen at cpan.org> >>
 
 =cut
 
