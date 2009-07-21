@@ -4,6 +4,10 @@ package Net::ISC::DHCPd;
 
 Net::ISC::DHCPd - Interacts with ISC DHCPd
 
+=head1 VERSION
+
+0.02
+
 =head1 SYNOPSIS
 
  my $dhcpd = Net::ISC::DHCPd->new(
@@ -31,7 +35,7 @@ the minimum api of L<Net::ISC::DHCPd::Process>.
 
 =cut
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 our $PROCESS_CLASS = "Net::ISC::DHCPd::Process";
 
 subtype NetISCDHCPdProcObject => as 'Object';

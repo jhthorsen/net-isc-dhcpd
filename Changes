@@ -1,6 +1,10 @@
 Revision history for Net-ISC-DHCPd
 
-0.01    Sun May 17 23:45:00 CET 2007
-      * parsing of config works
-      * generating config works
+0.02 Tue Juli 21 15:41:01 CET 2009
+   * can parse leases
+   * can test leases and config file
+
+0.01 Sun May 17 23:45:00 CET 2009
+   * parsing of config works
+   * generating config works
 
