@@ -87,7 +87,7 @@ has file => (
 =cut
 
 has filehandle => (
-    is => 'rw',
+    is => 'ro',
     lazy_build => 1,
 );
 
@@ -95,7 +95,7 @@ sub _build_filehandle {
     my $self = shift;
     my $file = $self->file or confess 'file attribute needs to be set';
     open(my $FH, "<", $file) or confess "cannot open $file: $!";
-    $self->filehandle($FH);
+    return $FH;
 }
 
 =head2 root
