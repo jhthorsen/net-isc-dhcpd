@@ -167,14 +167,15 @@ Will result in:
 sub BUILD {
     my $self = shift;
     my $args = shift;
+    my $proxy;
 
-    for my $attr (%$args) {
-        next unless(ref $args->{$attr} eq 'HASH');
-        next unless($attr =~ s/^-//);
-        next unless($self->has_attribute($attr));
+    for my $key (keys %$args) {
+        next unless(ref $args->{$key} eq 'HASH');
+        next unless($key =~ s/^-//);
+        next unless($proxy = $self->$key);
 
-        for my $key (%$attr) {
-            $self->$attr->$key($attr->{$key});
+        for my $attr (keys %{ $args->{"-$key"} }) {
+            $proxy->$attr($args->{"-$key"}{$attr});
         }
     }
 }
