@@ -16,7 +16,7 @@ my $isc = Net::ISC::DHCPd->new(
           );
 
 eval { $isc->process };
-like($@, qr{cannot be build}i, "process cannot be build");
+like($@, qr{cannot be build}i, "process attribute cannot be build");
 is($isc->binary, $binary, "binary is set");
 is($isc->status, "stopped", "process is stopped");
 ok($isc->process({}), "process set by hash");
