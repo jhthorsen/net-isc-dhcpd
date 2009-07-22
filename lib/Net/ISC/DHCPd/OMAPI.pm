@@ -58,13 +58,28 @@ has key => (
     default => '',
 );
 
-has _connection => (
+=head2 errstr
+
+ $str = $self->errstr;
+
+Returns the last known error.
+
+=cut
+
+has errstr => (
+    is => 'rw',
+    isa => 'Str',
+    default => '',
+);
+
+# meant for internal usage
+has _fh => (
     is => 'ro',
     lazy_build => 1,
 );
 
 # fork omshell and return an IO::Pty object
-sub _build__connection  {
+sub _build__fh  {
     my $self = shift;
     my $pty  = IO::Pty->new;
     my($pid, $slave);
@@ -83,10 +98,8 @@ sub _build__connection  {
         $pty->close_slave;
         $pty->set_raw;
 
-        my $error = sysread $READ, my $errno, 255;
-
-        if($error) {
-            $! = $error + 0;
+        if(my $error = sysread $READ, my $errno, 255) {
+            $! = $errno + 0;
             confess "Could not exec $OMSHELL: $!";
         }
 
@@ -113,11 +126,24 @@ sub _build__connection  {
 
 # $self->_cmd($cmd);
 sub _cmd {
-    my $self   = shift;
-    my $cmd    = shift;
-    my $buffer = q();
+    my $self = shift;
+    my $cmd  = shift;
+    my $pty  = $self->_fh;
+    my $buffer;
 
-    # read/write to socket ++
+    #print STDERR $cmd, "\n";
+
+    unless(defined $pty->syswrite("$cmd\n")) {
+        $self->errstr($!);
+        return;
+    }
+    unless(defined $pty->sysread($buffer, 2048)) {
+        $self->errstr($!);
+        return;
+    }
+
+    $buffer =~ s/^>\s*//;
+    $buffer =~ s/>\s*$//;
 
     return $buffer;
 }
@@ -134,19 +160,28 @@ Will open a connection to the dhcp server. Check C<$@> on failure.
 
 sub connect {
     my $self = shift;
+    my $buffer;
 
-    $@ = q();
+    $self->errstr("");
 
     for my $attr (qw/port server key/) {
-        $self->_cmd(sprintf "%s %s", $attr, $self->$attr);
-        last if($@);
+        my $buffer = $self->_cmd(sprintf "%s %s", $attr, $self->$attr);
+        last unless(defined $buffer);
     }
 
-    unless($@) {
-        $self->_cmd("connect");
+    if($self->errstr) {
+        return;
+    }
+    unless($buffer = $self->_cmd("connect")) {
+        return;
+    }
+    
+    unless($buffer =~ /obj:\s*<null>/) {
+        $self->errstr($buffer);
+        return;
     }
 
-    return $@ ? 0 : 1;
+    return 1;
 }
 
 =head2 new_object
