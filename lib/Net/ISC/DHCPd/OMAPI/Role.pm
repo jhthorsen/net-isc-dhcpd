@@ -11,7 +11,7 @@ so, either use L<set()> directly or use L<sync()> after altering attributes.
 
 =cut
 
-use Moose;
+use Moose::Role;
 
 =head1 ATTRIBUTES
 
@@ -27,25 +27,46 @@ has parent => (
     required => 1,
 );
 
+=head2 errstr
+
+ $str = $self->errstr;
+
+=cut
+
+has errstr => (
+    is => 'rw',
+    isa => 'Str',
+    default => '',
+);
+
 =head1 METHODS
 
 =head2 set
 
  $bool = $self->set($attribute => $value, ...);
 
-Attribute names are defined in dhcpd(8) and  dhclient(8).
+Attribute names are defined in dhcpd(8) and dhclient(8). Only difference
+is that "-" is converted to "_" when used with this module. Example:
+
+ $self->set(ip_address => $value);   # correct
+ $self->set("ip-address" => $value); # wrong
 
 =cut
 
 sub set {
     my $self = shift;
     my $args = ref $_[0] eq 'HASH' ? $_[0] : {@_};
-    my(@out, $success);
+    my($buffer, @cmd, $success);
 
-    @out = $self->_cmd(
-               ( map { "set $_ = $args->{$_}" } keys %$args ),
-               "update", # create?
-           );
+    for my $key (keys %$args) {
+        my $attr = $key;
+        $attr =~ s/_/-/g;
+        push @cmd, "set $attr = $args->{$key}";
+    }
+
+    $buffer = $self->_cmd(@cmd); # create?
+
+    print $buffer;
 
     # read @out:
     # ip-address = c0:a8:04:32
@@ -66,9 +87,12 @@ sub set {
 sub unset {
     my $self = shift;
     my @attr = @_;
-    my(@out, $success);
+    my($buffer, $success);
     
-    @out = $self->_cmd((map { "unset $_" } @attr), "update");
+    $buffer = $self->_cmd(
+                (map { local $_ = $_; s/_/-/g; "unset $_" } @attr),
+                "update",
+              );
 
     # read @out:
     # ip-address = <null>
@@ -155,18 +179,18 @@ sub sync {
 }
 
 sub _cmd {
-    my $self  = shift;
-    my @cmd   = @_;
-    my($type) = lc +( ref($self) =~ /::(\w+)$/ );
-    my @buffer;
+    my $self   = shift;
+    my @cmd    = @_;
+    my($type)  = lc +( ref($self) =~ /::(\w+)$/ );
+    my $buffer = q();
 
     for my $cmd (qq[new "$type"], @cmd) {
-        my $buffer = $self->parent->_cmd($cmd);
-        return if($@);
-        push @buffer, split /\n\r?/, $buffer;
+        my $tmp = $self->parent->_cmd($cmd);
+        last unless(defined $tmp);
+        $buffer .= $tmp;
     }
 
-    return @buffer;
+    return $buffer;
 }
 
 =head1 AUTHOR

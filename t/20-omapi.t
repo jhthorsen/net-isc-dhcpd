@@ -16,6 +16,8 @@ my $omapi = Net::ISC::DHCPd::OMAPI->new(
 
 is($omapi->server, "127.0.0.1", "got default server");
 is($omapi->key, $ENV{'OMAPI_KEY'}, "got server key");
-ok($omapi->_fh, "connection set up");
+ok($omapi->_fh, "omshell started");
 ok($omapi->connect, "connected");
+
+ok($omapi->new_object("lease"), "lease object created");
 

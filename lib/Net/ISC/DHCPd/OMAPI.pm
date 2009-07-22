@@ -8,9 +8,9 @@ Net::ISC::DHCPd::OMAPI - Talk to dhcp server
 
 use Moose;
 use IO::Pty;
-use Net::ISC::DHCPd::Config::Host;
-use Net::ISC::DHCPd::Config::Group;
-#use Net::ISC::DHCPd::Config::Lease;
+#use Net::ISC::DHCPd::OMAPI::Host;
+#use Net::ISC::DHCPd::OMAPI::Group;
+use Net::ISC::DHCPd::OMAPI::Lease;
 
 our $OMSHELL = "omshell";
 
@@ -186,9 +186,9 @@ sub connect {
 
 =head2 new_object
 
- $object = $self->new_object($type, %constructor_args);
+ $object = $self->new_object($type => %constructor_args);
 
-C<$type> can be group, host, or lease. Will return a new config object.
+C<$type> can be "group", "host", or "lease". Will return a new config object.
 
 Example, with C<$type="host">:
 
@@ -200,7 +200,7 @@ sub new_object {
     my $self  = shift;
     my $type  = shift or return;
     my %args  = @_;
-    my $class = "Net::ISC::DHCPd::Config::" .ucfirst(lc $type);
+    my $class = "Net::ISC::DHCPd::OMAPI::" .ucfirst(lc $type);
 
     unless($type =~ /^(?:group|host|lease)$/i) {
         return;
