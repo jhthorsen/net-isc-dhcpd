@@ -13,6 +13,20 @@ so, either use L<set()> directly or use L<sync()> after altering attributes.
 
 use Moose;
 
+=head1 ATTRIBUTES
+
+=head2 parent
+
+ $omapi_obj = $self->parent;
+
+=cut
+
+has parent => (
+    is => 'ro',
+    isa => 'Net::ISC::DHCPd::OMAPI',
+    required => 1,
+);
+
 =head1 METHODS
 
 =head2 set
@@ -141,20 +155,18 @@ sub sync {
 }
 
 sub _cmd {
-    my $self   = shift;
-    my @cmd    = shift;
-    my($type)  = lc +( ref($self) =~ /::(\w+)$/ );
-    my $buffer = q();
+    my $self  = shift;
+    my @cmd   = @_;
+    my($type) = lc +( ref($self) =~ /::(\w+)$/ );
+    my @buffer;
 
-    # print $socket qq(new "$type"\n);
-    # read buffer
-
-    for my $cmd (@cmd) {
-        # print $socket "$cmd\n";
-        # read buffer
+    for my $cmd (qq[new "$type"], @cmd) {
+        my $buffer = $self->parent->_cmd($cmd);
+        return if($@);
+        push @buffer, split /\n\r?/, $buffer;
     }
 
-    return $buffer;
+    return @buffer;
 }
 
 =head1 AUTHOR
