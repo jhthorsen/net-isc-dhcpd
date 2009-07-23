@@ -56,27 +56,42 @@ is that "-" is converted to "_" when used with this module. Example:
 sub set {
     my $self = shift;
     my $args = ref $_[0] eq 'HASH' ? $_[0] : {@_};
-    my($buffer, @cmd, $success);
+  
+    my(@cmd, @out, @error);
 
-    for my $key (keys %$args) {
-        my $attr = $key;
-        $attr =~ s/_/-/g;
-        push @cmd, "set $attr = $args->{$key}";
+    for my $attr (keys %$args) {
+        my $key = $attr;
+        $key =~ s/_/-/g;
+        push @cmd, "set $key = $args->{$attr}";
     }
 
-    $buffer = $self->_cmd(@cmd); # create?
+    @out = $self->_cmd(@cmd);
 
-    print $buffer;
+    for my $i (0..@cmd-1) {
+        my $match = ($cmd[$i] =~ /set(.*=\s)/)[0];
 
-    # read @out:
-    # ip-address = c0:a8:04:32
-
-    if($success) {
-        $self->$_($args->{$_}) for(keys %$args);
+        if($out[$i] =~ /$match/) {
+            push @error, $out[$i];
+        }
     }
 
-    return;
+    if(@error) {
+        # need to do stuff with @error...
+        return 0;
+    }
+
+    # need to be done before ->_open()
+    for my $attr (keys %$args) {
+        $self->$attr($args->{$attr});
+    }
+
+    $self->_set_pk unless(exists $args->{ $self->_primary });
+    $self->_cmd( $self->_open ? "update" : "create" ) or return;
+
+    return 1;
 }
+
+around set => \&_around;
 
 =head2 unset
 
@@ -87,12 +102,9 @@ sub set {
 sub unset {
     my $self = shift;
     my @attr = @_;
-    my($buffer, $success);
+    my(@out, $success);
     
-    $buffer = $self->_cmd(
-                (map { local $_ = $_; s/_/-/g; "unset $_" } @attr),
-                "update",
-              );
+    @out = $self->_cmd(map { local $_ = $_; s/_/-/g; "unset $_" } @attr);
 
     # read @out:
     # ip-address = <null>
@@ -106,35 +118,7 @@ sub unset {
     return;
 }
 
-=head2 open
-
- $int = $self->open;
-
-Will read attributes from server, and return the number of attributes read.
-
-=cut
-
-sub open {
-    my $self = shift;
-    my $pk   = "foo";
-    my(@out, %attr);
-
-    @out = $self->_cmd(
-               sprintf("set %s = %s", $pk, $self->$pk),
-               "open",
-           );
-
-    # read @out:
-    # client-hostname = "wendelina"
-    # key = value
-    # ...
-
-    for my $key (keys %attr) {
-        $self->$key($attr{$key});
-    }
-
-    return int keys %attr;
-}
+around unset => \&_around;
 
 =head2 remove
 
@@ -160,9 +144,13 @@ sub remove {
     return;
 }
 
+around remove => \&_around;
+
 =head2 sync
 
  $bool = $self->sync;
+
+Will set all attributes on server object.
 
 =cut
 
@@ -178,19 +166,72 @@ sub sync {
     return $self->set(%args);
 }
 
-sub _cmd {
-    my $self   = shift;
-    my @cmd    = @_;
-    my($type)  = lc +( ref($self) =~ /::(\w+)$/ );
-    my $buffer = q();
+# wrapper for set(), unset() and remove();
+sub _around {
+    my $next = shift;
+    my $self = shift;
+    my $type = lc +(ref($self) =~ /::(\w+)$/)[0];
+    my @out;
 
-    for my $cmd (qq[new "$type"], @cmd) {
-        my $tmp = $self->parent->_cmd($cmd);
-        last unless(defined $tmp);
-        $buffer .= $tmp;
+    @out = $self->_cmd("new $type") or return 0;
+    $self->$next(@_)                or return 0;
+    @out = $self->_cmd('close')     or return 0;
+
+    return (@out and $out[0] =~ /obj:/) ? 1 : 0;
+};
+
+# $int = $self->_open;
+# Open an object.
+# Returns the number of attributes read. 0 = not in server
+sub _open {
+    my $self = shift;
+    my $n;
+
+    for my $line ($self->_cmd("open")) {
+        if($line =~ /(\S+)\s=\s(.*)/) {
+            my($attr, $value) = ($1, $2);
+            $attr =~ s/-/_/g;
+            $self->$attr($value);
+            $n++;
+        }
     }
 
-    return $buffer;
+    return $n;
+}
+
+# $bool = $self->_set_pk;
+sub _set_pk {
+    my $self = shift;
+    my $attr = $self->_primary;
+    my $key  = $attr;
+
+    $key =~ s/_/-/g;
+
+    return $self->_cmd("set $key = $self->$attr");
+}
+
+# @out = $self->_cmd(@cmd)
+# @out contains one-to-one output data from @cmd
+# $self->errstr is reset each time empty errstr == success
+sub _cmd {
+    my $self = shift;
+    my @cmd  = @_;
+    my(@buffer, $head);
+
+    $self->errstr("");
+
+    for my $cmd (@cmd) {
+        my $tmp = $self->parent->_cmd($cmd);
+        last unless(defined $tmp);
+        push @buffer, $tmp;
+    }
+
+    if($self->parent->errstr) {
+        $self->errstr($self->parent->errstr);
+        return;
+    }
+
+    return @buffer;
 }
 
 =head1 AUTHOR
