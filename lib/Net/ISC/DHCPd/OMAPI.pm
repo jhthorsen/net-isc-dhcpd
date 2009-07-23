@@ -4,6 +4,13 @@ package Net::ISC::DHCPd::OMAPI;
 
 Net::ISC::DHCPd::OMAPI - Talk to dhcp server
 
+=head1 NOTE
+
+ BEGIN {
+   Net::ISC::DHCPd::OMAPI::_DEBUG = sub { 1 }; # to enable debug output
+   use Net::ISC::DHCPd::OMAPI;
+ }
+
 =cut
 
 use Moose;
@@ -11,6 +18,11 @@ use IO::Pty;
 #use Net::ISC::DHCPd::OMAPI::Host;
 #use Net::ISC::DHCPd::OMAPI::Group;
 use Net::ISC::DHCPd::OMAPI::Lease;
+
+BEGIN {
+    *Net::ISC::DHCPd::OMAPI::_DEBUG{'CODE'}
+        or *Net::ISC::DHCPd::OMAPI::_DEBUG = sub { 1 };
+}
 
 our $OMSHELL = "omshell";
 
@@ -102,6 +114,9 @@ sub _build__fh  {
             $! = $errno + 0;
             confess "Could not exec $OMSHELL: $!";
         }
+        if(!defined $pty->sysread(my $buffer, 2048)) {
+            return;
+        }
 
         return $pty;
     }
@@ -115,9 +130,6 @@ sub _build__fh  {
         open STDOUT, ">&". $slave->fileno or confess "Reopen STDOUT: $!\n";
         open STDERR, ">&". $slave->fileno or confess "Reopen STDERR: $!\n";
 
-        close $pty;
-        close $slave;
-
         { exec $OMSHELL } # block prevent warning
         print $WRITE int $!;
         die "Could not exec $OMSHELL: $!";
@@ -129,23 +141,35 @@ sub _cmd {
     my $self = shift;
     my $cmd  = shift;
     my $pty  = $self->_fh;
-    my $buffer;
+    my $out  = q();
+    my $end_time;
 
-    #print STDERR $cmd, "\n";
+    print STDERR "\$ $cmd\n" if _DEBUG;
 
     unless(defined $pty->syswrite("$cmd\n")) {
         $self->errstr($!);
         return;
     }
-    unless(defined $pty->sysread($buffer, 2048)) {
-        $self->errstr($!);
-        return;
+
+    $end_time = time + 10;
+
+    BUFFER:
+    while(time < $end_time) {
+        if(defined $pty->sysread(my $tmp, 1024)) {
+            $out .= $tmp;
+            $out =~ s/>\s$// and last BUFFER;
+        }
+        else {
+            $self->errstr($!);
+            return;
+        }
     }
 
-    $buffer =~ s/^>\s*//;
-    $buffer =~ s/>\s*$//;
+    $out =~ s/^>\s//;
 
-    return $buffer;
+    print STDERR $out if _DEBUG;
+
+    return $out;
 }
 
 =head1 METHODS
@@ -176,7 +200,7 @@ sub connect {
         return;
     }
     
-    unless($buffer =~ /obj:\s*<null>/) {
+    unless($buffer =~ /obj:\s+/) {
         $self->errstr($buffer);
         return;
     }
