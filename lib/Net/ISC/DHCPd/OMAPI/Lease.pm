@@ -53,6 +53,12 @@ has [qw/
     isa => 'Str',
 );
 
+has _primary => (
+    is => 'ro',
+    isa => 'Str',
+    default => 'ip_address',
+);
+
 =head1 AUTHOR
 
 See L<Net::ISC::DHCPd>.
