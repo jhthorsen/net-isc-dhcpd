@@ -59,21 +59,6 @@ has [qw/
     isa => 'Str',
 );
 
-# convert xx:xx:xx:xx to yyy.yyy.yyy.yyy
-around ip_address => sub {
-    return $_[1]->$_[0] if(@_ == 2);
-    return $_[1]->$_[0]( join ".", map { hex $_ } split /:/, $_[2] );
-};
-
-around state => sub {
-    return $_[1]->$_[0] if(@_ == 2);
-    my @state = qw/
-        UNDEF     free  active expired  released
-        abandoned reset backup reserved bootp
-    /;
-    return $_[1]->$_[0]( $state[$_[2]] || $_[2] );
-};
-
 =head2 hw_addr
 
 Alias for L<hardware_address>.
@@ -95,6 +80,30 @@ Returns the primary key for this object: "ip_address".
 =cut
 
 sub primary { 'ip_address' }
+
+=head2 normalize_ip_address
+
+ $human_value = $self->normalize_ip_address($omapi_value);
+
+=cut
+
+sub normalize_ip_address {
+    return join ".", map { hex $_ } split /:/, $_[1]
+}
+
+=head2 normalize_state
+
+ $human_value = $self->normalize_state($omapi_value);
+
+=cut
+
+sub normalize_state {
+    my $value = ($_[1] =~ /(\d+)$/)[0];
+    my @state = qw/
+        0 free active expired released abandoned reset backup reserved bootp
+    /;
+    return $value ? $state[$value] : $_[1];
+}
 
 =head1 AUTHOR
 

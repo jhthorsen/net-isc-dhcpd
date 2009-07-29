@@ -202,7 +202,10 @@ sub read {
         $attr =~ s/-/_/g;
 
         if($self->meta->has_attribute($attr)) {
-            $self->${ \"_$attr" }($value);
+            if(my $normalize = $self->can("normalize_$attr")) {
+                $value = $self->$normalize($value);
+            }
+            $self->$attr($value);
             $n++;
         }
         else {

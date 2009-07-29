@@ -27,7 +27,7 @@ ok($omapi->connect, "connected");
 ok($lease = $omapi->new_object("lease"), "new lease object created");
 ok($lease->set(ip_address => "10.19.83.200"), "set ip-address");
 
-for my $attr ($lease->meta->get_attribute_list) {
-    print "$attr = ", $lease->$attr, "\n";
-}
+#for my $attr ($lease->meta->get_attribute_list) {
+#    print "$attr = ", $lease->$attr, "\n";
+#}
 
