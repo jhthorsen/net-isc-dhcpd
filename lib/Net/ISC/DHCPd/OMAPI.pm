@@ -199,7 +199,6 @@ sub connect {
     unless($buffer = $self->_cmd("connect")) {
         return;
     }
-    
     unless($buffer =~ /obj:\s+/) {
         $self->errstr($buffer);
         return;

@@ -7,11 +7,13 @@ Net::ISC::DHCPd::OMAPI::Role - Common api for OMAPI objects
 =head1 DESCRIPTION
 
 Changing object attributes will not alter the attributes on server. To do
-so, either use L<set()> directly or use L<sync()> after altering attributes.
+so, either use L<set()> directly or use L<write()> after altering attributes.
 
 =cut
 
 use Moose::Role;
+
+requires 'primary';
 
 =head1 ATTRIBUTES
 
@@ -56,7 +58,6 @@ is that "-" is converted to "_" when used with this module. Example:
 sub set {
     my $self = shift;
     my $args = ref $_[0] eq 'HASH' ? $_[0] : {@_};
-  
     my(@cmd, @out, @error);
 
     for my $attr (keys %$args) {
@@ -68,9 +69,14 @@ sub set {
     @out = $self->_cmd(@cmd);
 
     for my $i (0..@cmd-1) {
-        my $match = ($cmd[$i] =~ /set(.*=\s)/)[0];
+        my($match) = ($cmd[$i] =~ /set\s+([\w-]+)\s+=/);
 
-        if($out[$i] =~ /$match/) {
+        if($out[$i] =~ /($match)/) {
+            my $attr = $1;
+            $attr =~ s/-/_/g;
+            $self->$attr($args->{$attr}); # update object values
+        }
+        else {
             push @error, $out[$i];
         }
     }
@@ -80,13 +86,8 @@ sub set {
         return 0;
     }
 
-    # need to be done before ->_open()
-    for my $attr (keys %$args) {
-        $self->$attr($args->{$attr});
-    }
-
-    $self->_set_pk unless(exists $args->{ $self->_primary });
-    $self->_cmd( $self->_open ? "update" : "create" ) or return;
+    $self->_set_primary_value unless(exists $args->{ $self->primary });
+    $self->_cmd( $self->read ? "update" : "create" ) or return;
 
     return 1;
 }
@@ -96,6 +97,9 @@ around set => \&_around;
 =head2 unset
 
  $bool = $self->unset(@attributes);
+
+Will unset values for an object in DHCP server. See L<set()> for details
+about C<@attributes>.
 
 =cut
 
@@ -128,7 +132,7 @@ around unset => \&_around;
 
 sub remove {
     my $self = shift;
-    my $pk   = shift;
+    my $pk   = $self->primary;
     my @out;
 
     @out = $self->_cmd(
@@ -146,15 +150,15 @@ sub remove {
 
 around remove => \&_around;
 
-=head2 sync
+=head2 write
 
- $bool = $self->sync;
+ $bool = $self->write;
 
 Will set all attributes on server object.
 
 =cut
 
-sub sync {
+sub write {
     my $self = shift;
     my %args;
 
@@ -180,29 +184,39 @@ sub _around {
     return (@out and $out[0] =~ /obj:/) ? 1 : 0;
 };
 
-# $int = $self->_open;
-# Open an object.
-# Returns the number of attributes read. 0 = not in server
-sub _open {
+=head2 read 
+
+ $int = $self->read;
+
+Open an object. Returns the number of attributes read. 0 = not in server.
+
+=cut
+
+sub read {
     my $self = shift;
+    my($out) = $self->_cmd("open");
     my $n;
 
-    for my $line ($self->_cmd("open")) {
-        if($line =~ /(\S+)\s=\s(.*)/) {
-            my($attr, $value) = ($1, $2);
-            $attr =~ s/-/_/g;
-            $self->$attr($value);
+    while($out =~ /(\S+)\s=\s(\S+)/g) {
+        my($attr, $value) = ($1, $2);
+        $attr =~ s/-/_/g;
+
+        if($self->meta->has_attribute($attr)) {
+            $self->${ \"_$attr" }($value);
             $n++;
+        }
+        else {
+            warn "$self does not have attribute $attr";
         }
     }
 
     return $n;
 }
 
-# $bool = $self->_set_pk;
-sub _set_pk {
+# $bool = $self->_set_primary_value;
+sub _set_primary_value {
     my $self = shift;
-    my $attr = $self->_primary;
+    my $attr = $self->primary;
     my $key  = $attr;
 
     $key =~ s/_/-/g;
@@ -210,8 +224,8 @@ sub _set_pk {
     return $self->_cmd("set $key = $self->$attr");
 }
 
-# @out = $self->_cmd(@cmd)
-# @out contains one-to-one output data from @cmd
+# @buffer = $self->_cmd(@cmd)
+# @buffer contains one-to-one output data from @cmd
 # $self->errstr is reset each time empty errstr == success
 sub _cmd {
     my $self = shift;
