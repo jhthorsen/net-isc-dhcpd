@@ -23,7 +23,6 @@ L<Net::ISC::DHCPd::OMAPI::Group>.
 use Moose;
 use MooseX::Types -declare => [qw/HexInt Ip Mac State Time/];
 use MooseX::Types::Moose ':all';
-use NetAddr::IP;
 
 with 'Net::ISC::DHCPd::OMAPI::Role';
 
@@ -32,7 +31,7 @@ my @states = qw/na free active expired released
 
 subtype State, as Str, where { my $s = $_; return grep { $s eq $_ } @states };
 subtype HexInt, as Int;
-subtype Ip, as Object;
+subtype Ip, as Str, where { not /:/ };
 subtype Mac, as Str, where { /[\w:]+/ };
 subtype Time, as Int;
 
@@ -49,9 +48,7 @@ coerce Time, (
 );
 
 coerce Ip, (
-    from Str, via {
-        NetAddr::IP->new( /:/ ? join(".", map { hex $_ } split /:/) : $_ );
-    },
+    from Str, via { join ".", map { hex $_ } split /:/ },
 );
 
 =head1 ATTRIBUTES
@@ -137,6 +134,7 @@ has dhcp_client_identifier => (
     isa => Str,
     traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
     actions => [qw/examine lookup update/],
+    predicate => 'has_dhcp_client_identifier',
 );
 
 =head2 ends
@@ -238,6 +236,7 @@ has ip_address => (
     coerce => 1,
     traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
     actions => [qw/lookup examine/],
+    predicate => 'has_ip_address',
 );
 
 =head2 pool
@@ -290,6 +289,7 @@ has state => (
     coerce => 1,
     traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
     actions => [qw/examine lookup/],
+    predicate => 'has_state',
 );
 
 =head2 subnet

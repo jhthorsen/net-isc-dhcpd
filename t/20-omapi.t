@@ -6,7 +6,7 @@ use lib './lib';
 use Test::More;
 
 plan skip_all => "cannot run without OMAPI_KEY set" unless($ENV{'OMAPI_KEY'});
-plan tests    => 7;
+plan tests    => 11;
 
 BEGIN {
     *Net::ISC::DHCPd::OMAPI::_DEBUG = sub { 0 };
@@ -25,9 +25,13 @@ ok($omapi->_fh, "omshell started");
 ok($omapi->connect, "connected");
 
 ok($lease = $omapi->new_object("lease"), "new lease object created");
-ok($lease->set(ip_address => "10.19.83.200"), "set ip-address");
+ok(!$lease->set(ip_address => "10.19.83.200"), "ip-address cannot be set");
+ok(!$lease->hardware_address, "hardware_address is not set");
+ok($lease->ip_address("10.19.83.200"), "ip_address attr set");
+ok($lease->read, "lease read from server");
+ok($lease->hardware_address, "got hardware_address from server");
 
 #for my $attr ($lease->meta->get_attribute_list) {
-#    print "$attr = ", $lease->$attr, "\n";
+#    print "$attr = ", ($lease->$attr || ''), "\n";
 #}
 
