@@ -41,6 +41,20 @@ has errstr => (
     default => '',
 );
 
+=head2 extra_attributes
+
+ $hash_ref = $self->extra_attributes;
+
+Contains all attributes, which is not defined for the OMAPI object.
+
+=cut
+
+has extra_attributes => (
+    is => 'ro',
+    isa => 'HashRef',
+    default => sub { {} },
+);
+
 =head1 METHODS
 
 =head2 set
@@ -209,7 +223,8 @@ sub read {
             $n++;
         }
         else {
-            warn "$self does not have attribute $attr";
+            $self->extra_attributes->{$attr} = $value;
+            #warn "$self does not have attribute $attr";
         }
     }
 
