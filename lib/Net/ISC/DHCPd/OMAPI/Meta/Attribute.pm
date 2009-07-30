@@ -12,7 +12,7 @@ use Moose::Role;
 
 =head2 actions
 
- $array_ref = $self->actions;
+ $array_ref = $attr->actions;
 
 Actions possible to execute on attribute. Can be:
 
@@ -25,13 +25,14 @@ Actions possible to execute on attribute. Can be:
 has actions => (
     is => 'ro',
     isa => 'ArrayRef',
+    default => sub { [] },
 );
 
 =head1 METHODS
 
 =head2 has_action
 
- $bool = $self->has_action($action_name);
+ $bool = $attr->has_action($action_name);
 
 Returns true if the attribute can execute C<$action_name>.
 
