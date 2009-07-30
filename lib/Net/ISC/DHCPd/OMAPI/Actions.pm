@@ -96,13 +96,18 @@ around read => \&_around;
 =head2 write
 
  $bool = $self->write;
+ $bool = $self->write(@attributes);
 
-Will set all attributes with action "update", on server object.
+Will set attributes on server object.
+
+C<@attributes> is by default every attribute on create, or every
+attribute with action "update" on update.
 
 =cut
 
 sub write {
     my $self = shift;
+    my @attr = @_;
     my $new  = 1;
     my(@cmd, @out);
 
@@ -113,11 +118,18 @@ sub write {
         $new = 0;
     }
 
-    for my $attr ($self->meta->get_all_attributes) {
-        next unless($attr->does("Net::ISC::DHCPd::OMAPI::Meta::Attribute"));
-        next unless($attr->has_action('update'));
-        my $name = $attr->name;
-        my $key  = $attr->name;
+    if(@attr == 0) {
+        my $attr_role = "Net::ISC::DHCPd::OMAPI::Meta::Attribute";
+        for my $attr ($self->meta->get_all_attributes) {
+            next if(!$attr->does($attr_role));
+            next if(!$attr->has_action('update') and !$new);
+            next if($attr->has_action('update') and !$new);
+            push @attr, $attr->name;
+        }
+    }
+
+    for my $name (@attr) {
+        my $key = $name;
         $key =~ s/_/-/g;
         push @cmd, 'set %s = %s', $key, $self->$name;
     }
