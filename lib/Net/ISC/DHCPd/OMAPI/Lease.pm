@@ -23,36 +23,9 @@ L<Net::ISC::DHCPd::OMAPI::Meta::Attribute>.
 
 =cut
 
-use Moose;
-use MooseX::Types -declare => [qw/HexInt Ip Mac State Time/];
-use MooseX::Types::Moose ':all';
+use Net::ISC::DHCPd::OMAPI::Meta::Class;
 
 with 'Net::ISC::DHCPd::OMAPI::Actions';
-
-my @states = qw/na free active expired released
-                abandoned reset backup reserved bootp/;
-
-subtype State, as Str, where { my $s = $_; return grep { $s eq $_ } @states };
-subtype HexInt, as Int;
-subtype Ip, as Str, where { not /:/ };
-subtype Mac, as Str, where { /[\w:]+/ };
-subtype Time, as Int;
-
-coerce State, (
-    from Str, via { /(\d+)$/ ? $states[$1] : undef }
-);
-
-coerce HexInt, (
-    from Str, via { s/://g; return hex },
-);
-
-coerce Time, (
-    from Str, via { s/://g; return hex },
-);
-
-coerce Ip, (
-    from Str, via { join ".", map { hex $_ } split /:/ },
-);
 
 =head1 ATTRIBUTES
 
@@ -68,11 +41,8 @@ Actions: examine.
 
 =cut
 
-has atsfp => (
-    is => 'rw',
+omapi_attr atsfp => (
     isa => Time,
-    coerce => 1,
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
     actions => [qw/examine/],
 );
 
@@ -88,9 +58,8 @@ Actions: none.
 
 =cut
 
-has billing_class => (
-    is => 'rw',
-    isa => Any,
+omapi_attr billing_class => (
+    isa => 'Any',
 );
 
 =head2 client_hostname
@@ -104,10 +73,8 @@ Actions: examine, update.
 
 =cut
 
-has client_hostname => (
-    is => 'rw',
-    isa => Str,
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
+omapi_attr client_hostname => (
+    isa => 'Str',
     actions => [qw/examine update/],
 );
 
@@ -122,11 +89,8 @@ Actions: examine.
 
 =cut
 
-has cltt => (
-    is => 'rw',
+omapi_attr cltt => (
     isa => Time,
-    coerce => 1,
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
     actions => [qw/examine/],
 );
 
@@ -142,12 +106,9 @@ Actions: examine, lookup, update.
 
 =cut
 
-has dhcp_client_identifier => (
-    is => 'rw',
-    isa => Str,
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
+omapi_attr dhcp_client_identifier => (
+    isa => 'Str',
     actions => [qw/examine lookup update/],
-    predicate => 'has_dhcp_client_identifier',
 );
 
 =head2 ends
@@ -161,11 +122,8 @@ Actions: examine.
 
 =cut
 
-has ends => (
-    is => 'rw',
+omapi_attr ends => (
     isa => Time,
-    coerce => 1,
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
     actions => [qw/examine/],
 );
 
@@ -178,10 +136,8 @@ Actions: none.
 
 =cut
 
-has flags => (
-    is => 'rw',
+omapi_attr flags => (
     isa => 'Str',
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
 );
 
 =head2 hardware_address
@@ -196,10 +152,8 @@ Actions: examine, update.
 
 =cut
 
-has hardware_address => (
-    is => 'rw',
+omapi_attr hardware_address => (
     isa => Mac,
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
     actions => [qw/examine update/],
 );
 
@@ -215,11 +169,8 @@ Actions: examine, update.
 
 =cut
 
-has hardware_type => (
-    is => 'rw',
+omapi_attr hardware_type => (
     isa => HexInt,
-    coerce => 1,
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
     actions => [qw/examine update/],
 );
 
@@ -234,10 +185,8 @@ Actions: examine.
 
 =cut
 
-has host => (
-    is => 'rw',
-    isa => Any,
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
+omapi_attr host => (
+    isa => 'Any',
     actions => [qw/examine/],
 );
 
@@ -254,13 +203,9 @@ Actions: examine, lookup.
 
 =cut
 
-has ip_address => (
-    is => 'rw',
+omapi_attr ip_address => (
     isa => Ip,
-    coerce => 1,
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
     actions => [qw/examine lookup/],
-    predicate => 'has_ip_address',
 );
 
 =head2 pool
@@ -275,10 +220,8 @@ Actions: examine.
 
 =cut
 
-has pool => (
-    is => 'rw',
-    isa => Any,
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
+omapi_attr pool => (
+    isa => 'Any',
     actions => [qw/examine/],
 );
 
@@ -293,11 +236,8 @@ Actions: examine.
 
 =cut
 
-has starts => (
-    is => 'rw',
+omapi_attr starts => (
     isa => Time,
-    coerce => 1,
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
     actions => [qw/examine/],
 );
 
@@ -313,13 +253,9 @@ Actions: examine, lookup.
 
 =cut
 
-has state => (
-    is => 'rw',
+omapi_attr state => (
     isa => State,
-    coerce => 1,
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
     actions => [qw/examine lookup/],
-    predicate => 'has_state',
 );
 
 =head2 subnet
@@ -334,10 +270,8 @@ Actions: examine.
 
 =cut
 
-has subnet => (
-    is => 'rw',
-    isa => Any,
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
+omapi_attr subnet => (
+    isa => 'Any',
     actions => [qw/examine/],
 );
 
@@ -356,11 +290,8 @@ Actions: examine.
 
 =cut
 
-has tsfp => (
-    is => 'rw',
+omapi_attr tsfp => (
     isa => Time,
-    coerce => 1,
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
     actions => [qw/examine/],
 );
 
@@ -375,11 +306,8 @@ Actions: examine.
 
 =cut
 
-has tstp => (
-    is => 'rw',
+omapi_attr tstp => (
     isa => Time,
-    coerce => 1,
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
     actions => [qw/examine/],
 );
 
@@ -395,10 +323,8 @@ Actions: examine, update.
 
 =cut
 
-has hardware_address => (
-    is => 'rw',
+omapi_attr hardware_address => (
     isa => Mac,
-    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
     actions => [qw/examine update/],
 );
 
