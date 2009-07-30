@@ -6,13 +6,14 @@ Net::ISC::DHCPd - Interacts with ISC DHCPd
 
 =head1 VERSION
 
-0.02
+0.02_0002
 
 =head1 SYNOPSIS
 
  my $dhcpd = Net::ISC::DHCPd->new(
-                 -config => { file => "path/to/config" },
-                 -leases => { file => "path/to/leases" },
+                 config => { file => "path/to/config" },
+                 leases => { file => "path/to/leases" },
+                 omapi => { ... },
              );
 
 See tests for more documentation.
@@ -21,65 +22,69 @@ See tests for more documentation.
 
 use Moose;
 use Moose::Util::TypeConstraints;
+use Net::ISC::DHCPd::Types ':all';
 use File::Basename;
 use File::Path;
 use File::Temp;
 use Net::ISC::DHCPd::Process;
 
-=head1 VARIABLES
-
-=head2 $PROCESS_CLASS
-
-The class that should spawn the L<process> object. Needs to support
-the minimum api of L<Net::ISC::DHCPd::Process>.
-
-=cut
-
-our $VERSION = "0.02";
-our $PROCESS_CLASS = "Net::ISC::DHCPd::Process";
-
-subtype NetISCDHCPdProcObject => as 'Object';
-coerce NetISCDHCPdProcObject => (
-    from HashRef => via { $PROCESS_CLASS->new(%$_) },
-);
+our $VERSION = "0.02_0002";
 
 =head1 OBJECT ATTRIBUTES
 
 =head2 config
 
  $config_obj = $self->config
+ $bool = $self->has_config;
 
-Default: L<Net::ISC::DHCPd::Config>.
+Instance of L<Net::ISC::DHCPd::Config> class.
 
 =cut
 
 has config => (
     is => 'ro',
-    lazy => 1,
-    isa => 'Net::ISC::DHCPd::Config',
-    default => sub {
-        eval "require Net::ISC::DHCPd::Config" or confess $@;
-        Net::ISC::DHCPd::Config->new;
-    },
+    isa => ConfigObject,
+    coerce => 1,
+    lazy_build => 1,
 );
+
+*_build_config = sub { _build_child_obj(Config => @_) };
 
 =head2 leases
 
  $leases_obj = $self->leases
+ $bool = $self->has_leases;
 
-Default: L<Net::ISC::DHCPd::Leases>.
+Instance of L<Net::ISC::DHCPd::Leases> class.
 
 =cut
 
 has leases => (
     is => 'ro',
-    lazy => 1,
-    isa => 'Net::ISC::DHCPd::Leases',
-    default => sub {
-        eval "require Net::ISC::DHCPd::Leases" or confess $@;
-        Net::ISC::DHCPd::Leases->new;
-    },
+    isa => LeasesObject,
+    coerce => 1,
+    lazy_build => 1,
 );
+
+*_build_leases = sub { _build_child_obj(Leases => @_) };
+
+=head2 omapi
+
+ $omapi_obj = $self->omapi;
+ $bool = $self->has_omapi;
+
+Instance of L<Net::ISC::DHCPd::OMAPI> class.
+
+=cut
+
+has omapi => (
+    is => 'ro',
+    isa => OMAPIObject,
+    coerce => 1,
+    lazy_build => 1,
+);
+
+*_build_omapi = sub { _build_child_obj(OMAPI => @_) };
 
 =head2 binary
 
@@ -113,7 +118,7 @@ has pidfile => (
 
  $proc_obj = $self->process;
  $self->process($proc_obj);
- $self->process(\%args); # will use $PROCESS_CLASS to create object
+ $self->process(\%args);
  $self->has_process;
  $self->clear_process;
 
@@ -123,9 +128,9 @@ The object holding the dhcpd process.
 
 has process => (
     is => 'rw',
-    isa => 'NetISCDHCPdProcObject',
-    lazy_build => 1,
+    isa => ProcessObject,
     coerce => 1,
+    lazy_build => 1,
 );
 
 sub _build_process {
@@ -147,42 +152,6 @@ has errstr => (
 );
 
 =head1 METHODS
-
-=head2 BUILD
-
-Takes extra '-foo' arguments to C<new()> and appends the values to
-the appropriate attribute.
-
-Example:
-
- $self = $class->new(
-   -config => {
-     file => "/foo/bar.conf",
-   },
- );
-
-Will result in:
-
- $self = $class->new;
- $self->config->file("/foo/bar.conf");
-
-=cut
-
-sub BUILD {
-    my $self = shift;
-    my $args = shift;
-    my $proxy;
-
-    for my $key (keys %$args) {
-        next unless(ref $args->{$key} eq 'HASH');
-        next unless($key =~ s/^-//);
-        next unless($proxy = $self->$key);
-
-        for my $attr (keys %{ $args->{"-$key"} }) {
-            $proxy->$attr($args->{"-$key"}{$attr});
-        }
-    }
-}
 
 =head2 start
 
@@ -256,6 +225,7 @@ sub start {
         args    => $args,
         user    => $user,
         group   => $group,
+        start   => 1,
     });
 
     return $self->process ? 1 : undef;
@@ -396,6 +366,17 @@ sub _run {
     open STDOUT, ">&", \*OLDOUT;
 
     return $exit;
+}
+
+# used from attributes
+sub _build_child_obj {
+    my $type = shift;
+    my $self = shift;
+    my $args = shift || {};
+
+    eval "require Net::ISC::DHCPd::$type" or confess $@;
+
+    return "Net::ISC::DHCPd::$type"->new($args);
 }
 
 =head1 BUGS
