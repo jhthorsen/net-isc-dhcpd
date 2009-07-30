@@ -2,11 +2,12 @@ package Net::ISC::DHCPd::OMAPI::Lease;
 
 =head1 NAME
 
-Net::ISC::DHCPd::OMAPI::Lease
+Net::ISC::DHCPd::OMAPI::Lease - OMAPI lease class
 
 =head1 SEE ALSO
 
-L<Net::ISC::DHCPd::OMAPI::Group>.
+L<Net::ISC::DHCPd::OMAPI::Actions>.
+L<Net::ISC::DHCPd::OMAPI::Meta::Attribute>.
 
 =head1 SYNOPSIS
 
@@ -14,9 +15,11 @@ L<Net::ISC::DHCPd::OMAPI::Group>.
 
  $omapi = Net::ISC::DHCPd::OMAPI->new(...);
  $omapi->connect
- $lease = $omapi->new_object("lease"); # object of this class
- $lease->set($attr => $value);
- # ...
+ $lease = $omapi->new_object("lease", { $attr => $value });
+ $lease->$attr($value); # same as in constructor
+ $lease->read; # retrieve server information
+ $lease->set($attr => $value); # alter an update attr
+ $lease->write; # write to server
 
 =cut
 
@@ -24,7 +27,7 @@ use Moose;
 use MooseX::Types -declare => [qw/HexInt Ip Mac State Time/];
 use MooseX::Types::Moose ':all';
 
-with 'Net::ISC::DHCPd::OMAPI::Role';
+with 'Net::ISC::DHCPd::OMAPI::Actions';
 
 my @states = qw/na free active expired released
                 abandoned reset backup reserved bootp/;
@@ -61,6 +64,8 @@ coerce Ip, (
 The actual tsfp value sent from the peer. This value is forgotten when a
 lease binding state change is made, to facillitate retransmission logic.
 
+Actions: examine.
+
 =cut
 
 has atsfp => (
@@ -79,6 +84,8 @@ has atsfp => (
 The handle to the class to which this lease is currently billed,
 if any (The class object is not currently supported).
 
+Actions: none.
+
 =cut
 
 has billing_class => (
@@ -92,6 +99,8 @@ has billing_class => (
  $str = $self->client_hostname;
 
 The value the client sent in the host-name option.
+
+Actions: examine, update.
 
 =cut
 
@@ -108,6 +117,8 @@ has client_hostname => (
  $self->cltt($int);
 
 The time of the last transaction with the client on this lease.
+
+Actions: examine.
 
 =cut
 
@@ -127,6 +138,8 @@ has cltt => (
 The client identifier that the client used when it acquired the lease.
 Not all clients send client identifiers, so this may be empty.
 
+Actions: examine, lookup, update.
+
 =cut
 
 has dhcp_client_identifier => (
@@ -144,6 +157,8 @@ has dhcp_client_identifier => (
 
 The time when the lease's current state ends, as understood by the client.
 
+Actions: examine.
+
 =cut
 
 has ends => (
@@ -159,13 +174,14 @@ has ends => (
  ?? = $self->flags;
  $self->flags(??);
 
+Actions: none.
+
 =cut
 
 has flags => (
     is => 'rw',
     isa => 'Str',
     traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
-    actions => [qw/examine/],
 );
 
 =head2 hardware_address
@@ -175,6 +191,8 @@ has flags => (
 
 The hardware address (chaddr) field sent by the client when it acquired
 its lease.
+
+Actions: examine, update.
 
 =cut
 
@@ -193,6 +211,8 @@ has hardware_address => (
 The type of the network interface that the client reported when it
 acquired its lease.
 
+Actions: examine, update.
+
 =cut
 
 has hardware_type => (
@@ -210,6 +230,8 @@ has hardware_type => (
 
 The host declaration associated with this lease, if any.
 
+Actions: examine.
+
 =cut
 
 has host => (
@@ -224,9 +246,11 @@ has host => (
  $self->ip_address($ip_addr_obj);
  $self->ip_address("127.0.0.1"); # standard ip
  $self->ip_address("22:33:aa:bb"); # hex
- $ip_addd_obj = $self->ip_address;
+ $std_ip_str = $self->ip_address;
 
 The IP address of the lease.
+
+Actions: examine, lookup.
 
 =cut
 
@@ -235,7 +259,7 @@ has ip_address => (
     isa => Ip,
     coerce => 1,
     traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
-    actions => [qw/lookup examine/],
+    actions => [qw/examine lookup/],
     predicate => 'has_ip_address',
 );
 
@@ -246,6 +270,8 @@ has ip_address => (
 
 The pool object associted with this lease (The pool object is not
 currently supported).
+
+Actions: examine.
 
 =cut
 
@@ -263,6 +289,8 @@ has pool => (
 
 The time when the lease's current state ends, as understood by the server.
 
+Actions: examine.
+
 =cut
 
 has starts => (
@@ -278,8 +306,10 @@ has starts => (
  $self->state($str);
  $str = $self->state;
 
-Valid states: free active expired released abandoned reset backup reserved
-bootp.
+Valid states: free, active, expired, released, abandoned, reset, backup,
+reserved, bootp.
+
+Actions: examine, lookup.
 
 =cut
 
@@ -299,6 +329,8 @@ has state => (
 
 The subnet object associated with this lease. (The subnet object is not
 currently supported).
+
+Actions: examine.
 
 =cut
 
@@ -320,6 +352,8 @@ Generally this value is only adjusted for expired, released, or reset
 leases while the server is operating in partner-down state, and otherwise
 is simply the value supplied by the peer.
 
+Actions: examine.
+
 =cut
 
 has tsfp => (
@@ -336,6 +370,8 @@ has tsfp => (
  $int = $self->tstp;
 
 The time when the lease's current state ends, as understood by the server.
+
+Actions: examine.
 
 =cut
 
@@ -355,6 +391,8 @@ has tstp => (
 The hardware address (chaddr) field sent by the client when it acquired
 its lease.
 
+Actions: examine, update.
+
 =cut
 
 has hardware_address => (
@@ -364,17 +402,9 @@ has hardware_address => (
     actions => [qw/examine update/],
 );
 
-=head1 METHODS
+=head1 ACKNOWLEDGEMENTS
 
-=head2 primary
-
- $str = $self->primary;
-
-Returns the primary key for this object: "ip_address".
-
-=cut
-
-sub primary { 'ip_address' }
+Most of the documentation is taken from C<dhcpd(8)>.
 
 =head1 AUTHOR
 
