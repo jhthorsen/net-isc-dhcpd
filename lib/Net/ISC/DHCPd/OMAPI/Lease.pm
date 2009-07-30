@@ -62,6 +62,20 @@ omapi_attr billing_class => (
     isa => 'Any',
 );
 
+=head2 circuit_id
+
+ $str => $self->circuit_id;
+ $self->circuit_id($str);
+
+Circuit ID from Relay Agent Option 82.
+
+=cut
+
+has circuit_id => (
+    is => 'rw',
+    isa => 'Str',
+);
+
 =head2 client_hostname
 
  $self->client_hostname($str);
@@ -223,6 +237,20 @@ Actions: examine.
 omapi_attr pool => (
     isa => 'Any',
     actions => [qw/examine/],
+);
+
+=head2 remote_id
+
+ $str = $self->remote_id;
+ $self->remote_id($str);
+
+Remote ID from Relay Agent Option 82.
+
+=cut
+
+has remote_id => (
+    is => 'rw',
+    isa => 'Str',
 );
 
 =head2 starts

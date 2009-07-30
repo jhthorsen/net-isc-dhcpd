@@ -26,9 +26,9 @@ my $time = timeit($count, sub {
 
     is($lease->starts, 1215970952, "lease->0 starts");
     is($lease->ends, 1216057352, "lease->0 ends");
-    is($lease->binding, "free", "lease->0 binding");
-    is($lease->hw_ethernet, "0015582f83bc", "lease->0 hw_ethernet");
-    is($lease->hostname, undef, "lease->0 hostname");
+    is($lease->state, "free", "lease->0 binding");
+    is($lease->hardware_address, "0015582f83bc", "lease->0 hw_ethernet");
+    is($lease->client_hostname, undef, "lease->0 hostname");
     is($lease->circuit_id, undef, "lease->0 circuit id");
     is($lease->remote_id, undef, "lease->0 remote id");
 });
