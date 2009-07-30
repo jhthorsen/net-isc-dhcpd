@@ -74,10 +74,31 @@ sub set {
     my $args = ref $_[0] eq 'HASH' ? $_[0] : {@_};
     my(@cmd, @out, @error);
 
-    for my $attr (keys %$args) {
-        my $key = $attr;
+    for my $name (keys %$args) {
+        my $attr = $self->meta->get_attribute($name);
+        my $key = $name;
+
+        unless($attr) {
+            push @error, "$name does not exist";
+            next;
+        }
+        unless($attr->does("Net::ISC::DHCPd::OMAPI::Meta::Attribute")) {
+            push @error, "$name is invalid";
+            next;
+        }
+        unless($attr->has_action('update')) {
+            push @error, "$name cannot be updated";
+            next;
+        }
+
         $key =~ s/_/-/g;
-        push @cmd, "set $key = $args->{$attr}";
+
+        push @cmd, "set $key = $args->{$name}";
+    }
+
+    if(@error) {
+        warn join "\n", @error if Net::ISC::DHCPd::OMAPI::_DEBUG;
+        return;
     }
 
     @out = $self->_cmd(@cmd);
@@ -177,7 +198,8 @@ sub write {
     my %args;
 
     for my $attr ($self->meta->get_all_attributes) {
-        next unless($attr->has_value('omapi'));
+        next unless($attr->does("Net::ISC::DHCPd::OMAPI::Meta::Attribute"));
+        next unless($attr->has_action('update'));
         $args{$attr->name} = $self->${ \$attr->name };
     }
 
@@ -208,28 +230,40 @@ Open an object. Returns the number of attributes read. 0 = not in server.
 
 sub read {
     my $self = shift;
-    my($out) = $self->_cmd("open");
-    my $n;
+    my(@cmd, @out, $n);
 
-    while($out =~ /(\S+)\s=\s(\S+)/g) {
+    for my $name ($self->meta->get_attribute_list) {
+        my $attr = $self->meta->get_attribute($name);
+        my $key = $name;
+
+        next unless($attr->does("Net::ISC::DHCPd::OMAPI::Meta::Attribute"));
+        next unless($attr->has_action("lookup"));
+        next unless($self->${ \"has_$name" });
+
+        $key =~ s/_/-/g;
+
+        push @cmd, sprintf 'set %s = %s', $key, $self->$name;
+    }
+
+    @out = $self->_cmd(@cmd, "open");
+
+    while($out[-1] =~ /(\S+)\s=\s(\S+)/g) {
         my($attr, $value) = ($1, $2);
         $attr =~ s/-/_/g;
+        $n++;
 
         if($self->meta->has_attribute($attr)) {
-            if(my $normalize = $self->can("normalize_$attr")) {
-                $value = $self->$normalize($value);
-            }
             $self->$attr($value);
-            $n++;
         }
         else {
             $self->extra_attributes->{$attr} = $value;
-            #warn "$self does not have attribute $attr";
         }
     }
 
     return $n;
 }
+
+around read => \&_around;
 
 # $bool = $self->_set_primary_value;
 sub _set_primary_value {
