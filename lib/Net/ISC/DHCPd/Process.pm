@@ -4,10 +4,37 @@ package Net::ISC::DHCPd::Process;
 
 Net::ISC::DHCPd::Process
 
+=head2 USAGE
+
+ package MyProcessRole;
+ use Moose;
+ use Net::ISC::DHCPd::Process
+
+ has program => ( is => 'rw' );
+ has args => ( is => 'rw' );
+ has user => ( is => 'rw' );
+ has group => ( is => 'rw' );
+
+ after BUILDALL => sub {
+   my $self = shift;
+   my $args = shift;
+
+   if($args->{'start'}) {
+     # spawn process
+   }
+ };
+
+ sub kill {
+   # kill process
+ }
+
+ MyProcessRole->meta->apply( Net::ISC::DHCPd::Process->meta );
+
+ 1;
+
 =cut
 
-use strict;
-use warnings;
+use Moose;
 
 =head1 METHODS
 
@@ -24,37 +51,15 @@ Args:
  args
  user
  group
-
-=cut
-
-sub new {
-    my $class = shift;
-    my $args  = @_ == 1 ? $_[0] : {@_};
-
-    # spawn...
-
-    return bless $args, $class;
-}
+ start
 
 =head2 pid
 
  $pid = $self->pid
 
-=cut
-
-sub pid {
-    return;
-}
-
 =head2 kill
 
  $bool = $self->kill($signal)
-
-=cut
-
-sub kill {
-    return;
-}
 
 =head1 AUTHOR
 
