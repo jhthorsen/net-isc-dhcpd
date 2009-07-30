@@ -74,6 +74,10 @@ __PACKAGE__->create_children(qw/
 
 =head2 file
 
+ $str = $self->file;
+
+Holds the path to the config file.
+
 =cut
 
 has file => (
@@ -83,6 +87,12 @@ has file => (
 );
 
 =head2 filehandle
+
+ $glob = $self->filehandle;
+ $bool = $self->has_filehandle;
+ $self->clear_filehandle;
+
+Holds the filehande to l<file>.
 
 =cut
 
@@ -100,6 +110,8 @@ sub _build_filehandle {
 
 =head2 root
 
+ $self = $self->root;
+
 =cut
 
 has '+root' => (
@@ -107,6 +119,8 @@ has '+root' => (
 );
 
 =head2 parent
+
+ $self = $self->parent;
 
 =cut
 
@@ -127,10 +141,6 @@ List of parsed L<Net::ISC::DHCPd::Config::Host> objects.
 List of parsed L<Net::ISC::DHCPd::Config::Option> objects.
 
 =head1 METHODS
-
-=head2 new
-
- $obj = $self->new(...);
 
 =head2 generate
 
