@@ -19,49 +19,8 @@ Net::ISC::DHCPd::OMAPI::Meta::Class
 =cut
 
 use Moose;
+use Net::ISC::DHCPd::Types ':all';
 use Moose::Exporter;
-use MooseX::Types -declare => [qw/HexInt Ip Mac State Time/];
-use MooseX::Types::Moose ':all';
-
-my @types;
-my @states = qw/na free active expired released
-                abandoned reset backup reserved bootp/;
-
-=head1 MOOSE TYPES
-
-=head2 State
-
-=head2 HexInt
-
-=head2 Ip
-
-=head2 Mac
-
-=head2 Time
-
-=cut
-
-subtype State, as Str, where { my $s = $_; return grep { $s eq $_ } @states };
-subtype HexInt, as Int;
-subtype Ip, as Str, where { not /:/ };
-subtype Mac, as Str, where { /[\w:]+/ };
-subtype Time, as Int;
-
-coerce State, (
-    from Str, via { /(\d+)$/ ? $states[$1] : undef }
-);
-
-coerce HexInt, (
-    from Str, via { s/://g; return hex },
-);
-
-coerce Time, (
-    from Str, via { s/://g; return hex },
-);
-
-coerce Ip, (
-    from Str, via { join ".", map { hex $_ } split /:/ },
-);
 
 =head1 FUNCTIONS
 
