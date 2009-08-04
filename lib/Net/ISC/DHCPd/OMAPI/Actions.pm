@@ -229,13 +229,13 @@ sub _around {
     my $next = shift;
     my $self = shift;
     my $type = lc +(ref($self) =~ /::(\w+)$/)[0];
-    my @out;
+    my(@out, @ret);
 
     @out = $self->_cmd("new $type") or return 0;
-    $self->$next(@_)                or return 0;
+    @ret = $self->$next(@_)         or return 0;
     @out = $self->_cmd('close')     or return 0;
 
-    return (@out and $out[0] =~ /obj:/) ? 1 : 0;
+    return @ret;
 };
 
 # @buffer = $self->_cmd(@cmd)
