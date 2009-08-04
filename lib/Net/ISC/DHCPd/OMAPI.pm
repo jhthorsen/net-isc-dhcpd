@@ -15,8 +15,10 @@ Net::ISC::DHCPd::OMAPI - Talk to dhcp server
 
 use Moose;
 use IO::Pty;
-#use Net::ISC::DHCPd::OMAPI::Host;
-#use Net::ISC::DHCPd::OMAPI::Group;
+use Time::HiRes qw/usleep/;
+use Net::ISC::DHCPd::OMAPI::Control;
+use Net::ISC::DHCPd::OMAPI::Group;
+use Net::ISC::DHCPd::OMAPI::Host;
 use Net::ISC::DHCPd::OMAPI::Lease;
 
 BEGIN {
@@ -87,7 +89,14 @@ has errstr => (
 # meant for internal usage
 has _fh => (
     is => 'ro',
-    lazy_build => 1,
+    lazy => 1,
+    builder => '_build__fh',
+    clearer => '_clear__fh',
+);
+
+has _pid => (
+    is => 'rw',
+    isa => 'Int',
 );
 
 # fork omshell and return an IO::Pty object
@@ -109,6 +118,7 @@ sub _build__fh  {
         close $WRITE;
         $pty->close_slave;
         $pty->set_raw;
+        $self->_pid($pid);
 
         if(my $error = sysread $READ, my $errno, 255) {
             $! = $errno + 0;
@@ -189,7 +199,7 @@ sub connect {
     $self->errstr("");
 
     for my $attr (qw/port server key/) {
-        my $buffer = $self->_cmd(sprintf "%s %s", $attr, $self->$attr);
+        $buffer = $self->_cmd(sprintf "%s %s", $attr, $self->$attr);
         last unless(defined $buffer);
     }
 
@@ -203,6 +213,36 @@ sub connect {
         $self->errstr($buffer);
         return;
     }
+
+    return 1;
+}
+
+=head2 disconnect
+
+ $bool = $self->disconnect;
+
+Will disconnect from the server.
+
+=cut
+
+sub disconnect {
+    my $self    = shift;
+    my $retries = 10;
+
+    while($retries--) {
+        kill 15, $self->_pid;
+        usleep 2e3;
+        if(kill 0, $self->_pid) {
+            $retries = 1; # make sure it's true
+            last;
+        }
+    }
+
+    unless($retries) {
+        return;
+    }
+
+    $self->_clear__fh;
 
     return 1;
 }
@@ -225,7 +265,7 @@ sub new_object {
     my %args  = @_;
     my $class = "Net::ISC::DHCPd::OMAPI::" .ucfirst(lc $type);
 
-    unless($type =~ /^(?:group|host|lease)$/i) {
+    unless($type =~ /^(?:control|group|host|lease)$/i) {
         return;
     }
 
