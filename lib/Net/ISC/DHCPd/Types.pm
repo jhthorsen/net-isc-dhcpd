@@ -43,8 +43,8 @@ BEGIN {
 
 subtype State, as Str, where { my $s = $_; return grep { $s eq $_ } @states };
 subtype HexInt, as Int;
-subtype Ip, as Str, where { not /:/ };
-subtype Mac, as Str, where { /[\w:]+/ };
+subtype Ip, as Str, where { /^[\d.]+$/ };
+subtype Mac, as Str, where { /^[a-f0-9:]{17}$/i };
 subtype Time, as Int;
 
 coerce State, (
