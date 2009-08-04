@@ -101,7 +101,7 @@ around read => \&_around;
 Will set attributes on server object.
 
 C<@attributes> is by default every attribute on create, or every
-attribute with action "update" on update.
+attribute with action "modify" on update.
 
 =cut
 
@@ -122,8 +122,8 @@ sub write {
         my $attr_role = "Net::ISC::DHCPd::OMAPI::Meta::Attribute";
         for my $attr ($self->meta->get_all_attributes) {
             next if(!$attr->does($attr_role));
-            next if(!$attr->has_action('update') and !$new);
-            next if($attr->has_action('update') and !$new);
+            next if(!$attr->has_action('modify') and !$new);
+            next if($attr->has_action('modify') and !$new);
             push @attr, $attr->name;
         }
     }

@@ -18,7 +18,7 @@ L<Net::ISC::DHCPd::OMAPI::Meta::Attribute>.
  $lease = $omapi->new_object("lease", { $attr => $value });
  $lease->$attr($value); # same as in constructor
  $lease->read; # retrieve server information
- $lease->set($attr => $value); # alter an update attr
+ $lease->set($attr => $value); # alter an modify attr
  $lease->write; # write to server
 
 =cut
@@ -83,13 +83,13 @@ has circuit_id => (
 
 The value the client sent in the host-name option.
 
-Actions: examine, update.
+Actions: examine, modify.
 
 =cut
 
 omapi_attr client_hostname => (
     isa => 'Str',
-    actions => [qw/examine update/],
+    actions => [qw/examine modify/],
 );
 
 =head2 cltt
@@ -116,13 +116,13 @@ omapi_attr cltt => (
 The client identifier that the client used when it acquired the lease.
 Not all clients send client identifiers, so this may be empty.
 
-Actions: examine, lookup, update.
+Actions: examine, lookup, modify.
 
 =cut
 
 omapi_attr dhcp_client_identifier => (
     isa => 'Str',
-    actions => [qw/examine lookup update/],
+    actions => [qw/examine lookup modify/],
 );
 
 =head2 ends
@@ -162,13 +162,13 @@ omapi_attr flags => (
 The hardware address (chaddr) field sent by the client when it acquired
 its lease.
 
-Actions: examine, update.
+Actions: examine, modify.
 
 =cut
 
 omapi_attr hardware_address => (
     isa => Mac,
-    actions => [qw/examine update/],
+    actions => [qw/examine modify/],
 );
 
 =head2 hardware_type
@@ -179,13 +179,13 @@ omapi_attr hardware_address => (
 The type of the network interface that the client reported when it
 acquired its lease.
 
-Actions: examine, update.
+Actions: examine, modify.
 
 =cut
 
 omapi_attr hardware_type => (
     isa => HexInt,
-    actions => [qw/examine update/],
+    actions => [qw/examine modify/],
 );
 
 =head2 host
@@ -347,13 +347,13 @@ omapi_attr tstp => (
 The hardware address (chaddr) field sent by the client when it acquired
 its lease.
 
-Actions: examine, update.
+Actions: examine, modify.
 
 =cut
 
 omapi_attr hardware_address => (
     isa => Mac,
-    actions => [qw/examine update/],
+    actions => [qw/examine modify/],
 );
 
 =head1 ACKNOWLEDGEMENTS
