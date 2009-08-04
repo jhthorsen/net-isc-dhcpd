@@ -55,12 +55,16 @@ coerce HexInt, (
     from Str, via { s/://g; hex $_ },
 );
 
-coerce Time, (
-    from Str, via { s/://g; hex $_ },
-);
-
 coerce Ip, (
     from Str, via { join ".", map { hex $_ } split /:/ },
+);
+
+coerce Mac, (
+    from Str, via { join ":", /(\w\w)/g },
+);
+
+coerce Time, (
+    from Str, via { s/://g; hex $_ },
 );
 
 =head2 Statements
