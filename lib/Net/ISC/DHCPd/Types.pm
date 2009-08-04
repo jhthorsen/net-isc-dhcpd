@@ -13,14 +13,19 @@ Net::ISC::DHCPd::Types - Moose type constraint declaration
 =cut
 
 use Moose;
+use MooseX::Types;
 use MooseX::Types::Moose ':all';
-use MooseX::Types -declare => [qw/
-    HexInt Ip Mac State Time
-    ConfigObject LeasesObject OMAPIObject ProcessObject
-/];
 
+my @type_list;
 my @states = qw/na free active expired released
                 abandoned reset backup reserved bootp/;
+
+BEGIN {
+    MooseX::Types->import(-declare => [@type_list = qw/
+        HexInt Ip Mac State Time Statements
+        ConfigObject LeasesObject OMAPIObject ProcessObject
+    /]);
+}
 
 =head1 MOOSE TYPES
 
@@ -58,6 +63,17 @@ coerce Ip, (
     from Str, via { join ".", map { hex $_ } split /:/ },
 );
 
+=head2 Statements
+
+=cut
+
+subtype Statements, as Str, where { /^[\w,]+$/ };
+
+coerce Statements, (
+    from Str, via { s/\s+/,/g; $_; },
+    from ArrayRef, via { join ",", @$_ },
+);
+
 =head2 ConfigObject
 
 =head2 LeasesObject
@@ -89,6 +105,18 @@ coerce ProcessObject, from HashRef, via {
     eval "require Net::ISC::DHCPd::Process" or confess $@;
     Net::ISC::DHCPd::Process->new($_);
 };
+
+=head2 get_type_list
+
+ @names = $class->get_type_list;
+
+Returns the types defined in this package.
+
+=cut
+
+sub get_type_list {
+    return @type_list;
+}
 
 =head1 AUTHOR
 

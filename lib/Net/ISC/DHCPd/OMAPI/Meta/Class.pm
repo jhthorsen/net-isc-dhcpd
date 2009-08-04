@@ -22,6 +22,8 @@ use Moose;
 use Net::ISC::DHCPd::Types ':all';
 use Moose::Exporter;
 
+my @types = Net::ISC::DHCPd::Types->get_type_list;
+
 =head1 FUNCTIONS
 
 =head2 omapi_attr
@@ -45,7 +47,7 @@ sub omapi_attr {
     my $name  = shift;
     my %opts  = @_;
 
-    for my $isa (State, HexInt, Time, Ip) {
+    for my $isa (@types) {
         if($opts{'isa'} eq $isa) {
             $opts{'coerce'} = 1;
             last;
@@ -62,7 +64,7 @@ sub omapi_attr {
 
 Moose::Exporter->setup_import_methods(
     with_caller => [qw/omapi_attr/],
-    as_is => [qw/HexInt Ip Mac State Time/],
+    as_is => \@types,
     also => 'Moose',
 );
 
