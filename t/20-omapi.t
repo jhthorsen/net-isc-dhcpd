@@ -6,10 +6,10 @@ use lib './lib';
 use Test::More;
 
 plan skip_all => "cannot run without OMAPI_KEY set" unless($ENV{'OMAPI_KEY'});
-plan tests    => 10;
+plan tests    => 14;
 
 BEGIN {
-    *Net::ISC::DHCPd::OMAPI::_DEBUG = sub { 0 };
+    *Net::ISC::DHCPd::OMAPI::_DEBUG = sub { 1 };
 }
 
 use_ok("Net::ISC::DHCPd::OMAPI");
@@ -30,7 +30,13 @@ ok($lease->ip_address("10.19.83.200"), "ip_address attr set");
 ok($lease->read, "lease read from server");
 ok($lease->hardware_address, "got hardware_address from server");
 
-#for my $attr ($lease->meta->get_attribute_list) {
-#    print "$attr = ", ($lease->$attr || ''), "\n";
-#}
+ok($omapi->disconnect, "disconnected from server");
+ok($omapi->connect, "re-connected");
+
+# test shutdown
+SKIP: {
+    skip "restart of server is disabled", 2 if 1;
+    ok(my $ctrl = $omapi->new_object("control"), "new control object created");
+    ok($ctrl->shutdown_server, "server is shut down");
+}
 
