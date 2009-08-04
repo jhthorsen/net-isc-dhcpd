@@ -12,10 +12,6 @@ Net::ISC::DHCPd::OMAPI::Meta::Class
     isa => State,
  );
 
- # ...
-
- 1;
-
 =cut
 
 use Moose;
@@ -47,10 +43,10 @@ sub omapi_attr {
     my $name  = shift;
     my %opts  = @_;
 
-    for my $isa (@types) {
-        if($opts{'isa'} eq $isa) {
+    if(my $isa = $opts{'isa'}) {
+        $isa =~ s/Net::ISC::DHCPd::Types:://;
+        if(__PACKAGE__->can("to_$isa")) {
             $opts{'coerce'} = 1;
-            last;
         }
     }
 
