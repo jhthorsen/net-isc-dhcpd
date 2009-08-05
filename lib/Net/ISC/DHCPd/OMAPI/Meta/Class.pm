@@ -40,7 +40,7 @@ It will also set "coerce => 1", when "isa" is one of L<MOOSE TYPES>.
 
 sub omapi_attr {
     my $class = shift;
-    my $name  = shift;
+    my $names = ref $_[0] eq 'ARRAY' ? shift : [shift];
     my %opts  = @_;
 
     if(my $isa = $opts{'isa'}) {
@@ -50,12 +50,14 @@ sub omapi_attr {
         }
     }
 
-    $class->meta->add_attribute($name => (
-        is => 'rw',
-        predicate => "has_$name",
-        traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
-        %opts,
-    ));
+    for my $name (@$names) {
+        $class->meta->add_attribute($name => (
+            is => 'rw',
+            predicate => "has_$name",
+            traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
+            %opts,
+        ));
+    }
 }
 
 Moose::Exporter->setup_import_methods(
