@@ -6,7 +6,7 @@ Net::ISC::DHCPd - Interacts with ISC DHCPd
 
 =head1 VERSION
 
-0.02_0002
+0.02_0003
 
 =head1 SYNOPSIS
 
@@ -28,7 +28,7 @@ use File::Path;
 use File::Temp;
 use Net::ISC::DHCPd::Process;
 
-our $VERSION = "0.02_0002";
+our $VERSION = "0.02_0003";
 
 =head1 OBJECT ATTRIBUTES
 

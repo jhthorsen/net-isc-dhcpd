@@ -2,31 +2,35 @@ NAME
     Net::ISC::DHCPd - Interacts with ISC DHCPd
 
 VERSION
-    0.02
+    0.02_0003
 
 SYNOPSIS
      my $dhcpd = Net::ISC::DHCPd->new(
-                     -config => { file => "path/to/config" },
-                     -leases => { file => "path/to/leases" },
+                     config => { file => "path/to/config" },
+                     leases => { file => "path/to/leases" },
+                     omapi => { ... },
                  );
 
     See tests for more documentation.
 
-VARIABLES
-  $PROCESS_CLASS
-    The class that should spawn the process object. Needs to support the
-    minimum api of Net::ISC::DHCPd::Process.
-
 OBJECT ATTRIBUTES
   config
      $config_obj = $self->config
+     $bool = $self->has_config;
 
-    Default: Net::ISC::DHCPd::Config.
+    Instance of Net::ISC::DHCPd::Config class.
 
   leases
      $leases_obj = $self->leases
+     $bool = $self->has_leases;
 
-    Default: Net::ISC::DHCPd::Leases.
+    Instance of Net::ISC::DHCPd::Leases class.
+
+  omapi
+     $omapi_obj = $self->omapi;
+     $bool = $self->has_omapi;
+
+    Instance of Net::ISC::DHCPd::OMAPI class.
 
   binary
      $path_to_binary = $self->binary;
@@ -41,7 +45,7 @@ OBJECT ATTRIBUTES
   process
      $proc_obj = $self->process;
      $self->process($proc_obj);
-     $self->process(\%args); # will use $PROCESS_CLASS to create object
+     $self->process(\%args);
      $self->has_process;
      $self->clear_process;
 
@@ -53,23 +57,6 @@ OBJECT ATTRIBUTES
     Holds the last know error.
 
 METHODS
-  BUILD
-    Takes extra '-foo' arguments to "new()" and appends the values to the
-    appropriate attribute.
-
-    Example:
-
-     $self = $class->new(
-       -config => {
-         file => "/foo/bar.conf",
-       },
-     );
-
-    Will result in:
-
-     $self = $class->new;
-     $self->config->file("/foo/bar.conf");
-
   start
      $bool = $self->start($args);
 

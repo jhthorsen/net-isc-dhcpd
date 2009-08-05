@@ -1,5 +1,14 @@
 Revision history for Net-ISC-DHCPd
 
+0.03 Tue Juli 21 15:41:01 CET 2009
+   * can talk with the DHCP server, using omshell
+     + stop remote server
+     + read leases
+     - write leases (should work)
+     - read/write hosts (should work)
+     - read/write groups (should work)
+   * add types for coercion support
+
 0.02 Tue Juli 21 15:41:01 CET 2009
    * can parse leases
    * can test leases and config file
