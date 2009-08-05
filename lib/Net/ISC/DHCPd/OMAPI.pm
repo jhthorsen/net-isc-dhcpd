@@ -17,6 +17,7 @@ use Moose;
 use IO::Pty;
 use Time::HiRes qw/usleep/;
 use Net::ISC::DHCPd::OMAPI::Control;
+use Net::ISC::DHCPd::OMAPI::Failover;
 use Net::ISC::DHCPd::OMAPI::Group;
 use Net::ISC::DHCPd::OMAPI::Host;
 use Net::ISC::DHCPd::OMAPI::Lease;
@@ -265,7 +266,7 @@ sub new_object {
     my %args  = @_;
     my $class = "Net::ISC::DHCPd::OMAPI::" .ucfirst(lc $type);
 
-    unless($type =~ /^(?:control|group|host|lease)$/i) {
+    unless($type =~ /^(?:control|failover|group|host|lease)$/i) {
         return;
     }
 

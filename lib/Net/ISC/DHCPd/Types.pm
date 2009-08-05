@@ -17,12 +17,22 @@ use MooseX::Types;
 use MooseX::Types::Moose ':all';
 
 my @type_list;
-my @states = qw/na free active expired released
-                abandoned reset backup reserved bootp/;
+my @failover_states = (
+    "na",                     "partner down",
+    "normal",                 "communications interrupted",
+    "resolution interrupted", "potential conflict",
+    "recover",                "recover done",
+    "shutdown",               "paused",
+    "startup",                "recover wait",
+);
+my @states = qw/
+    na free active expired released
+    abandoned reset backup reserved bootp
+/;
 
 BEGIN {
     MooseX::Types->import(-declare => [@type_list = qw/
-        HexInt Ip Mac State Time Statements
+        HexInt Ip Mac State Time Statements FailoverState
         ConfigObject LeasesObject OMAPIObject ProcessObject
     /]);
 }
@@ -41,14 +51,23 @@ BEGIN {
 
 =cut
 
-subtype State, as Str, where { my $s = $_; return grep { $s eq $_ } @states };
+subtype State, as Str,
+    where { my $s = $_; return grep { $s eq $_ } @states };
+subtype FailoverState, as Str,
+    where { my $s = $_; return grep { $s eq $_ } @failover_states };
 subtype HexInt, as Int;
-subtype Ip, as Str, where { /^[\d.]+$/ };
-subtype Mac, as Str, where { /^[a-f0-9:]{17}$/i };
+subtype Ip, as Str,
+    where { /^[\d.]+$/ };
+subtype Mac, as Str,
+    where { /^[a-f0-9:]{17}$/i };
 subtype Time, as Int;
 
 coerce State, (
     from Str, via { /(\d+)$/ ? $states[$1] : undef }
+);
+
+coerce FailoverState, (
+    from Str
 );
 
 coerce HexInt, (
