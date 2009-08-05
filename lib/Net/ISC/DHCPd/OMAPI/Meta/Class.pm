@@ -2,7 +2,7 @@ package Net::ISC::DHCPd::OMAPI::Meta::Class;
 
 =head1 NAME
 
-Net::ISC::DHCPd::OMAPI::Meta::Class
+Net::ISC::DHCPd::OMAPI::Meta::Class - Sugar for omapi classes
 
 =head1 SYNOPSIS
 

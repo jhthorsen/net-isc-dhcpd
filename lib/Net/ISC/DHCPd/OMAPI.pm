@@ -2,7 +2,7 @@ package Net::ISC::DHCPd::OMAPI;
 
 =head1 NAME
 
-Net::ISC::DHCPd::OMAPI - Talk to dhcp server
+Net::ISC::DHCPd::OMAPI - Talk to a dhcp server
 
 =head1 NOTE
 

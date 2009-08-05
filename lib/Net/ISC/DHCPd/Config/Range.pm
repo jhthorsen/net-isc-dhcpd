@@ -2,7 +2,7 @@ package Net::ISC::DHCPd::Config::Range;
 
 =head1 NAME
 
-Net::ISC::DHCPd::Config::Range - IP range config parameter
+Net::ISC::DHCPd::Config::Range - Range config parameter
 
 =head1 DESCRIPTION
 

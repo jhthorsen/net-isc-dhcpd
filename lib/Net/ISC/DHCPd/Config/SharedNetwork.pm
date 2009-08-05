@@ -2,7 +2,7 @@ package Net::ISC::DHCPd::Config::SharedNetwork;
 
 =head1 NAME
 
-Net::ISC::DHCPd::Config::SharedNetwork - shared-network config parameter
+Net::ISC::DHCPd::Config::SharedNetwork - Shared-network config parameter
 
 =head1 DESCRIPTION
 

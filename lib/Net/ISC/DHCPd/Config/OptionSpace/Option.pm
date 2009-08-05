@@ -2,7 +2,7 @@ package Net::ISC::DHCPd::Config::OptionSpace::Option;
 
 =head1 NAME
 
-Net::ISC::DHCPd::Config::OptionSpace::Option - option space data
+Net::ISC::DHCPd::Config::OptionSpace::Option - Optionspace config param data
 
 =head1 DESCRIPTION
 

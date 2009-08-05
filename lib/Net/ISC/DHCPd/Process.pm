@@ -2,7 +2,7 @@ package Net::ISC::DHCPd::Process;
 
 =head1 NAME
 
-Net::ISC::DHCPd::Process
+Net::ISC::DHCPd::Process - Skeleton process class
 
 =head2 USAGE
 

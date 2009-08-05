@@ -2,7 +2,7 @@ package Net::ISC::DHCPd::Config::Function;
 
 =head1 NAME
 
-Net::ISC::DHCPd::Config::Function - parse a function
+Net::ISC::DHCPd::Config::Function - Function config parameters
 
 =head1 DESCRIPTION
 

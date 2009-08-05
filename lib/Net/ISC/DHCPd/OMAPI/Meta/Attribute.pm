@@ -2,7 +2,7 @@ package Net::ISC::DHCPd::OMAPI::Meta::Attribute;
 
 =head1 NAME
 
-Net::ISC::DHCPd::OMAPI::Meta::Attribute
+Net::ISC::DHCPd::OMAPI::Meta::Attribute - Extra sugar for omapi attributes
 
 =cut
 
