@@ -10,7 +10,7 @@ plan tests => 18;
 use Net::ISC::DHCPd::Types qw/:all/;
 
 my @required_types = qw/
-    HexInt Ip Mac State Time Statements
+    HexInt Ip Mac State Time Statements FailoverState
     ConfigObject LeasesObject OMAPIObject ProcessObject
 /;
 my @types = Net::ISC::DHCPd::Types->get_type_list;
