@@ -2,7 +2,7 @@ package Net::ISC::DHCPd::OMAPI::Failover;
 
 =head1 NAME
 
-Net::ISC::DHCPd::OMAPI::Failover - OMAPI failover class
+Net::ISC::DHCPd::OMAPI::Failover - OMAPI failover state class
 
 =head1 SEE ALSO
 

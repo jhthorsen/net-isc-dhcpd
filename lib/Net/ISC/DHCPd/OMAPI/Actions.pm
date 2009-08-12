@@ -69,7 +69,8 @@ all unknown objects in L<extra_attributes>.
 
 sub read {
     my $self = shift;
-    my(@cmd, @out, $n);
+    my $n    = 0;
+    my @out;
 
     @out = $self->_open;
 
@@ -77,7 +78,8 @@ sub read {
 
     while($out[-1] =~ /(\S+)\s=\s(\S+)/g) {
         my($attr, $value) = ($1, $2);
-        $attr =~ s/-/_/g;
+        $attr  =~ s/-/_/g;
+        $value =~ s/^"(.*)"$/$1/;
         $n++;
 
         if($self->meta->has_attribute($attr)) {
@@ -212,6 +214,7 @@ sub _open {
     for my $name ($self->meta->get_attribute_list) {
         my $attr = $self->meta->get_attribute($name);
         my $key = $name;
+        my $format;
 
         next unless($attr->does("Net::ISC::DHCPd::OMAPI::Meta::Attribute"));
         next unless($attr->has_action("lookup"));
@@ -219,7 +222,10 @@ sub _open {
 
         $key =~ s/_/-/g;
 
-        push @cmd, sprintf 'set %s = %s', $key, $self->$name;
+        $format = $attr->type_constraint->equals('Str') ? 'set %s = "%s"'
+                :                                         'set %s = %s';
+
+        push @cmd, sprintf $format, $key, $self->$name;
     }
 
     return $self->_cmd(@cmd, "open");
@@ -235,7 +241,7 @@ sub _around {
     @ret = $self->$next(@_)         or return 0;
     @out = $self->_cmd('close')     or return 0;
 
-    return @ret;
+    return @ret == 1 ? $ret[0] : @ret;
 };
 
 # @buffer = $self->_cmd(@cmd)
