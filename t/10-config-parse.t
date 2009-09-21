@@ -8,7 +8,7 @@ use Test::More;
 
 my $count  = $ENV{'COUNT'} || 1;
 my $config = "./t/data/dhcpd.conf";
-my $lines  = 48;
+my $lines  = 49;
 
 plan tests => 1 + 24 * $count;
 

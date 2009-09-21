@@ -55,7 +55,7 @@ sub captured_to_args {
 =cut
 
 sub generate {
-    return sprintf q(filename %s;), shift->name;
+    return sprintf q(filename %s;), shift->file;
 }
 
 =head1 AUTHOR

@@ -2,7 +2,7 @@ NAME
     Net::ISC::DHCPd - Interacts with ISC DHCPd
 
 VERSION
-    0.02_0004
+    0.03
 
 SYNOPSIS
      my $dhcpd = Net::ISC::DHCPd->new(
@@ -123,6 +123,9 @@ COPYRIGHT & LICENSE
 
     This program is free software; you can redistribute it and/or modify it
     under the same terms as Perl itself.
+
+CONTRIBUTORS
+    Nito Martinez
 
 AUTHOR
     Jan Henning Thorsen, "<jhthorsen at cpan.org>"

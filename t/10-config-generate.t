@@ -2,6 +2,7 @@
 
 use warnings;
 use strict;
+use lib q(lib);
 use Benchmark;
 use NetAddr::IP;
 use Test::More;
@@ -65,6 +66,11 @@ my $time = timeit($count, sub {
                 value => '10.19.83.102',
             ),
         ],
+        filenames => [
+            Net::ISC::DHCPd::Config::Filename->new(
+                file => 'pxelinux.0',
+            ),
+        ],
     );
 
     #print $config->generate;
@@ -90,4 +96,5 @@ subnet 10.0.0.96 netmask 255.255.255.224 {
 }
 host foo {
     fixed-address 10.19.83.102;
+    filename pxelinux.0;
 }

@@ -1,6 +1,7 @@
 Revision history for Net-ISC-DHCPd
 
 0.03 Tue Juli 21 15:41:01 CET 2009
+   * fix typo in Net::ISC::DHCPd::Config::Filename (Nito)
    * add types for coercion support
    * can talk with the DHCP server, using omshell
      + stop remote server
