@@ -38,8 +38,7 @@ has root => (
     lazy => 1,
     weak_ref => 1,
     default => sub {
-        my $self = shift;
-        my $obj  = $self;
+        my $obj = shift;
 
         while(my $tmp = $obj->parent) {
             ref($obj = $tmp) eq "Net::ISC::DHCPd::Config" and last;
@@ -56,9 +55,21 @@ How far this node is from the root node.
 =cut
 
 has depth => (
-    is => 'rw',
+    is => 'ro',
     isa => 'Int',
-    default => 0,
+    lazy => 1,
+    default => sub {
+        my $self = shift;
+        my $obj = $self;
+        my $i = 0;
+
+        while($obj = $obj->parent) {
+            $i++;
+            last if($obj == $self->root);
+        }
+
+        return $i;
+    },
 );
 
 =head2 children
@@ -199,42 +210,38 @@ sub create_children {
     my @list = @_;
 
     for my $obj (@list) {
-        my $class = $obj; # bareword classname
+        my $class = $obj; # copy classname
         my $name  = lc +($class =~ /::(\w+)$/)[0];
-        my $acc   = $name ."s";
+        my $attr  = $name ."s";
 
-        unless($meta->get_attribute($acc)) {
-            $meta->add_attribute($acc => (
+        unless($meta->get_attribute($attr)) {
+            $meta->add_attribute($attr => (
                 is => "rw",
-                isa => "ArrayRef[$class]",
+                isa => "ArrayRef",
                 lazy => 1,
                 auto_deref => 1,
                 default => sub { [] },
+                trigger => sub {
+                    for my $e (@{ $_[1] }) {
+                        next if(blessed $e);
+                        next if(ref $e ne 'HASH');
+                        $e = $class->new(parent => $_[0], %$e);
+                    }
+                },
             ));
+
             $meta->add_method("add_${name}" => sub {
                 my $self = shift;
                 my $args = @_ == 1 ? $_[0] : {@_};
-                my $new  = $class->new($args);
 
-                $new->parent($self);
-                $new->depth($self->depth + 1);
+                push @{ $self->$attr }, $class->new(%$args, parent => $self);
 
-                for my $e (values %$args) {
-                    next unless(ref $e eq 'ARRAY');
-                    for my $o (@$e) {
-                        $o->does(__PACKAGE__) or next;
-                        $o->parent or $o->parent($new);
-                        $o->depth  or $o->depth($new->depth);
-                    }
-                }
-
-                push @{ $self->$acc }, $new;
-                return $new;
+                return ${ $self->$attr }[-1];
             });
         }
 
         # replace class bareword with object in @list
-        $obj = $obj->new;
+        $obj = $class->new;
     }
 
     unless(blessed $self) {
@@ -255,14 +262,14 @@ Loops all child node and calls L<generate()>.
 =cut
 
 sub generate_config_from_children {
-    my $self   = shift;
-    my $indent = "    " x $self->depth;
+    my $self = shift;
+    my $indent = $self->parent ? (' ' x 4) : '';
     my @text;
 
     for(reverse $self->children) {
-        my($acc) = lc +((blessed $_) =~ /::(\w+)$/ )[0] ."s";
+        my($attr) = lc +((blessed $_) =~ /::(\w+)$/ )[0] ."s";
 
-        for my $child ($self->$acc) {
+        for my $child ($self->$attr) {
             push @text, map { "$indent$_" } $child->generate;
         }
     }

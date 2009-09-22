@@ -28,11 +28,11 @@ my $time = timeit($count, sub {
         prefix => 'foo',
         code => 122,
         options => [
-            Net::ISC::DHCPd::Config::OptionSpace::Option->new(
+            {
                 name => 'bar',
                 code => 1,
                 value => 'ip-address',
-            ),
+            },
         ],
     );
     $config->add_function(
@@ -42,34 +42,34 @@ my $time = timeit($count, sub {
     $config->add_subnet(
         address => NetAddr::IP->new('10.0.0.96/27'),
         options => [
-            Net::ISC::DHCPd::Config::Option->new(
+            {
                 name => 'routers',
                 value => '10.0.0.97',
-            ),
+            },
         ],
         pools => [
-            Net::ISC::DHCPd::Config::Pool->new(
+            {
                 ranges => [
-                    Net::ISC::DHCPd::Config::Range->new(
+                    {
                         upper => NetAddr::IP->new("10.0.0.116"),
                         lower => NetAddr::IP->new("10.0.0.126"),
-                    ),
+                    },
                 ],
-            ),
+            },
         ],
     );
     $config->add_host(
         name => 'foo',
         keyvalues => [
-            Net::ISC::DHCPd::Config::KeyValue->new(
+            {
                 name => 'fixed-address',
                 value => '10.19.83.102',
-            ),
+            },
         ],
         filenames => [
-            Net::ISC::DHCPd::Config::Filename->new(
+            {
                 file => 'pxelinux.0',
-            ),
+            },
         ],
     );
 
