@@ -125,7 +125,8 @@ has '+root' => (
 =cut
 
 has '+parent' => (
-    default => sub { shift },
+    isa => 'Undef',
+    default => sub { undef },
 );
 
 =head2 subnets
