@@ -1,5 +1,9 @@
 Revision history for Net-ISC-DHCPd
 
+0.04 Wed Sep 23 01:06:58 2009 +0200
+   * Supports ArrayRef[HashRef], when setting attributes
+   * >depth is not in use, so therefore lazy
+
 0.03 Tue Juli 21 15:41:01 CET 2009
    * fix typo in Net::ISC::DHCPd::Config::Filename (Nito)
    * add types for coercion support

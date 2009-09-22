@@ -2,7 +2,7 @@ NAME
     Net::ISC::DHCPd - Interacts with ISC DHCPd
 
 VERSION
-    0.03
+    0.04
 
 SYNOPSIS
      my $dhcpd = Net::ISC::DHCPd->new(
