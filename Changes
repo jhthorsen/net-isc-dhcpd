@@ -1,5 +1,8 @@
 Revision history for Net-ISC-DHCPd
 
+0.05 Mon Dec  7 21:16:00 2009 +0100
+   * Implemented OMAPI write() and remove()
+
 0.04 Wed Sep 23 01:06:58 2009 +0200
    * Supports ArrayRef[HashRef], when setting attributes
    * >depth is not in use, so therefore lazy
