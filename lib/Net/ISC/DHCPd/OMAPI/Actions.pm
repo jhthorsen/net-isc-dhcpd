@@ -6,6 +6,9 @@ Net::ISC::DHCPd::OMAPI::Actions - Common actions on OMAPI objects
 
 =head1 DESCRIPTION
 
+This module contains methods which can be called on each of the
+L<Net::ISC::DHCPd::OMAPI> subclasses.
+
 Changing object attributes will not alter the attributes on server. To do
 so, either use L<set()> directly or use L<write()> after altering attributes.
 
@@ -13,11 +16,15 @@ so, either use L<set()> directly or use L<write()> after altering attributes.
 
 use Moose::Role;
 
+my $attr_role = "Net::ISC::DHCPd::OMAPI::Meta::Attribute";
+
 =head1 ATTRIBUTES
 
 =head2 parent
 
  $omapi_obj = $self->parent;
+
+Returns the parent L<Net::ISC::DHCPd::OMAPI> object.
 
 =cut
 
@@ -30,6 +37,8 @@ has parent => (
 =head2 errstr
 
  $str = $self->errstr;
+
+Holds the latest error. Check this if a method returns empty list.
 
 =cut
 
@@ -110,40 +119,40 @@ attribute with action "modify" on update.
 sub write {
     my $self = shift;
     my @attr = @_;
-    my $new  = 1;
+    my $new = 0;
     my(@cmd, @out);
 
     # check for existence
     @out = $self->_open;
 
-    if($out[-1] =~ /(\S+)\s=\s(\S+)/g) {
-        $new = 0;
+    if(grep { /not found/i } @out) {
+        $new = 1;
     }
 
     if(@attr == 0) {
-        my $attr_role = "Net::ISC::DHCPd::OMAPI::Meta::Attribute";
         for my $attr ($self->meta->get_all_attributes) {
+            my $name = $attr->name;
+
             next if(!$attr->does($attr_role));
-            next if(!$attr->has_action('modify') and !$new);
-            next if($attr->has_action('modify') and !$new);
-            push @attr, $attr->name;
+            next if(!$self->${ \"has_$name" });
+            next if(!$attr->has_action('modify'));
+
+            push @attr, $attr;
         }
     }
 
-    for my $name (@attr) {
-        my $key = $name;
-        $key =~ s/_/-/g;
-        push @cmd, 'set %s = %s', $key, $self->$name;
-    }
+    @cmd = map { $self->_set_cmd($_) } @attr or return;
 
     # set attributes
     @out = $self->_cmd(@cmd);
 
-    # need to test @out
-    # ...
-
     # update or create
-    $self->_cmd( $new ? "create" : "update" ) or return;
+    @out = $self->_cmd( $new ? "create" : "update" ) or return;
+
+    if(grep { /not found/ } @out) {
+        $self->errstr("not found");
+        return;
+    }
 
     return $new ? +1 : -1;
 }
@@ -175,7 +184,7 @@ sub unset {
         $self->${ \"clear_$_" } for(@attr);
     }
 
-    return;
+    return 1;
 }
 
 around unset => \&_around;
@@ -184,24 +193,33 @@ around unset => \&_around;
 
  $bool = $self->remove;
 
+This method will remove the object from the server.
+
 =cut
 
 sub remove {
     my $self = shift;
-    my $pk   = $self->primary;
     my @out;
 
-    @out = $self->_cmd(
-               sprintf("set %s = %s", $pk, $self->$pk),
-               "remove",
-           );
+    @out = $self->_open;
+    @out = $self->_cmd('remove');
 
-    for my $attr ($self->meta->get_all_attributes) {
-        next unless($attr->has_value('omapi'));
-        $self->${ \"clear_" .$attr->name };
+    if(grep { /not implemented/i } @out) {
+        $self->errstr('not implemented');
+        return;
+    }
+    if(grep { /not found/i } @out) {
+        $self->errstr('not found');
+        return;
     }
 
-    return;
+    for my $attr ($self->meta->get_all_attributes) {
+        next unless($attr->does($attr_role));
+        my $clearer = 'clear_' .$attr->name;
+        $self->$clearer;
+    }
+
+    return 1;
 }
 
 around remove => \&_around;
@@ -213,22 +231,29 @@ sub _open {
 
     for my $name ($self->meta->get_attribute_list) {
         my $attr = $self->meta->get_attribute($name);
-        my $key = $name;
-        my $format;
 
         next unless($attr->does("Net::ISC::DHCPd::OMAPI::Meta::Attribute"));
         next unless($attr->has_action("lookup"));
         next unless($self->${ \"has_$name" });
 
-        $key =~ s/_/-/g;
-
-        $format = $attr->type_constraint->equals('Str') ? 'set %s = "%s"'
-                :                                         'set %s = %s';
-
-        push @cmd, sprintf $format, $key, $self->$name;
+        push @cmd, $self->_set_cmd($attr);
     }
 
     return $self->_cmd(@cmd, "open");
+}
+
+sub _set_cmd {
+    my $self = shift;
+    my $attr = shift;
+    my $name = $attr->name;
+    my $key = $name;
+    my $format;
+
+    $key =~ s/_/-/g;
+    $format = $attr->type_constraint->equals('Str') ? 'set %s = "%s"'
+            :                                         'set %s = %s';
+
+    return sprintf $format, $key, $self->${ \"raw_$name" };
 }
 
 sub _around {
@@ -238,7 +263,7 @@ sub _around {
     my(@out, @ret);
 
     @out = $self->_cmd("new $type") or return 0;
-    @ret = $self->$next(@_)         or return 0;
+    @ret = $self->$next(@_);
     @out = $self->_cmd('close')     or return 0;
 
     return @ret == 1 ? $ret[0] : @ret;

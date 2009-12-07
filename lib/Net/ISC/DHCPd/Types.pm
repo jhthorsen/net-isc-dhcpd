@@ -66,9 +66,41 @@ coerce State, (
     from Str, via { /(\d+)$/ ? $states[$1] : undef }
 );
 
+=head2 from_State
+
+=cut
+
+sub from_State {
+    my $self = shift;
+    my $attr = shift;
+    my $value = $self->$attr || return 0;
+
+    for my $i (0..@states) {
+        return $i if($states[$i] eq $value);
+    }
+
+    return 0;
+}
+
 coerce FailoverState, (
     from Str
 );
+
+=head2 from_FailoverState
+
+=cut
+
+sub from_FailoverState {
+    my $self = shift;
+    my $attr = shift;
+    my $value = $self->$attr || return 0;
+
+    for my $i (0..@failover_states) {
+        return $i if($failover_states[$i] eq $value);
+    }
+
+    return 0;
+}
 
 coerce HexInt, (
     from Str, via { s/://g; hex $_ },

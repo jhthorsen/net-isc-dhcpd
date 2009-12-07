@@ -42,11 +42,13 @@ sub omapi_attr {
     my $class = shift;
     my $names = ref $_[0] eq 'ARRAY' ? shift : [shift];
     my %opts  = @_;
+    my $to_raw;
 
-    if(my $isa = $opts{'isa'}) {
-        $isa =~ s/Net::ISC::DHCPd::Types:://;
-        if(__PACKAGE__->can("to_$isa")) {
+    if(my $type = $opts{'isa'}) {
+        $type =~ s/Net::ISC::DHCPd::Types:://;
+        if(__PACKAGE__->can("to_$type")) {
             $opts{'coerce'} = 1;
+            $to_raw = Net::ISC::DHCPd::Types->can("from_$type");
         }
     }
 
@@ -54,9 +56,13 @@ sub omapi_attr {
         $class->meta->add_attribute($name => (
             is => 'rw',
             predicate => "has_$name",
+            clearer => "clear_$name",
             traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
             %opts,
         ));
+        $class->meta->add_method("raw_$name" =>
+            $to_raw ? sub { shift->$to_raw($name) } : sub { shift->$name }
+        );
     }
 }
 

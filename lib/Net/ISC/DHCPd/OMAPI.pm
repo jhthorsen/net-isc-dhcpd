@@ -4,12 +4,27 @@ package Net::ISC::DHCPd::OMAPI;
 
 Net::ISC::DHCPd::OMAPI - Talk to a dhcp server
 
+=head1 DESCRIPTION
+
+This module provides an API to query and possible change the ISC DHCPd
+server. The module use OMAPI (Object Management API) which does not
+require the server to be restarted for changes to apply.
+
+OMAPI is simply a communications mechanism that allows you to manipulate
+objects, which is stored in the dhcpd.leases file.
+
+See subclasses for more information about the different objects you can
+manipulate:
+L<Net::ISC::DHCPd::OMAPI::Failover>,
+L<Net::ISC::DHCPd::OMAPI::Group>,
+L<Net::ISC::DHCPd::OMAPI::Host>,
+and L<Net::ISC::DHCPd::OMAPI::Lease>.
+
 =head1 NOTE
 
- BEGIN {
-   Net::ISC::DHCPd::OMAPI::_DEBUG = sub { 1 }; # to enable debug output
-   use Net::ISC::DHCPd::OMAPI;
- }
+To enable debug output, execute this chunk of code before loading the module:
+
+ BEGIN { Net::ISC::DHCPd::OMAPI::_DEBUG = sub { 1 } }
 
 =cut
 

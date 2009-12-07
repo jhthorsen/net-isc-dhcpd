@@ -71,7 +71,7 @@ Circuit ID from Relay Agent Option 82.
 
 =cut
 
-has circuit_id => (
+omapi_attr circuit_id => (
     is => 'rw',
     isa => 'Str',
 );
@@ -248,7 +248,7 @@ Remote ID from Relay Agent Option 82.
 
 =cut
 
-has remote_id => (
+omapi_attr remote_id => (
     is => 'rw',
     isa => 'Str',
 );

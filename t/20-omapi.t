@@ -6,12 +6,9 @@ use lib './lib';
 use Test::More;
 
 plan skip_all => "cannot run without OMAPI_KEY set" unless($ENV{'OMAPI_KEY'});
-plan tests    => 19;
+plan tests    => 21;
 
-BEGIN {
-    *Net::ISC::DHCPd::OMAPI::_DEBUG = sub { 0 };
-}
-
+BEGIN { *Net::ISC::DHCPd::OMAPI::_DEBUG = sub { 0 } }
 use_ok("Net::ISC::DHCPd::OMAPI");
 
 my $omapi = Net::ISC::DHCPd::OMAPI->new( key => $ENV{'OMAPI_KEY'} );
@@ -33,6 +30,16 @@ ok(!$lease->hardware_address, "hardware_address is not set");
 ok($lease->ip_address("10.19.83.200"), "ip_address attr set");
 is($lease->read, 15, "lease read from server");
 is($lease->hardware_address, "00:13:02:b8:a9:1b", "got hardware_address from server");
+
+my $duplicate_host = $omapi->new_object(host => (
+                            name => 'thorslapp',
+                            hardware_address => '00:0e:35:d1:27:e3',
+                            hardware_type => 1,
+                            ip_address => '0a:13:53:66',
+                        ));
+
+ok($host->remove, 'object removed') or diag $host->errstr;
+ok($duplicate_host->write, 'object written') or diag $host->errstr;
 
 ok($omapi->disconnect, "disconnected from server");
 ok($omapi->connect, "re-connected");
