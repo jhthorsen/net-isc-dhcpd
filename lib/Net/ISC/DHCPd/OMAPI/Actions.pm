@@ -262,6 +262,8 @@ sub _around {
     my $type = lc +(ref($self) =~ /::(\w+)$/)[0];
     my(@out, @ret);
 
+    $self->errstr("");
+
     @out = $self->_cmd("new $type") or return 0;
     @ret = $self->$next(@_);
     @out = $self->_cmd('close')     or return 0;
@@ -276,8 +278,6 @@ sub _cmd {
     my $self = shift;
     my @cmd  = @_;
     my(@buffer, $head);
-
-    $self->errstr("");
 
     for my $cmd (@cmd) {
         my $tmp = $self->parent->_cmd($cmd);
