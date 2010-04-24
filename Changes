@@ -1,28 +1,33 @@
 Revision history for Net-ISC-DHCPd
 
-0.05 Mon Dec  7 21:16:00 2009 +0100
-   * Implemented OMAPI write() and remove()
+0.05_01  Sat Apr 24 16:52:43 CEST 2010
+       - Fix RT56775: 10-leases-parse.t failed in any other
+         timezone than CEST.
+         Contributor: Alexey Illarionov
 
-0.04 Wed Sep 23 01:06:58 2009 +0200
-   * Supports ArrayRef[HashRef], when setting attributes
-   * >depth is not in use, so therefore lazy
+0.05     Mon Dec  7 21:16:00 2009 +0100
+       - Add OMAPI write() and remove()
 
-0.03 Tue Juli 21 15:41:01 CET 2009
-   * fix typo in Net::ISC::DHCPd::Config::Filename (Nito)
-   * add types for coercion support
-   * can talk with the DHCP server, using omshell
-     + stop remote server
-     + read leases
-     - write leases (should work)
-     + read host
-     - write hosts (should work)
-     - read/write groups (should work)
+0.04     Wed Sep 23 01:06:58 2009 +0200
+       - Add Supports ArrayRef[HashRef], when setting attributes
+       - Change depth attribute is not in use, so therefore lazy
 
-0.02 Tue Juli 21 15:41:01 CET 2009
-   * can parse leases
-   * can test leases and config file
+0.03     Tue Juli 21 15:41:01 CET 2009
+       - Fix typo in Net::ISC::DHCPd::Config::Filename (Nito)
+       - Add types for coercion support
+       - Can talk with the DHCP server, using omshell
+        + stop remote server
+        + read leases
+        - write leases (should work)
+        + read host
+        - write hosts (should work)
+        - read/write groups (should work)
 
-0.01 Sun May 17 23:45:00 CET 2009
-   * parsing of config works
-   * generating config works
+0.02     Tue Juli 21 15:41:01 CET 2009
+       - Add parse leases
+       - Add test leases and config file
+
+0.01     Sun May 17 23:45:00 CET 2009
+       - Add parsing of config works
+       - Add generating config works
 
