@@ -1,17 +1,24 @@
 use inc::Module::Install;
 
-name     q(Net-ISC-DHCPd);
+name q(Net-ISC-DHCPd);
 all_from q(lib/Net/ISC/DHCPd.pm);
 
-requires q(Moose)                     => 0.80;
-requires q(MooseX::Types)             => 0.10;
-requires q(NetAddr::IP)               => 4.0;
-requires q(File::Path)                => 2.0;
-requires q(IO::Pty)                   => 1.0;
+requires q(File::Path) => 2.00;
+requires q(File::Temp) => 0.20;
+requires q(IO::Pty) => 1.00;
+requires q(Moose) => 0.90;
+requires q(MooseX::Types) => 0.12;
+requires q(NetAddr::IP) => 4.0;
 requires q(POE::Filter::DHCPd::Lease) => 0.04;
+requires q(Time::HiRes) => 1.90;
 
-test_requires q(Test::More) => 0;
-test_requires q(Test::Pod)  => 0;
+test_requires q(Benchmark) => 1.0;
+test_requires q(Test::More) => 0.90;
+test_requires q(Time::Local) => 1.18;
+
+bugtracker q(http://rt.cpan.org/NoAuth/Bugs.html?Dist=Net-ISC-DHCPd);
+homepage q(http://search.cpan.org/dist/Net-ISC-DHCPd);
+repository q(git://github.com/jhthorsen/net-isc-dhcpd.git);
 
 auto_install;
 WriteAll;
