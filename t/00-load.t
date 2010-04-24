@@ -1,25 +1,32 @@
-#!perl
-
-BEGIN {
-    use File::Find;
-    use Test::More;
-
-    my $dir = './lib';
-    my @modules;
-
-    unshift @INC, $dir;
-
-    find(sub {
-        $_ = $File::Find::name;
-        if(s, ^ $dir /? (.*) \.pm $ ,$1,x) {
-            s,/,::,g;
-            push @modules, $_;
-        }
-    }, $dir);
-
-    plan tests => int(@modules);
-
-    for my $mod (@modules) {
-        use_ok($mod);
-    }
-}
+#!/usr/bin/perl
+use lib qw(lib);
+use Test::More;
+plan tests => 28;
+use_ok('Net::ISC::DHCPd');
+use_ok('Net::ISC::DHCPd::Config');
+use_ok('Net::ISC::DHCPd::Config::Filename');
+use_ok('Net::ISC::DHCPd::Config::Function');
+use_ok('Net::ISC::DHCPd::Config::Group');
+use_ok('Net::ISC::DHCPd::Config::Host');
+use_ok('Net::ISC::DHCPd::Config::KeyValue');
+use_ok('Net::ISC::DHCPd::Config::Option');
+use_ok('Net::ISC::DHCPd::Config::OptionSpace');
+use_ok('Net::ISC::DHCPd::Config::OptionSpace::Option');
+use_ok('Net::ISC::DHCPd::Config::Pool');
+use_ok('Net::ISC::DHCPd::Config::Range');
+use_ok('Net::ISC::DHCPd::Config::Role');
+use_ok('Net::ISC::DHCPd::Config::SharedNetwork');
+use_ok('Net::ISC::DHCPd::Config::Subnet');
+use_ok('Net::ISC::DHCPd::Leases');
+use_ok('Net::ISC::DHCPd::Leases::Lease');
+use_ok('Net::ISC::DHCPd::OMAPI');
+use_ok('Net::ISC::DHCPd::OMAPI::Actions');
+use_ok('Net::ISC::DHCPd::OMAPI::Control');
+use_ok('Net::ISC::DHCPd::OMAPI::Failover');
+use_ok('Net::ISC::DHCPd::OMAPI::Group');
+use_ok('Net::ISC::DHCPd::OMAPI::Host');
+use_ok('Net::ISC::DHCPd::OMAPI::Lease');
+use_ok('Net::ISC::DHCPd::OMAPI::Meta::Attribute');
+use_ok('Net::ISC::DHCPd::OMAPI::Meta::Class');
+use_ok('Net::ISC::DHCPd::Process');
+use_ok('Net::ISC::DHCPd::Types');
