@@ -4,6 +4,7 @@ use warnings;
 use strict;
 use lib './lib';
 use Benchmark;
+use Time::Local;
 use Test::More;
 
 my $count  = $ENV{'COUNT'} || 1;
@@ -24,8 +25,8 @@ my $time = timeit($count, sub {
 
     $lease = $leases->leases->[0];
 
-    is($lease->starts, 1215970952, "lease->0 starts");
-    is($lease->ends, 1216057352, "lease->0 ends");
+    is($lease->starts, timelocal(32, 42, 19, 13, 6, 2008), "lease->0 starts");
+    is($lease->ends, timelocal(32, 42, 19, 14, 6, 2008), "lease->0 ends");
     is($lease->state, "free", "lease->0 binding");
     is($lease->hardware_address, "00:15:58:2f:83:bc", "lease->0 hw_ethernet");
     is($lease->client_hostname, undef, "lease->0 hostname");
