@@ -1,6 +1,6 @@
 Revision history for Net-ISC-DHCPd
 
-0.05_02
+0.05_02  Fri May 28 23:40:21 CEST 2010
        - Fix RT57947: Minor improvement for Net::ISC::DHCPd::OMAPI:
          "key" not required for localhost
          Contributor: Patrick
