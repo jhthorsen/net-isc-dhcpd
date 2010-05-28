@@ -1,5 +1,10 @@
 Revision history for Net-ISC-DHCPd
 
+0.05_02
+       - Fix RT57947: Minor improvement for Net::ISC::DHCPd::OMAPI:
+         "key" not required for localhost
+         Contributor: Patrick
+
 0.05_01  Sat Apr 24 16:52:43 CEST 2010
        - Fix RT56775: 10-leases-parse.t fails in non-UTC timezones
          Contributor: Alexey Illarionov

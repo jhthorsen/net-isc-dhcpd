@@ -394,13 +394,17 @@ Copyright 2007 Jan Henning Thorsen, all rights reserved.
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
+=head1 AUTHOR
+
+Jan Henning Thorsen, C<< <jhthorsen at cpan.org> >>
+
 =head1 CONTRIBUTORS
 
 Nito Martinez
 
-=head1 AUTHOR
+Alexey Illarionov
 
-Jan Henning Thorsen, C<< <jhthorsen at cpan.org> >>
+Patrick
 
 =cut
 
