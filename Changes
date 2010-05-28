@@ -1,8 +1,7 @@
 Revision history for Net-ISC-DHCPd
 
 0.05_01  Sat Apr 24 16:52:43 CEST 2010
-       - Fix RT56775: 10-leases-parse.t failed in any other
-         timezone than CEST.
+       - Fix RT56775: 10-leases-parse.t fails in non-UTC timezones
          Contributor: Alexey Illarionov
 
 0.05     Mon Dec  7 21:16:00 2009 +0100
@@ -13,7 +12,9 @@ Revision history for Net-ISC-DHCPd
        - Change depth attribute is not in use, so therefore lazy
 
 0.03     Tue Juli 21 15:41:01 CET 2009
-       - Fix typo in Net::ISC::DHCPd::Config::Filename (Nito)
+       - Fix RT49694: Problem in generate when in a host section a
+         "filename "pxelinux.0";" entry exists
+         Contributor: Nito Martinez
        - Add types for coercion support
        - Can talk with the DHCP server, using omshell
         + stop remote server
