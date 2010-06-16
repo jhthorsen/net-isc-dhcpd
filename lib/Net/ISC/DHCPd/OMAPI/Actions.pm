@@ -52,7 +52,10 @@ has errstr => (
 
  $hash_ref = $self->extra_attributes;
 
-Contains all attributes, which is not defined for the OMAPI object.
+Contains all attributes, which is not predefined by the OMAPI object.
+
+Note: If you ever need to use this - send me a bug report, since it
+means something is missing.
 
 =cut
 
