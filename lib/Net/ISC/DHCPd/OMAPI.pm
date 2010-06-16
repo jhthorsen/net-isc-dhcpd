@@ -210,12 +210,15 @@ Will open a connection to the dhcp server. Check C<$@> on failure.
 
 sub connect {
     my $self = shift;
+    my @commands = qw/port server/;
     my $buffer;
+
+    push @commands, 'key' if($self->key);
 
     $self->errstr('');
 
-    for my $attr (qw/port server key/) {
-        $buffer = $self->_cmd(sprintf '%s %s', $attr, $self->$attr);
+    for my $attr (@commands) {
+        $buffer = $self->_cmd(sprintf "%s %s", $attr, $self->$attr);
         last unless(defined $buffer);
     }
 

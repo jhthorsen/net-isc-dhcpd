@@ -6,7 +6,7 @@ Net::ISC::DHCPd - Interacts with ISC DHCPd
 
 =head1 VERSION
 
-0.05_01
+0.05_02
 
 =head1 SYNOPSIS
 
@@ -28,7 +28,7 @@ use File::Path;
 use File::Temp;
 use Net::ISC::DHCPd::Process;
 
-our $VERSION = '0.05_01';
+our $VERSION = '0.05_02';
 
 =head1 OBJECT ATTRIBUTES
 
@@ -394,13 +394,17 @@ Copyright 2007 Jan Henning Thorsen, all rights reserved.
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
+=head1 AUTHOR
+
+Jan Henning Thorsen, C<< <jhthorsen at cpan.org> >>
+
 =head1 CONTRIBUTORS
 
 Nito Martinez
 
-=head1 AUTHOR
+Alexey Illarionov
 
-Jan Henning Thorsen, C<< <jhthorsen at cpan.org> >>
+Patrick
 
 =cut
 
