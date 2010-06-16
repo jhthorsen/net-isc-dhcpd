@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use lib qw(lib);
 use Test::More;
 plan tests => 28;
@@ -27,6 +27,6 @@ use_ok('Net::ISC::DHCPd::OMAPI::Group');
 use_ok('Net::ISC::DHCPd::OMAPI::Host');
 use_ok('Net::ISC::DHCPd::OMAPI::Lease');
 use_ok('Net::ISC::DHCPd::OMAPI::Meta::Attribute');
-use_ok('Net::ISC::DHCPd::OMAPI::Meta::Class');
+use_ok('Net::ISC::DHCPd::OMAPI::Sugar');
 use_ok('Net::ISC::DHCPd::Process');
 use_ok('Net::ISC::DHCPd::Types');
