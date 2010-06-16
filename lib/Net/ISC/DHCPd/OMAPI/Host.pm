@@ -23,7 +23,7 @@ L<Net::ISC::DHCPd::OMAPI::Meta::Attribute>.
 
 =cut
 
-use Net::ISC::DHCPd::OMAPI::Meta::Class;
+use Net::ISC::DHCPd::OMAPI::Sugar;
 
 with 'Net::ISC::DHCPd::OMAPI::Actions';
 

@@ -1,12 +1,12 @@
-package Net::ISC::DHCPd::OMAPI::Meta::Class;
+package Net::ISC::DHCPd::OMAPI::Sugar;
 
 =head1 NAME
 
-Net::ISC::DHCPd::OMAPI::Meta::Class - Sugar for omapi classes
+Net::ISC::DHCPd::OMAPI::Sugar - Moose sugar for omapi classes
 
 =head1 SYNOPSIS
 
- use Net::ISC::DHCPd::OMAPI::Meta::Class; # not use Moose
+ use Net::ISC::DHCPd::OMAPI::Sugar; # not use Moose
 
  omapi_attr foo => (
     isa => State,
