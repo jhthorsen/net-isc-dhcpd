@@ -38,11 +38,12 @@ use Net::ISC::DHCPd::OMAPI::Host;
 use Net::ISC::DHCPd::OMAPI::Lease;
 
 BEGIN {
-    *Net::ISC::DHCPd::OMAPI::_DEBUG{'CODE'}
-        or *Net::ISC::DHCPd::OMAPI::_DEBUG = sub { 1 };
+    unless(__PACKAGE__->meta->has_method('_DEBUG')) {
+        __PACKAGE__->meta->add_method(_DEBUG => sub { 1 });
+    }
 }
 
-our $OMSHELL = "omshell";
+our $OMSHELL = 'omshell';
 
 =head1 ATTRIBUTES
 
@@ -118,7 +119,7 @@ has _pid => (
 # fork omshell and return an IO::Pty object
 sub _build__fh  {
     my $self = shift;
-    my $pty  = IO::Pty->new;
+    my $pty = IO::Pty->new;
     my($pid, $slave);
 
     pipe my $READ, my $WRITE or confess $!;
@@ -152,22 +153,22 @@ sub _build__fh  {
         $slave = $pty->slave;
         $slave->set_raw;
 
-        open STDIN,  "<&". $slave->fileno or confess "Reopen STDIN: $!\n";
-        open STDOUT, ">&". $slave->fileno or confess "Reopen STDOUT: $!\n";
-        open STDERR, ">&". $slave->fileno or confess "Reopen STDERR: $!\n";
+        open STDIN,  '<&'. $slave->fileno or confess "Reopen STDIN: $!";
+        open STDOUT, '>&'. $slave->fileno or confess "Reopen STDOUT: $!";
+        open STDERR, '>&'. $slave->fileno or confess "Reopen STDERR: $!";
 
         { exec $OMSHELL } # block prevent warning
         print $WRITE int $!;
-        die "Could not exec $OMSHELL: $!";
+        confess "Could not exec $OMSHELL: $!";
     }
 }
 
 # $self->_cmd($cmd);
 sub _cmd {
     my $self = shift;
-    my $cmd  = shift;
-    my $pty  = $self->_fh;
-    my $out  = q();
+    my $cmd = shift;
+    my $pty = $self->_fh;
+    my $out = q();
     my $end_time;
 
     print STDERR "\$ $cmd\n" if _DEBUG;
@@ -212,17 +213,17 @@ sub connect {
     my $self = shift;
     my $buffer;
 
-    $self->errstr("");
+    $self->errstr('');
 
     for my $attr (qw/port server key/) {
-        $buffer = $self->_cmd(sprintf "%s %s", $attr, $self->$attr);
+        $buffer = $self->_cmd(sprintf '%s %s', $attr, $self->$attr);
         last unless(defined $buffer);
     }
 
     if($self->errstr) {
         return;
     }
-    unless($buffer = $self->_cmd("connect")) {
+    unless($buffer = $self->_cmd('connect')) {
         return;
     }
     unless($buffer =~ /obj:\s+/) {
@@ -242,7 +243,7 @@ Will disconnect from the server.
 =cut
 
 sub disconnect {
-    my $self    = shift;
+    my $self = shift;
     my $retries = 10;
 
     while($retries--) {
@@ -276,10 +277,10 @@ Example, with C<$type="host">:
 =cut
 
 sub new_object {
-    my $self  = shift;
-    my $type  = shift or return;
-    my %args  = @_;
-    my $class = "Net::ISC::DHCPd::OMAPI::" .ucfirst(lc $type);
+    my $self = shift;
+    my $type = shift or return;
+    my %args = @_;
+    my $class = 'Net::ISC::DHCPd::OMAPI::' .ucfirst(lc $type);
 
     unless($type =~ /^(?:control|failover|group|host|lease)$/i) {
         return;
