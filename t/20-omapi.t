@@ -6,9 +6,9 @@ use lib './lib';
 use Test::More;
 
 plan skip_all => "cannot run without OMAPI_KEY set" unless($ENV{'OMAPI_KEY'});
-plan tests    => 21;
+plan tests    => 22;
 
-BEGIN { *Net::ISC::DHCPd::OMAPI::_DEBUG = sub { 0 } }
+BEGIN { *Net::ISC::DHCPd::OMAPI::_DEBUG = sub { $ENV{'DEBUG'} } }
 use_ok("Net::ISC::DHCPd::OMAPI");
 
 my $omapi = Net::ISC::DHCPd::OMAPI->new( key => $ENV{'OMAPI_KEY'} );
@@ -28,6 +28,7 @@ is($host->hardware_address, "00:0e:35:d1:27:e3", "got hardware_address from serv
 ok($lease = $omapi->new_object("lease"), "new lease object created");
 ok(!$lease->hardware_address, "hardware_address is not set");
 ok($lease->ip_address("10.19.83.200"), "ip_address attr set");
+ok($lease->state("active"), "state attr set");
 is($lease->read, 15, "lease read from server");
 is($lease->hardware_address, "00:13:02:b8:a9:1b", "got hardware_address from server");
 
