@@ -38,9 +38,8 @@ use Net::ISC::DHCPd::OMAPI::Host;
 use Net::ISC::DHCPd::OMAPI::Lease;
 
 BEGIN {
-    unless(__PACKAGE__->meta->has_method('_DEBUG')) {
-        __PACKAGE__->meta->add_method(_DEBUG => sub { 1 });
-    }
+    *Net::ISC::DHCPd::OMAPI::_DEBUG{'CODE'}
+        or *Net::ISC::DHCPd::OMAPI::_DEBUG = sub { 0 };
 }
 
 our $OMSHELL = 'omshell';
