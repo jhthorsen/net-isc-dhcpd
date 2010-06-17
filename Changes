@@ -1,5 +1,12 @@
 Revision history for Net-ISC-DHCPd
 
+0.06
+       - Fix version number (didn't know _ made it a dev release)
+       - Fix _DEBUG is default off (0)
+       - Change OMAPI::Meta::Class is renamed to OMAPI::Sugar
+       - Add (RT58391) t/20-omapi.t test which proves (?!) that state() is
+         ignored by omapi/omshell.
+
 0.05_02  Fri May 28 23:40:21 CEST 2010
        - Fix RT57947: Minor improvement for Net::ISC::DHCPd::OMAPI:
          "key" not required for localhost
