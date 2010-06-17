@@ -5,7 +5,7 @@ Revision history for Net-ISC-DHCPd
          it does not appear to described in the dhcpd manual (?)
          Contributor: Jeff Bair
 
-0.06
+0.06     Thu Jun 17 20:23:51 CEST 2010
        - Fix version number (didn't know _ made it a dev release)
        - Fix _DEBUG is default off (0)
        - Change OMAPI::Meta::Class is renamed to OMAPI::Sugar
