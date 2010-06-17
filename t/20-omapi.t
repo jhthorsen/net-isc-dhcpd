@@ -6,7 +6,7 @@ use lib './lib';
 use Test::More;
 
 plan skip_all => 'cannot run without OMAPI_KEY set' unless($ENV{'OMAPI_KEY'});
-plan tests    => 24;
+plan tests => 25;
 
 BEGIN { *Net::ISC::DHCPd::OMAPI::_DEBUG = sub { $ENV{'DEBUG'} } }
 use_ok('Net::ISC::DHCPd::OMAPI');
@@ -31,13 +31,14 @@ ok($omapi->connect, 'connected');
     my $lease = $omapi->new_object('lease');
     $lease->hardware_address('00:13:02:b8:a9:1b');
     is($lease->read, 15, 'lease was found by mac');
+    is($lease->state, 'free', 'state attr is free');
 }
 
-TODO: {
-    todo_skip 'OMAPI ignores the state attribute', 2;
+{
     my $lease = $omapi->new_object('lease');
     $lease->ip_address('10.19.83.200');
-    ok($lease->state('free'), 'state attr set');
+    $lease->hardware_address('00:13:02:b8:a9:1b');
+    ok($lease->state('abandoned'), 'state attr set');
     is($lease->read, 0, 'lease could not be found');
 }
 

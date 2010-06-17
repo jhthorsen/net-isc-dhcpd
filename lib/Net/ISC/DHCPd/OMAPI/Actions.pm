@@ -16,7 +16,7 @@ so, either use L<set()> directly or use L<write()> after altering attributes.
 
 use Moose::Role;
 
-my $attr_role = "Net::ISC::DHCPd::OMAPI::Meta::Attribute";
+my $ATTR_ROLE = "Net::ISC::DHCPd::OMAPI::Meta::Attribute";
 
 =head1 ATTRIBUTES
 
@@ -75,34 +75,68 @@ Open an object. Returns the number of attributes read. 0 = not in server.
 
 It looks up an object on server, by all the attributes that has action
 C<lookup>. Will update all attributes in the local object, and setting
-all unknown objects in L<extra_attributes>.
+all unknown objects in L</extra_attributes>.
+
+
+This is subject for change, but:
+
+C<read()> will also do a post check which checks if the retrieved values
+actually match the one used to lookup. If they do not match all retrieved
+data will be stored in L</extra_attributes> and this method will return
+zero (0).
 
 =cut
 
 sub read {
     my $self = shift;
-    my $n    = 0;
-    my @out;
+    my $post_check_failed = 0;
+    my $n = 0;
+    my(@out, %out);
 
     @out = $self->_open;
 
     %{ $self->extra_attributes } = (); # clear all extra attributes
 
     while($out[-1] =~ /(\S+)\s=\s(\S+)/g) {
-        my($attr, $value) = ($1, $2);
-        $attr  =~ s/-/_/g;
+        my($name, $value) = ($1, $2);
+        $name =~ s/-/_/g;
         $value =~ s/^"(.*)"$/$1/;
         $n++;
 
-        if($self->meta->has_attribute($attr)) {
-            $self->$attr($value);
+        if(my $attr = $self->meta->get_attribute($name)) {
+
+            if( #_ugly___________________________
+                    $attr->does($ATTR_ROLE)
+                and $self->${ \"has_$name" }
+                and $attr->has_action('lookup')
+            ) { #--------------------------------
+
+                if($attr->should_coerce) {
+                    $value = $attr->type_constraint->coerce($value);
+                }
+
+                if($self->$name ne $value) {
+                    $post_check_failed = 1;
+                }
+            }
+
+            $out{$name} = $value;
         }
         else {
-            $self->extra_attributes->{$attr} = $value;
+            $self->extra_attributes->{$name} = $value;
         }
     }
 
-    return $n;
+    for my $name (keys %out) {
+        if($post_check_failed) {
+            $self->extra_attributes->{$name} = $out{$name};
+        }
+        else {
+            $self->$name($out{$name});
+        }
+    }
+
+    return $post_check_failed ? 0 : $n;
 }
 
 around read => \&_around;
@@ -136,7 +170,7 @@ sub write {
         for my $attr ($self->meta->get_all_attributes) {
             my $name = $attr->name;
 
-            next if(!$attr->does($attr_role));
+            next if(!$attr->does($ATTR_ROLE));
             next if(!$self->${ \"has_$name" });
             next if(!$attr->has_action('modify'));
 
@@ -217,7 +251,7 @@ sub remove {
     }
 
     for my $attr ($self->meta->get_all_attributes) {
-        next unless($attr->does($attr_role));
+        next unless($attr->does($ATTR_ROLE));
         my $clearer = 'clear_' .$attr->name;
         $self->$clearer;
     }
