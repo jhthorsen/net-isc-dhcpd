@@ -45,11 +45,13 @@ sub omapi_attr {
     my $to_raw;
 
     if(my $type = $opts{'isa'}) {
-        $type =~ s/Net::ISC::DHCPd::Types:://;
-        if(__PACKAGE__->can("to_$type")) {
+        if($type =~ /^Net::ISC::/ and $type->coercion) {
             $opts{'coerce'} = 1;
             $to_raw = Net::ISC::DHCPd::Types->can("from_$type");
         }
+    }
+    else {
+        confess '"isa" is required for omapi_attr()';
     }
 
     for my $name (@$names) {

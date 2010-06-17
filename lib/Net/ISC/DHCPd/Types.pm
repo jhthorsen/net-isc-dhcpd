@@ -37,7 +37,7 @@ BEGIN {
     /]);
 }
 
-=head1 MOOSE TYPES
+=head1 TYPES
 
 =head2 HexInt
 
@@ -73,7 +73,7 @@ coerce State, (
 sub from_State {
     my $self = shift;
     my $attr = shift;
-    my $value = $self->$attr || return 0;
+    my $value = $self->$attr or return 0;
 
     for my $i (0..@states) {
         return $i if($states[$i] eq $value);
@@ -93,7 +93,7 @@ coerce FailoverState, (
 sub from_FailoverState {
     my $self = shift;
     my $attr = shift;
-    my $value = $self->$attr || return 0;
+    my $value = $self->$attr or return 0;
 
     for my $i (0..@failover_states) {
         return $i if($failover_states[$i] eq $value);
