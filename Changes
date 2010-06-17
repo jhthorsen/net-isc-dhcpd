@@ -1,5 +1,10 @@
 Revision history for Net-ISC-DHCPd
 
+0.07
+       - Add (RT58391) OMAPI lookup by hardware_address, even though
+         it does not appear to described in the dhcpd manual (?)
+         Contributor: Jeff Bair
+
 0.06
        - Fix version number (didn't know _ made it a dev release)
        - Fix _DEBUG is default off (0)

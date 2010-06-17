@@ -154,40 +154,6 @@ omapi_attr flags => (
     isa => 'Str',
 );
 
-=head2 hardware_address
-
- $self->hardware_address($str);
- $str = $self->hardware_address;
-
-The hardware address (chaddr) field sent by the client when it acquired
-its lease.
-
-Actions: examine, modify.
-
-=cut
-
-omapi_attr hardware_address => (
-    isa => Mac,
-    actions => [qw/examine modify/],
-);
-
-=head2 hardware_type
-
- $self->hardware_type($str);
- $str = $self->hardware_type;
-
-The type of the network interface that the client reported when it
-acquired its lease.
-
-Actions: examine, modify.
-
-=cut
-
-omapi_attr hardware_type => (
-    isa => HexInt,
-    actions => [qw/examine modify/],
-);
-
 =head2 host
 
  $self->host(??);
@@ -353,6 +319,23 @@ Actions: examine, modify.
 
 omapi_attr hardware_address => (
     isa => Mac,
+    actions => [qw/examine lookup modify/],
+);
+
+=head2 hardware_type
+
+ $self->hardware_type($str);
+ $str = $self->hardware_type;
+
+The type of the network interface that the client reported when it
+acquired its lease.
+
+Actions: examine, modify.
+
+=cut
+
+omapi_attr hardware_type => (
+    isa => HexInt,
     actions => [qw/examine modify/],
 );
 
