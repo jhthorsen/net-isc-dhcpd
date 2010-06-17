@@ -1,6 +1,6 @@
 Revision history for Net-ISC-DHCPd
 
-0.07
+0.07     Fri Jun 18 01:30:15 CEST 2010
        - Add (RT58391) OMAPI lookup by hardware_address, even though
          it does not appear to described in the dhcpd manual (?)
          Contributor: Jeff Bair
