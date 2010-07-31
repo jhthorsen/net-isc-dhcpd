@@ -31,6 +31,7 @@ __PACKAGE__->create_children(qw/
 /);
 
 sub _build_regex { qr{^\s* include \s "([^"]+)" ;}x }
+sub _build_root { shift->parent }
 
 sub _build__filehandle {
     my $self = shift;
@@ -45,19 +46,25 @@ sub _build__filehandle {
 
 =head1 METHODS
 
+=cut
+
+around parse => sub {
+    my $next = shift;
+    my $self = shift;
+
+    if($_[0] and $_[0] eq 'auto') {
+        return '0e0';
+    }
+
+    return $self->$next(@_);
+};
+
 =head2 captured_to_args
 
 =cut
 
 sub captured_to_args {
-    my $self = shift;
-    my $file = shift;
-
-    return {
-        file => $file,
-        parent => $self,
-        root => $self,
-    };
+    return { file => $_[1] };
 }
 
 =head2 generate

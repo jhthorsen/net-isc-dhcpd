@@ -193,7 +193,7 @@ sub parse {
             my $add = 'add_' .lc +(ref($child) =~ /::(\w+)$/)[0];
             my $new = $self->$add( $child->captured_to_args(@c) );
 
-            $n += $new->parse if(@_ = $new->children);
+            $n += $new->parse('auto') if(@_ = $new->children);
 
             last CHILD;
         }
