@@ -46,23 +46,13 @@ has file => (
     },
 );
 
-=head2 filehandle
-
- $glob = $self->filehandle;
- $bool = $self->has_filehandle;
- $self->clear_filehandle;
-
-Holds the filehande to l<file>.
-
-=cut
-
-has filehandle => (
+has _filehandle => (
     is => 'ro',
     isa => 'GlobRef',
     lazy_build => 1,
 );
 
-sub _build_filehandle { shift->file->openr }
+sub _build__filehandle { shift->file->openr }
 
 has _parser => (
     is => 'ro',
@@ -76,16 +66,16 @@ has _parser => (
 
  $int = $self->parse;
 
-Read lines from L<filehandle>, and parses every lease it can find.
+Read lines from L<file>, and parses every lease it can find.
 Returns the number of leases found. Will add each found lease to L<leases>.
 
 =cut
 
 sub parse {
-    my $self   = shift;
-    my $fh     = $self->filehandle;
+    my $self = shift;
+    my $fh = $self->_filehandle;
     my $parser = $self->_parser;
-    my $n      = 0;
+    my $n = 0;
 
     LINE:
     while(++$n) {

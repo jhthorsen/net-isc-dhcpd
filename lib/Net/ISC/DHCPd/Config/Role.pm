@@ -34,7 +34,7 @@ The root node in the config tree.
 
 has root => (
     is => 'ro',
-    isa => 'Net::ISC::DHCPd::Config',
+    isa => 'Object',
     lazy => 1,
     weak_ref => 1,
     builder => '_build_root',
@@ -120,21 +120,43 @@ has endpoint => (
 
 sub _build_endpoint { qr" ^ \s* } \s* $ "x }
 
+has _filehandle => (
+    is => 'ro',
+    lazy_build => 1,
+);
+
+sub _build__filehandle {
+    my $self = shift;
+    my $file;
+
+    if($self->parent) {
+        return $self->parent->_filehandle;
+    }
+
+    $file = $self->file;
+
+    if($file->is_relative and !-e $file) {
+        $file = Path::Class::File->new($self->root->file->dir, $file);
+    }
+
+    return $file->openr;
+}
+
+
 =head1 METHODS
 
 =head2 parse
 
- $int = $self->parse;
+ $int = $self->parse
 
 Parses a current node recursively. Does this by reading line by line from
-L<$self-E<gt>root-E<gt>filehandle>, and use the rules from the possible
-child elements and endpoint.
+L<file>, and use the rules from the possible child elements and endpoint.
 
 =cut
 
 sub parse {
     my $self = shift;
-    my $fh = $self->root->filehandle;
+    my $fh = $self->_filehandle;
     my $endpoint = $self->endpoint;
     my $n = 0;
 

@@ -72,28 +72,6 @@ has file => (
     default => sub { Path::Class::File->new('', 'etc', 'dhcp3', 'dhcpd.conf') },
 );
 
-=head2 filehandle
-
- $glob = $self->filehandle;
- $bool = $self->has_filehandle;
- $self->clear_filehandle;
-
-Holds the filehande to l<file>.
-
-=cut
-
-has filehandle => (
-    is => 'ro',
-    lazy_build => 1,
-);
-
-sub _build_filehandle {
-    my $self = shift;
-    my $file = $self->file or confess 'file attribute needs to be set';
-    open my $FH, '<', $file or confess "cannot open $file: $!";
-    return $FH;
-}
-
 =head2 parent
 
  $self = $self->parent;
@@ -105,8 +83,7 @@ with an undef value. This is used to see that we are at the top level.
 
 has parent => (
     is => 'ro',
-    isa => 'Undef',
-    init_arg => undef,
+    isa => 'Undef|Net::ISC::DHCPd::Config', # TODO: Need to remove union
     default => sub { undef },
 );
 

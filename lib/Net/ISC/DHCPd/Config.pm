@@ -17,6 +17,7 @@ __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::Function
     Net::ISC::DHCPd::Config::OptionSpace
     Net::ISC::DHCPd::Config::Option
+    Net::ISC::DHCPd::Config::Include
     Net::ISC::DHCPd::Config::KeyValue
 /);
 

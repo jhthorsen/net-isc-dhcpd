@@ -30,15 +30,18 @@ __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::KeyValue
 /);
 
-=head2 filehandle
-
-This attribute has a builder, which handles relative paths.
-This might be changed in the future, if proven to be wrong.
-
-=cut
-
-sub _build_filehandle { shift->file->openr }
 sub _build_regex { qr{^\s* include \s "([^"]+)" ;}x }
+
+sub _build__filehandle {
+    my $self = shift;
+    my $file = $self->file;
+
+    if($file->is_relative and !-e $file) {
+        $file = Path::Class::File->new($self->root->file->dir, $file);
+    }
+
+    return $file->openr;
+}
 
 =head1 METHODS
 
@@ -48,11 +51,12 @@ sub _build_regex { qr{^\s* include \s "([^"]+)" ;}x }
 
 sub captured_to_args {
     my $self = shift;
+    my $file = shift;
 
     return {
-        file => Path::Class::File->new($_[0]),
-        root => $self->root,
+        file => $file,
         parent => $self,
+        root => $self,
     };
 }
 
