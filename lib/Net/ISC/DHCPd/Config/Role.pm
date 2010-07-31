@@ -216,12 +216,14 @@ construct the L<children> attribute.
 sub create_children {
     my $self = shift;
     my $meta = $self->meta;
-    my @list = @_;
+    my @children = @_;
 
-    for my $obj (@list) {
+    for my $obj (@children) {
         my $class = $obj; # copy classname
         my $name  = lc +($class =~ /::(\w+)$/)[0];
         my $attr  = $name .'s';
+
+        Class::MOP::load_class($class);
 
         unless($meta->get_attribute($attr)) {
             $meta->add_attribute($attr => (
@@ -249,15 +251,15 @@ sub create_children {
             });
         }
 
-        # replace class bareword with object in @list
+        # replace class bareword with object in @children
         $obj = $class->new;
     }
 
     unless(blessed $self) {
-        $meta->add_method(_build_children => sub { \@list });
+        $meta->add_method(_build_children => sub { \@children });
     }
 
-    return \@list;
+    return \@children;
 }
 
 =head2 generate_config_from_children

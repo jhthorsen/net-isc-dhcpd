@@ -16,9 +16,6 @@ See L<Net::ISC::DHCPd::Config> for synopsis.
 =cut
 
 use Moose;
-use Net::ISC::DHCPd::Config::Option;
-use Net::ISC::DHCPd::Config::Filename;
-use Net::ISC::DHCPd::Config::KeyValue;
 
 with 'Net::ISC::DHCPd::Config::Role';
 

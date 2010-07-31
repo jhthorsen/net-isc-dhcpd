@@ -52,13 +52,6 @@ Net::ISC::DHCPd::Config::Root - Role to parse and create ISC DHCPd config
 
 use Moose::Role;
 use MooseX::Types::Path::Class qw(File);
-use Net::ISC::DHCPd::Config::Host;
-use Net::ISC::DHCPd::Config::Subnet;
-use Net::ISC::DHCPd::Config::SharedNetwork;
-use Net::ISC::DHCPd::Config::Function;
-use Net::ISC::DHCPd::Config::OptionSpace;
-use Net::ISC::DHCPd::Config::Option;
-use Net::ISC::DHCPd::Config::KeyValue;
 
 with 'Net::ISC::DHCPd::Config::Role';
 

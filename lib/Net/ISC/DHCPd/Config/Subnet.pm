@@ -8,11 +8,6 @@ Net::ISC::DHCPd::Config::Subnet - Subnet config parameter
 
 use Moose;
 use NetAddr::IP;
-use Net::ISC::DHCPd::Config::Option;
-use Net::ISC::DHCPd::Config::Range;
-use Net::ISC::DHCPd::Config::Host;
-use Net::ISC::DHCPd::Config::Filename;
-use Net::ISC::DHCPd::Config::Pool;
 
 with 'Net::ISC::DHCPd::Config::Role';
 
