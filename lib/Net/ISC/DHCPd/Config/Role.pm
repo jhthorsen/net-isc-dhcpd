@@ -168,7 +168,7 @@ sub parse {
         }
     }
 
-    return $n ? $n : "0e0";
+    return $n ? $n : '0e0';
 }
 
 =head2 captured_to_args
@@ -212,12 +212,12 @@ sub create_children {
     for my $obj (@list) {
         my $class = $obj; # copy classname
         my $name  = lc +($class =~ /::(\w+)$/)[0];
-        my $attr  = $name ."s";
+        my $attr  = $name .'s';
 
         unless($meta->get_attribute($attr)) {
             $meta->add_attribute($attr => (
-                is => "rw",
-                isa => "ArrayRef",
+                is => 'rw',
+                isa => 'ArrayRef',
                 lazy => 1,
                 auto_deref => 1,
                 default => sub { [] },
@@ -267,7 +267,7 @@ sub generate_config_from_children {
     my @text;
 
     for(reverse $self->children) {
-        my($attr) = lc +((blessed $_) =~ /::(\w+)$/ )[0] ."s";
+        my($attr) = lc +((blessed $_) =~ /::(\w+)$/ )[0] .'s';
 
         for my $child ($self->$attr) {
             push @text, map { "$indent$_" } $child->generate;
