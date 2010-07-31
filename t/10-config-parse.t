@@ -18,7 +18,7 @@ my $time = timeit($count, sub {
     my $config = Net::ISC::DHCPd::Config->new(file => $config);
 
     is(ref $config, "Net::ISC::DHCPd::Config", "config object constructed");
-    is($config->parse, $lines, "all config lines parsed");
+    is($config->parse, $lines, "all config lines parsed") or BAIL_OUT 'failed to parse config';
 
     is(scalar(@_=$config->keyvalues), 3, "key values");
     is(scalar(@_=$config->optionspaces), 1, "option space");
