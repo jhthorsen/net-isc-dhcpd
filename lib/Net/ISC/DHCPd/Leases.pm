@@ -48,7 +48,7 @@ has file => (
 
 has _filehandle => (
     is => 'ro',
-    isa => 'GlobRef',
+    isa => 'IO::File',
     lazy_build => 1,
 );
 

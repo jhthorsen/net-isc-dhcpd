@@ -10,7 +10,7 @@ my $count  = $ENV{'COUNT'} || 1;
 my $config = "./t/data/dhcpd.conf";
 my $lines  = 51;
 
-plan tests => 1 + 24 * $count;
+plan tests => 1 + 28 * $count;
 
 use_ok("Net::ISC::DHCPd::Config");
 
