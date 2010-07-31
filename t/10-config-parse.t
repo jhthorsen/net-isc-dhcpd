@@ -8,7 +8,7 @@ use Test::More;
 
 my $count  = $ENV{'COUNT'} || 1;
 my $config = "./t/data/dhcpd.conf";
-my $lines  = 49;
+my $lines  = 51;
 
 plan tests => 1 + 24 * $count;
 
@@ -25,6 +25,12 @@ my $time = timeit($count, sub {
     is(scalar(@_=$config->options), 1, "options");
     is(scalar(@_=$config->subnets), 1, "subnets");
     is(scalar(@_=$config->hosts), 1, "hosts");
+    is(scalar(@_=$config->includes), 1, "includes");
+
+    my $included = $config->includes->[0];
+    like($included->file, qr{foo-included.conf}, 'foo-included.conf got included');
+    is($included->parse, 6, 'included file got parsed');
+    is(scalar(@_=$included->hosts), 1, 'included file contains one host');
 
     my $space = $config->optionspaces->[0];
     is(scalar(@_=$space->options), 2, "option space options");
