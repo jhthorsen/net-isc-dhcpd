@@ -1,13 +1,14 @@
 #!/usr/bin/env perl
 use lib qw(lib);
 use Test::More;
-plan tests => 28;
+plan tests => 30;
 use_ok('Net::ISC::DHCPd');
 use_ok('Net::ISC::DHCPd::Config');
 use_ok('Net::ISC::DHCPd::Config::Filename');
 use_ok('Net::ISC::DHCPd::Config::Function');
 use_ok('Net::ISC::DHCPd::Config::Group');
 use_ok('Net::ISC::DHCPd::Config::Host');
+use_ok('Net::ISC::DHCPd::Config::Include');
 use_ok('Net::ISC::DHCPd::Config::KeyValue');
 use_ok('Net::ISC::DHCPd::Config::Option');
 use_ok('Net::ISC::DHCPd::Config::OptionSpace');
@@ -15,6 +16,7 @@ use_ok('Net::ISC::DHCPd::Config::OptionSpace::Option');
 use_ok('Net::ISC::DHCPd::Config::Pool');
 use_ok('Net::ISC::DHCPd::Config::Range');
 use_ok('Net::ISC::DHCPd::Config::Role');
+use_ok('Net::ISC::DHCPd::Config::Root');
 use_ok('Net::ISC::DHCPd::Config::SharedNetwork');
 use_ok('Net::ISC::DHCPd::Config::Subnet');
 use_ok('Net::ISC::DHCPd::Leases');

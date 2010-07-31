@@ -16,6 +16,7 @@ See L<Net::ISC::DHCPd::Config> for synopsis.
 =cut
 
 use Moose;
+use Path::Class::File;
 
 with 'Net::ISC::DHCPd::Config::Role';
 
@@ -29,7 +30,7 @@ with 'Net::ISC::DHCPd::Config::Role';
 
 has file => (
     is => 'rw',
-    isa => 'Str',
+    isa => 'Path::Class::File',
 );
 
 sub _build_regex { qr{^\s* filename \s (\S+) ;}x }
@@ -41,7 +42,7 @@ sub _build_regex { qr{^\s* filename \s (\S+) ;}x }
 =cut
 
 sub captured_to_args {
-    return { file => $_[1] };
+    return { file => Path::Class::File->new($_[1]) };
 }
 
 =head2 generate

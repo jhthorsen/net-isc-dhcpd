@@ -24,8 +24,8 @@ use Moose;
 use Moose::Util::TypeConstraints;
 use Net::ISC::DHCPd::Types ':all';
 use File::Basename;
-use File::Path;
 use File::Temp;
+use Path::Class::Dir;
 use Net::ISC::DHCPd::Process;
 
 our $VERSION = '0.07';
@@ -203,16 +203,13 @@ sub start {
 
     MAKE_DIR:
     for my $file ($self->config->file, $self->leases->file, $self->pidfile) {
-        my $dir = dirname $file;
+        my $dir = $file->dir;
         next if -d $dir;
 
-        eval {
-            File::Path::mkpath($dir);
-            1;
-        } or do {
-            $self->errstr("could not mkpath($dir): $@");
+        unless(eval { $dir->mkpath }) {
+            $self->errstr($@);
             return;
-        };
+        }
 
         unless(chown $user, $group, $dir) {
             $self->errstr("could not chown($user, $group $dir): $!");

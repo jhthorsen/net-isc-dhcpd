@@ -51,6 +51,7 @@ Net::ISC::DHCPd::Config::Root - Role to parse and create ISC DHCPd config
 =cut
 
 use Moose::Role;
+use Path::Class::File;
 use Net::ISC::DHCPd::Config::Host;
 use Net::ISC::DHCPd::Config::Subnet;
 use Net::ISC::DHCPd::Config::SharedNetwork;
@@ -73,8 +74,8 @@ Holds the path to the config file.
 
 has file => (
     is => 'rw',
-    isa => 'Str',
-    default => '/etc/dhcp3/dhcpd.conf',
+    isa => 'Path::Class::File',
+    default => sub { Path::Class::File->new('', 'etc', 'dhcp3', 'dhcpd.conf') },
 );
 
 =head2 filehandle

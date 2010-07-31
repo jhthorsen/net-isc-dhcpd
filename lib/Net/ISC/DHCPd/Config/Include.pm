@@ -16,6 +16,7 @@ See L<Net::ISC::DHCPd::Config> for synopsis.
 =cut
 
 use Moose;
+use Path::Class::File;
 
 with 'Net::ISC::DHCPd::Config::Root';
 
@@ -55,7 +56,7 @@ sub captured_to_args {
     my $self = shift;
 
     return {
-        file => $_[0],
+        file => Path::Class::File->new($_[0]),
         root => $self->root,
         parent => $self,
     };
