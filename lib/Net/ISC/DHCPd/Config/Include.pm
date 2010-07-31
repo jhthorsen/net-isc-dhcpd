@@ -37,13 +37,7 @@ This might be changed in the future, if proven to be wrong.
 
 =cut
 
-sub _build_filehandle {
-    my $self = shift;
-    my $file = $self->file or confess 'file attribute needs to be set';
-    open my $FH, '<', $file or confess "cannot open $file: $!";
-    return $FH;
-}
-
+sub _build_filehandle { shift->file->openr }
 sub _build_regex { qr{^\s* include \s "([^"]+)" ;}x }
 
 =head1 METHODS

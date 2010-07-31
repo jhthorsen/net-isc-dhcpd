@@ -62,12 +62,7 @@ has filehandle => (
     lazy_build => 1,
 );
 
-sub _build_filehandle {
-    my $self = shift;
-    my $file = $self->file or confess 'file attribute needs to be set';
-    open(my $FH, "<", $file) or confess "cannot open $file: $!";
-    return $FH;
-}
+sub _build_filehandle { shift->file->openr }
 
 has _parser => (
     is => 'ro',
