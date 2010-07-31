@@ -60,13 +60,7 @@ has quoted => (
     isa => 'Bool',
 );
 
-=head2 regex
-
-=cut
-
-has '+regex' => (
-    default => sub { qr{^\s* ([\w-]+) \s (.*) ;}x },
-);
+sub _build_regex { qr{^\s* ([\w-]+) \s (.*) ;}x }
 
 =head1 METHODS
 

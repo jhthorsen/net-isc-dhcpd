@@ -70,27 +70,15 @@ has prefix => (
     isa => 'Str',
 );
 
-=head2 regex
+sub _build_regex { qr{^\s* option \s space \s (.*) ;}x }
 
-=cut
-
-has '+regex' => (
-    default => sub { qr{^\s* option \s space \s (.*) ;}x },
-);
-
-=head2 endpoint
-
-=cut
-
-has '+endpoint' => (
-    default => sub {
-        qr{^
-            \s* option \s (\S+)
-            \s  code \s (\d+) \s =
-            \s  encapsulate \s (\S+) ;
-        }x;
-    },
-);
+sub _build_endpoint {
+    qr{^
+        \s* option \s (\S+)
+        \s  code \s (\d+) \s =
+        \s  encapsulate \s (\S+) ;
+    }x;
+}
 
 =head1 METHODS
 

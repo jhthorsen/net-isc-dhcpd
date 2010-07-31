@@ -38,13 +38,9 @@ A list of parsed L<Net::ISC::DHCPd::Config::Option> objects.
 
 A list of parsed L<Net::ISC::DHCPd::Config::Range> objects.
 
-=head2 regex
-
 =cut
 
-has '+regex' => (
-    default => sub { qr{^ \s* pool}x },
-);
+sub _build_regex { qr{^ \s* pool}x }
 
 =head1 METHODS
 

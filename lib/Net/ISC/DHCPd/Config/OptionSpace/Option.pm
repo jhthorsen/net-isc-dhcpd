@@ -73,16 +73,9 @@ has quoted => (
     isa => 'Bool',
 );
 
-=head2 regex
-
-=cut
-
-has '+regex' => (
-    lazy => 1,
-    default => sub {
-        qr{^\s* option \s (\S+)\.(\S+) \s code \s (\d+) \s = \s (.*) ;}x;
-    },
-);
+sub _build_regex {
+    qr{^\s* option \s (\S+)\.(\S+) \s code \s (\d+) \s = \s (.*) ;}x;
+}
 
 =head1 METHODS
 

@@ -65,9 +65,7 @@ A list of parsed L<Net::ISC::DHCPd::Config::Pool> objects.
 
 =cut
 
-has '+regex' => (
-    default => sub { qr{^ \s* subnet \s (\S+) \s netmask \s (\S+) }x },
-);
+sub _build_regex { qr{^ \s* subnet \s (\S+) \s netmask \s (\S+) }x }
 
 =head1 METHODS
 

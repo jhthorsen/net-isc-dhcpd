@@ -43,13 +43,9 @@ A list of parsed L<Net::ISC::DHCPd::Config::Host> objects.
 
 A list of parsed L<Net::ISC::DHCPd::Config::Option> objects.
 
-=head2 regex
-
 =cut
 
-has '+regex' => (
-    default => sub { qr{^ \s* group}x },
-);
+sub _build_regex { qr{^ \s* group}x }
 
 =head2 generate
 

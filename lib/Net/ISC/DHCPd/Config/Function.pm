@@ -48,21 +48,9 @@ has body => (
     trigger => sub { chomp shift->{'body'} },
 );
 
-=head2 children
+sub _build_children { [undef] }
 
-=cut
-
-has '+children' => (
-    default => sub { [undef] },
-);
-
-=head2 regex
-
-=cut
-
-has '+regex' => (
-    default => sub { qr{^\s* on \s (\w+)}x },
-);
+sub _build_regex { qr{^\s* on \s (\w+)}x }
 
 has _depth => (
     is => 'rw',

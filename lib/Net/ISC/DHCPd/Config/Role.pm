@@ -37,16 +37,18 @@ has root => (
     isa => 'Net::ISC::DHCPd::Config',
     lazy => 1,
     weak_ref => 1,
-    default => sub {
-        my $obj = shift;
-
-        while(my $tmp = $obj->parent) {
-            ref($obj = $tmp) eq "Net::ISC::DHCPd::Config" and last;
-        }
-
-        return $obj;
-    },
+    builder => '_build_root',
 );
+
+sub _build_root {
+    my $obj = shift;
+
+    while(my $tmp = $obj->parent) {
+        blessed($obj = $tmp) eq 'Net::ISC::DHCPd::Config' and last;
+    }
+
+    return $obj;
+}
 
 =head2 depth
 
@@ -58,19 +60,21 @@ has depth => (
     is => 'ro',
     isa => 'Int',
     lazy => 1,
-    default => sub {
-        my $self = shift;
-        my $obj = $self;
-        my $i = 0;
-
-        while($obj = $obj->parent) {
-            $i++;
-            last if($obj == $self->root);
-        }
-
-        return $i;
-    },
+    builder => '_build_depth',
 );
+
+sub _build_depth {
+    my $self = shift;
+    my $obj = $self;
+    my $i = 0;
+
+    while($obj = $obj->parent) {
+        $i++;
+        last if($obj == $self->root);
+    }
+
+    return $i;
+}
 
 =head2 children
 
@@ -83,8 +87,10 @@ has children => (
     isa => 'ArrayRef',
     lazy => 1,
     auto_deref => 1,
-    default => sub { [] },
+    builder => '_build_children',
 );
+
+sub _build_children { [] }
 
 =head2 regex
 
@@ -95,6 +101,7 @@ Regex to match for the node to be added.
 has regex => (
     is => 'ro',
     isa => 'RegexpRef',
+    builder => '_build_regex',
 );
 
 =head2 endpoint
@@ -108,8 +115,10 @@ Will not be used if the node does not have any possible L<children>.
 has endpoint => (
     is => 'ro',
     isa => 'Maybe[RegexpRef]',
-    default => sub { qr" ^ \s* } \s* $ "x },
+    builder => '_build_endpoint',
 );
+
+sub _build_endpoint { qr" ^ \s* } \s* $ "x }
 
 =head1 METHODS
 
@@ -124,10 +133,10 @@ child elements and endpoint.
 =cut
 
 sub parse {
-    my $self     = shift;
-    my $fh       = $self->root->filehandle;
+    my $self = shift;
+    my $fh = $self->root->filehandle;
     my $endpoint = $self->endpoint;
-    my $n        = 0;
+    my $n = 0;
 
     LINE:
     while(++$n) {
@@ -159,7 +168,7 @@ sub parse {
         CHILD:
         for my $child ($self->children) {
             my @c   = $line =~ $child->regex or next CHILD;
-            my $add = "add_" .lc +(ref($child) =~ /::(\w+)$/)[0];
+            my $add = 'add_' .lc +(ref($child) =~ /::(\w+)$/)[0];
             my $new = $self->$add( $child->captured_to_args(@c) );
 
             $n += $new->parse if(@_ = $new->children);
@@ -245,9 +254,7 @@ sub create_children {
     }
 
     unless(blessed $self) {
-        $meta->add_attribute($meta->get_attribute('children')->clone(
-            default => sub { \@list },
-        ));
+        $meta->add_method(_build_children => sub { \@list });
     }
 
     return \@list;

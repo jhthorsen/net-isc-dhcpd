@@ -51,13 +51,7 @@ has name => (
     isa => 'Str',
 );
 
-=head2 regex
-
-=cut
-
-has '+regex' => (
-    default => sub { qr{^ \s* host \s (\S+)}x },
-);
+sub _build_regex { qr{^ \s* host \s (\S+)}x }
 
 =head1 METHODS
 

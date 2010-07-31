@@ -34,13 +34,9 @@ A list of parsed L<Net::ISC::DHCPd::Config::Subnet> objects.
 
 A list of parsed L<Net::ISC::DHCPd::Config::KeyValue> objects.
 
-=head2 regex
-
 =cut
 
-has '+regex' => (
-    default => sub { qr{^\s* shared-network}x },
-);
+sub _build_regex { qr{^\s* shared-network}x }
 
 =head1 METHODS
 
