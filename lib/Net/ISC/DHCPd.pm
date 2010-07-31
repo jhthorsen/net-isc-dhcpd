@@ -22,11 +22,11 @@ See tests for more documentation.
 
 use Moose;
 use Moose::Util::TypeConstraints;
+use MooseX::Types::Path::Class qw(File);
+use Net::ISC::DHCPd::Process;
 use Net::ISC::DHCPd::Types ':all';
-use File::Basename;
 use File::Temp;
 use Path::Class::Dir;
-use Net::ISC::DHCPd::Process;
 
 our $VERSION = '0.07';
 
@@ -110,8 +110,10 @@ Default: /var/run/dhcp3-server/dhcpd.pid
 
 has pidfile => (
     is => 'ro',
-    isa => 'Str',
-    default => '/var/run/dhcp3-server/dhcpd.pid',
+    isa => File,
+    default => sub {
+        Path::Class::File->new('', 'var', 'run', 'dhcp3-server', 'dhcpd.pid');
+    },
 );
 
 =head2 process

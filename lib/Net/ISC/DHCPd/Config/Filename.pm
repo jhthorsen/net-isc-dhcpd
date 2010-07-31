@@ -17,6 +17,7 @@ See L<Net::ISC::DHCPd::Config> for synopsis.
 
 use Moose;
 use Path::Class::File;
+use MooseX::Types::Path::Class qw(File);
 
 with 'Net::ISC::DHCPd::Config::Role';
 
@@ -30,7 +31,8 @@ with 'Net::ISC::DHCPd::Config::Role';
 
 has file => (
     is => 'rw',
-    isa => 'Path::Class::File',
+    isa => File,
+    coerce => 1,
 );
 
 sub _build_regex { qr{^\s* filename \s (\S+) ;}x }

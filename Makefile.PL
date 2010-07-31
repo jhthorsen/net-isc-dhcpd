@@ -7,6 +7,7 @@ requires q(File::Temp) => 0.20;
 requires q(IO::Pty) => 1.00;
 requires q(Moose) => 0.90;
 requires q(MooseX::Types) => 0.12;
+requires q(MooseX::Types::Path::Class) => 0.05;
 requires q(NetAddr::IP) => 4.0;
 requires q(Path::Class) => 0.19;
 requires q(POE::Filter::DHCPd::Lease) => 0.04;

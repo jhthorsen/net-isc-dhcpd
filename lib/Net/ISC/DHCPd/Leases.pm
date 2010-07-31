@@ -9,6 +9,7 @@ Net::ISC::DHCPd::Leases - Parse ISC DHCPd leases
 use Moose;
 use Net::ISC::DHCPd::Leases::Lease;
 use POE::Filter::DHCPd::Lease;
+use MooseX::Types::Path::Class qw(File);
 
 =head1 OBJECT ATTRIBUTES
 
@@ -38,8 +39,11 @@ Default: "/var/lib/dhcp3/dhcpd.leases"
 
 has file => (
     is => 'rw',
-    isa => 'Str',
-    default => "/var/lib/dhcp3/dhcpd.leases",
+    isa => File,
+    coerce => 1,
+    default => sub {
+        Path::Class::File->new('', 'var', 'lib', 'dhcp3', 'dhcpd.leases');
+    },
 );
 
 =head2 filehandle
