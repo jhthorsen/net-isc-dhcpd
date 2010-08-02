@@ -64,6 +64,8 @@ around shutdown_server => \&Net::ISC::DHCPd::OMAPI::Actions::_around;
 
 Most of the documentation is taken from C<dhcpd(8)>.
 
+=head1 COPYRIGHT & LICENSE
+
 =head1 AUTHOR
 
 See L<Net::ISC::DHCPd>.

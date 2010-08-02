@@ -74,9 +74,11 @@ Moose::Exporter->setup_import_methods(
     also => 'Moose',
 );
 
+=head1 COPYRIGHT & LICENSE
+
 =head1 AUTHOR
 
-See L<Net::ISC::DHCPd>
+See L<Net::ISC::DHCPd>.
 
 =cut
 

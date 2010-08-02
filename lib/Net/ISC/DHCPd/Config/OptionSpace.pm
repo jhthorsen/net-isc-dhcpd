@@ -23,7 +23,7 @@ __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::OptionSpace::Option
 /);
 
-=head1 OBJECT ATTRIBUTES
+=head1 ATTRIBUTES
 
 =head2 options
 
@@ -83,6 +83,8 @@ sub _build_endpoint {
 
 =head2 captured_to_args
 
+See L<Net::ISC::DHCPd::Config::Role::captured_to_args()>.
+
 =cut
 
 sub captured_to_args {
@@ -90,6 +92,8 @@ sub captured_to_args {
 }
 
 =head2 captured_endpoint
+
+See L<Net::ISC::DHCPd::Config::Role::captured_endpoint()>.
 
 =cut
 
@@ -106,6 +110,8 @@ sub captured_endpoint {
 
 =head2 generate
 
+See L<Net::ISC::DHCPd::Config::Role::generate()>.
+
 =cut
 
 sub generate {
@@ -121,6 +127,8 @@ sub generate {
         ),
     );
 }
+
+=head1 COPYRIGHT & LICENSE
 
 =head1 AUTHOR
 

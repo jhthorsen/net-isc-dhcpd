@@ -19,7 +19,7 @@ use Moose;
 
 with 'Net::ISC::DHCPd::Config::Role';
 
-=head1 OBJECT ATTRIBUTES
+=head1 ATTRIBUTES
 
 =head2 name
 
@@ -81,6 +81,8 @@ sub _build_regex {
 
 =head2 captured_to_args
 
+See L<Net::ISC::DHCPd::Config::Role::captured_to_args()>.
+
 =cut
 
 sub captured_to_args {
@@ -103,6 +105,8 @@ sub captured_to_args {
 
 =head2 generate
 
+See L<Net::ISC::DHCPd::Config::Role::generate()>.
+
 =cut
 
 sub generate {
@@ -115,6 +119,8 @@ sub generate {
         $self->value,
     );
 }
+
+=head1 COPYRIGHT & LICENSE
 
 =head1 AUTHOR
 

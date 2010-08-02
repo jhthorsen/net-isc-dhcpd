@@ -4,7 +4,7 @@ package Net::ISC::DHCPd::Process;
 
 Net::ISC::DHCPd::Process - Skeleton process class
 
-=head2 USAGE
+=head1 SYNOPSIS
 
  package MyProcessRole;
  use Moose;
@@ -60,6 +60,8 @@ Args:
 =head2 kill
 
  $bool = $self->kill($signal)
+
+=head1 COPYRIGHT & LICENSE
 
 =head1 AUTHOR
 

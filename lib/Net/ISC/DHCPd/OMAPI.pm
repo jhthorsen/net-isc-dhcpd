@@ -291,9 +291,11 @@ sub new_object {
     return $class->new(parent => $self, %args);
 }
 
+=head1 COPYRIGHT & LICENSE
+
 =head1 AUTHOR
 
-Jan Henning Thorsen
+See L<Net::ISC::DHCPd>.
 
 =cut
 

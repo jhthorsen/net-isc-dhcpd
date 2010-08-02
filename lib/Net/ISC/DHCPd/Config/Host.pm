@@ -25,7 +25,7 @@ __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::KeyValue
 /);
 
-=head1 OBJECT ATTRIBUTES
+=head1 ATTRIBUTES
 
 =head2 options
 
@@ -54,6 +54,8 @@ sub _build_regex { qr{^ \s* host \s (\S+)}x }
 
 =head2 captured_to_args
 
+See L<Net::ISC::DHCPd::Config::Role::captured_to_args()>.
+
 =cut
 
 sub captured_to_args {
@@ -61,6 +63,8 @@ sub captured_to_args {
 }
 
 =head2 generate
+
+See L<Net::ISC::DHCPd::Config::Role::generate()>.
 
 =cut
 
@@ -73,6 +77,8 @@ sub generate {
         "}",
     );
 }
+
+=head1 COPYRIGHT & LICENSE
 
 =head1 AUTHOR
 

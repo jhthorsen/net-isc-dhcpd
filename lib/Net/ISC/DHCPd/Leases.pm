@@ -11,7 +11,7 @@ use Net::ISC::DHCPd::Leases::Lease;
 use POE::Filter::DHCPd::Lease;
 use MooseX::Types::Path::Class qw(File);
 
-=head1 OBJECT ATTRIBUTES
+=head1 ATTRIBUTES
 
 =head2 leases
 
@@ -59,8 +59,6 @@ has _parser => (
     isa => 'Object',
     default => sub { POE::Filter::DHCPd::Lease->new },
 );
-
-=head1 METHODS
 
 =head1 METHODS
 
@@ -141,9 +139,11 @@ sub add_lease {
     return push @{$self->leases}, Net::ISC::DHCPd::Leases::Lease->new(\%lease);
 }
 
+=head1 COPYRIGHT & LICENSE
+
 =head1 AUTHOR
 
-Jan Henning Thorsen
+See L<Net::ISC::DHCPd>.
 
 =cut
 

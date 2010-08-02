@@ -4,50 +4,6 @@ package Net::ISC::DHCPd::Config::Root;
 
 Net::ISC::DHCPd::Config::Root - Role to parse and create ISC DHCPd config
 
-=head1 POSSIBLE CONFIG TREE
-
- Config
-  |- Config::Include
-  |- Config::Subnet
-  |  |- Config::Option
-  |  |- Config::Declaration
-  |  |- Config::Range
-  |  |- Config::Host
-  |  |  |- ...
-  |  |- Config::Filename
-  |  '- Config::Pool
-  |     |- Option
-  |     |- Range
-  |     '- KeyValue
-  |
-  |- Config::SharedNetwork
-  |  |- Config::Subnet
-  |  |  |- ...
-  |  |- Config::Declaration
-  |  '- Config::KeyValue
-  |
-  |- Config::Group
-  |  |- Config::Host
-  |  |  |- ...
-  |  |- Config::Option
-  |  |- Config::Declaration
-  |  '- Config::KeyValue
-  |
-  |- Config::Host
-  |  |- Config::Option
-  |  |- Config::Filename
-  |  |- Config::Declaration
-  |  '- Config::KeyValue
-  |
-  |- Config::OptionSpace
-  |  '- Config::OptionSpace::Option
-  |
-  |- Config::Option
-  |- Config::Declaration *
-  |- Config::Function
-  |- Config::KeyValue
-  '- Config::Single      *
-
 =cut
 
 use Moose::Role;
@@ -55,7 +11,7 @@ use MooseX::Types::Path::Class qw(File);
 
 with 'Net::ISC::DHCPd::Config::Role';
 
-=head1 OBJECT ATTRIBUTES
+=head1 ATTRIBUTES
 
 =head2 file
 
@@ -113,9 +69,11 @@ sub generate {
     shift->generate_config_from_children ."\n";
 }
 
+=head1 COPYRIGHT & LICENSE
+
 =head1 AUTHOR
 
-Jan Henning Thorsen
+See L<Net::ISC::DHCPd>.
 
 =cut
 

@@ -12,7 +12,7 @@ See L<Net::ISC::DHCPd::Config> for synopsis.
 
 use Moose::Role;
 
-=head1 OBJECT ATTRIBUTES
+=head1 ATTRIBUTES
 
 =head2 parent
 
@@ -194,7 +194,7 @@ sub parse {
             my $add = 'add_' .lc +(ref($child) =~ /::(\w+)$/)[0];
             my $new = $self->$add( $child->captured_to_args(@c) );
 
-            $n += $new->parse('auto') if(@_ = $new->children);
+            $n += $new->parse('recursive') if(@_ = $new->children);
 
             last CHILD;
         }
@@ -312,6 +312,8 @@ sub generate_config_from_children {
 
     return join "\n", @text;
 }
+
+=head1 COPYRIGHT & LICENSE
 
 =head1 AUTHOR
 

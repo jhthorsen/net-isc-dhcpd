@@ -173,9 +173,11 @@ sub get_type_list {
     return @type_list;
 }
 
+=head1 COPYRIGHT & LICENSE
+
 =head1 AUTHOR
 
-See L<Net::ISC::DHCPd>
+See L<Net::ISC::DHCPd>.
 
 =cut
 

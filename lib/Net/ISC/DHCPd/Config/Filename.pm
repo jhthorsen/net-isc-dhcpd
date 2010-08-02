@@ -21,11 +21,13 @@ use MooseX::Types::Path::Class qw(File);
 
 with 'Net::ISC::DHCPd::Config::Role';
 
-=head1 OBJECT ATTRIBUTES
+=head1 ATTRIBUTES
 
 =head2 file
 
  $string = $self->file;
+
+Holds a L<Path::Class::File> object.
 
 =cut
 
@@ -41,6 +43,8 @@ sub _build_regex { qr{^\s* filename \s (\S+) ;}x }
 
 =head2 captured_to_args
 
+See L<Net::ISC::DHCPd::Config::Role::captured_to_args()>.
+
 =cut
 
 sub captured_to_args {
@@ -49,11 +53,15 @@ sub captured_to_args {
 
 =head2 generate
 
+See L<Net::ISC::DHCPd::Config::Role::generate()>.
+
 =cut
 
 sub generate {
     return sprintf q(filename %s;), shift->file;
 }
+
+=head1 COPYRIGHT & LICENSE
 
 =head1 AUTHOR
 

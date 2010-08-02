@@ -19,7 +19,7 @@ use Moose;
 
 with 'Net::ISC::DHCPd::Config::Role';
 
-=head1 OBJECT ATTRIBUTES
+=head1 ATTRIBUTES
 
 =head2 name
 
@@ -143,6 +143,8 @@ See L<Net::ISC::DHCPd::Config::Role::generate()>.
 sub generate {
     return sprintf 'on %s {', $_[0]->name), $_[0]->body, '}';
 }
+
+=head1 COPYRIGHT & LICENSE
 
 =head1 AUTHOR
 

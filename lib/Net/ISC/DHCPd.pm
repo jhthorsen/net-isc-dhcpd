@@ -30,7 +30,7 @@ use Path::Class::Dir;
 
 our $VERSION = '0.07';
 
-=head1 OBJECT ATTRIBUTES
+=head1 ATTRIBUTES
 
 =head2 config
 
@@ -102,7 +102,7 @@ has binary => (
 
 =head2 pidfile
 
- $path_to_pidfile = $self->pidfile;
+ $path_class_object = $self->pidfile;
 
 Default: /var/run/dhcp3-server/dhcpd.pid
 
@@ -404,6 +404,8 @@ Nito Martinez
 Alexey Illarionov
 
 Patrick
+
+napetrov
 
 =cut
 

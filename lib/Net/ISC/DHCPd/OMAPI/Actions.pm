@@ -330,6 +330,8 @@ sub _cmd {
     return @buffer;
 }
 
+=head1 COPYRIGHT & LICENSE
+
 =head1 AUTHOR
 
 See L<Net::ISC::DHCPd>.

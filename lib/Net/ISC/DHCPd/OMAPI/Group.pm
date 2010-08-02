@@ -69,6 +69,8 @@ omapi_attr statements => (
 
 Most of the documentation is taken from C<dhcpd(8)>.
 
+=head1 COPYRIGHT & LICENSE
+
 =head1 AUTHOR
 
 See L<Net::ISC::DHCPd>.

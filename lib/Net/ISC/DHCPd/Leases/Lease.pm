@@ -16,9 +16,11 @@ extends 'Net::ISC::DHCPd::OMAPI::Lease';
 
 has '+parent' => ( required => 0 );
 
+=head1 COPYRIGHT & LICENSE
+
 =head1 AUTHOR
 
-Jan Henning Thorsen
+See L<Net::ISC::DHCPd>.
 
 =cut
 

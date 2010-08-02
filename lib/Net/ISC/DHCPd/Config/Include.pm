@@ -65,13 +65,24 @@ sub _build__filehandle {
 
 =head1 METHODS
 
+=head2 parse
+
+This around method modifier will stop the parser when parsing
+recursively, which will require the user to manually parse the
+included files from the config. Reason for this is that the
+C<parse()> method returns the number of lines in a single file.
+and counting lines from included files will break this behaviour.
+
+See also L<Net::ISC::DHCPd::Config::Role::parse> and
+L<Net::ISC::DHCPd::Config::SYNOPSIS>.
+
 =cut
 
 around parse => sub {
     my $next = shift;
     my $self = shift;
 
-    if($_[0] and $_[0] eq 'auto') {
+    if($_[0] and $_[0] eq 'recursive') {
         return '0e0';
     }
 
@@ -79,6 +90,8 @@ around parse => sub {
 };
 
 =head2 captured_to_args
+
+See L<Net::ISC::DHCPd::Config::Role::captured_to_args()>.
 
 =cut
 
@@ -91,6 +104,8 @@ sub captured_to_args {
 This method can either result in C<include ...;> or the whole
 config of the included file. See L</generate_with_include> for how
 to control the behaviour.
+
+See also L<Net::ISC::DHCPd::Config::Role::generate()>.
 
 =cut
 
@@ -106,6 +121,8 @@ sub generate {
         return qq(include ") .$self->file .qq(";);
     }
 }
+
+=head1 COPYRIGHT & LICENSE
 
 =head1 AUTHOR
 

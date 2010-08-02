@@ -42,6 +42,8 @@ sub has_action {
     return grep { $_[1] eq $_ } @{ $_[0]->actions };
 }
 
+=head1 COPYRIGHT & LICENSE
+
 =head1 AUTHOR
 
 See L<Net::ISC::DHCPd>.
