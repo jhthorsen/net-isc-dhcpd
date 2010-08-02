@@ -50,11 +50,7 @@ See L<Net::ISC::DHCPd::Config::Role::generate()>.
 =cut
 
 sub generate {
-    return(
-        'group {',
-        shift->generate_config_from_children,
-        '}',
-    );
+    return 'group {', shift->generate_config_from_children, '}';
 }
 
 =head1 COPYRIGHT & LICENSE

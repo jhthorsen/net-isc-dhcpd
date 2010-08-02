@@ -48,9 +48,9 @@ See L<Net::ISC::DHCPd::Config::Role::generate()>.
 
 sub generate {
     return(
-        "shared-network {",
+        'shared-network {',
         shift->generate_config_from_children,
-        "}",
+        '}',
     );
 }
 

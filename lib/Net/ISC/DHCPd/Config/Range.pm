@@ -77,7 +77,8 @@ See L<Net::ISC::DHCPd::Config::Role::generate()>.
 =cut
 
 sub generate {
-    return sprintf("range %s %s;", $_[0]->lower->addr, $_[0]->upper->addr);
+    my $self = shift;
+    return 'range ' .$self->lower->addr .' ' .$self->upper->addr .';';
 }
 
 =head1 COPYRIGHT & LICENSE

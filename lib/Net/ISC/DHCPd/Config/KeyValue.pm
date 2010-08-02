@@ -93,13 +93,9 @@ See L<Net::ISC::DHCPd::Config::Role::generate()>.
 
 sub generate {
     my $self  = shift;
+    my $format = $self->quoted ? qq(%s "%s";) : qq(%s %s;);
 
-    if($self->quoted) {
-        return sprintf qq(%s "%s";), $self->name, $self->value;
-    }
-    else {
-        return sprintf qq(%s %s;), $self->name, $self->value;
-    }
+    return sprintf $format, $self->name, $self->value;
 }
 
 =head1 COPYRIGHT & LICENSE

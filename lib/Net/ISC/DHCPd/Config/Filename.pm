@@ -58,7 +58,7 @@ See L<Net::ISC::DHCPd::Config::Role::generate()>.
 =cut
 
 sub generate {
-    return sprintf q(filename %s;), shift->file;
+    return 'filename ' .shift->file .';';
 }
 
 =head1 COPYRIGHT & LICENSE

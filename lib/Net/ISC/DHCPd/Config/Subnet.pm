@@ -82,12 +82,12 @@ See L<Net::ISC::DHCPd::Config::Role::generate()>.
 
 sub generate {
     my $self = shift;
-    my $addr = $self->address;
+    my $net = $self->address;
 
     return(
-        sprintf("subnet %s netmask %s {", $addr->addr, $addr->mask),
+        'subnet ' .$net->addr .' netmask ' .$net->mask .' {',
         $self->generate_config_from_children,
-        "}",
+        '}',
     );
 }
 

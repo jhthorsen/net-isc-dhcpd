@@ -72,9 +72,9 @@ sub generate {
     my $self = shift;
 
     return(
-        sprintf('host %s {', $self->name),
+        'host ' .$self->name .' {',
         $self->generate_config_from_children,
-        "}",
+        '}',
     );
 }
 

@@ -141,7 +141,13 @@ See L<Net::ISC::DHCPd::Config::Role::generate()>.
 =cut
 
 sub generate {
-    return sprintf 'on %s {', $_[0]->name), $_[0]->body, '}';
+    my $self = shift;
+
+    return(
+        'on ' .$self->name .' {',
+        $self->body,
+        '}',
+    );
 }
 
 =head1 COPYRIGHT & LICENSE

@@ -112,7 +112,7 @@ See L<Net::ISC::DHCPd::Config::Role::generate()>.
 sub generate {
     my $self = shift;
 
-    sprintf("option %s.%s code %i = %s;",
+    return sprintf('option %s.%s code %i = %s;',
         $self->parent->prefix,
         $self->name,
         $self->code,
