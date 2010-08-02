@@ -1,6 +1,6 @@
 package Net::ISC::DHCPd::Config::Root;
 
-=head1 NAME 
+=head1 NAME
 
 Net::ISC::DHCPd::Config::Root - Role to parse and create ISC DHCPd config
 

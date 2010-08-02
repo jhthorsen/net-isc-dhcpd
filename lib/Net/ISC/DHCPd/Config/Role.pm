@@ -129,8 +129,9 @@ sub _build__filehandle {
     my $self = shift;
     my $file;
 
-    if($self->parent) {
-        return $self->parent->_filehandle;
+    # get filehandle from parent to prevent seeking file from beginning
+    if(my $parent = $self->parent) {
+        return $parent->_filehandle;
     }
 
     $file = $self->file;

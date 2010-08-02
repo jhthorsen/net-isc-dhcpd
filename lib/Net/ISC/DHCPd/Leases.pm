@@ -62,6 +62,19 @@ has _parser => (
 
 =head1 METHODS
 
+=head1 METHODS
+
+=head2 filehandle
+
+This method will be deprecated.
+
+=cut
+
+sub filehandle {
+    Carp::cluck('->filehandle is replaced with private attribute _filehandle');
+    shift->_filehandle;
+}
+
 =head2 parse
 
  $int = $self->parse;

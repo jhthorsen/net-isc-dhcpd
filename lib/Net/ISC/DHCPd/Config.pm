@@ -24,6 +24,19 @@ __PACKAGE__->create_children(qw/
 sub _build_root { $_[0] }
 sub _build_regex { qr{\x00} } # should not be used
 
+=head1 METHODS
+
+=head2 filehandle
+
+This method will be deprecated.
+
+=cut
+
+sub filehandle {
+    Carp::cluck('->filehandle is replaced with private attribute _filehandle');
+    shift->_filehandle;
+}
+
 =head1 AUTHOR
 
 Jan Henning Thorsen
