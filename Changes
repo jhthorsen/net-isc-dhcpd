@@ -6,6 +6,7 @@ Revision history for Net-ISC-DHCPd
          "include" statement. parsing of includes is a manual
          operation.
          Contributor: napetrov
+       - Add Function methods to manipulate body
        - Change filehandle is replaced with _filehandle
        - Change attributes holding a file is changed from Str
          to File (from MooseX::Types::Path::Class)
