@@ -1,6 +1,6 @@
 Revision history for Net-ISC-DHCPd
 
-0.08
+0.08     Mon Aug  2 14:03:35 CEST 2010
        - Add (RT59816) support for "include ...;"
          generate() can either flatten includes or just print the
          "include" statement. parsing of includes is a manual

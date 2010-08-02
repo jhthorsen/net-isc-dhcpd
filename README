@@ -2,7 +2,7 @@ NAME
     Net::ISC::DHCPd - Interacts with ISC DHCPd
 
 VERSION
-    0.07
+    0.08
 
 SYNOPSIS
      my $dhcpd = Net::ISC::DHCPd->new(
@@ -13,7 +13,7 @@ SYNOPSIS
 
     See tests for more documentation.
 
-OBJECT ATTRIBUTES
+ATTRIBUTES
   config
      $config_obj = $self->config
      $bool = $self->has_config;
@@ -38,7 +38,7 @@ OBJECT ATTRIBUTES
     Default: "dhcpd3"
 
   pidfile
-     $path_to_pidfile = $self->pidfile;
+     $path_class_object = $self->pidfile;
 
     Default: /var/run/dhcp3-server/dhcpd.pid
 
@@ -133,4 +133,6 @@ CONTRIBUTORS
     Alexey Illarionov
 
     Patrick
+
+    napetrov
 
