@@ -10,7 +10,7 @@ use Test::More;
 my $count = 1;
 my $text = do { local $/; <DATA> };
 
-plan tests => 1 + 2 * $count;
+plan tests => 1 + 2 * $count + 3;
 
 use_ok("Net::ISC::DHCPd::Config");
 
@@ -79,6 +79,31 @@ my $time = timeit($count, sub {
 });
 
 diag($count .": " .timestr($time));
+
+{
+    my $config = Net::ISC::DHCPd::Config->new;
+    my $include_file = 't/data/foo-included.conf';
+    my $include_text;
+
+    {
+        open my $INCLUDE, '<', $include_file or BAIL_OUT $!;
+        local $/;
+        $include_text = <$INCLUDE>;
+        $include_text =~ s/^\n+//m;
+        $include_text =~ s/\n+$//m;
+        $include_text .= "\n";
+    }
+
+    $config->add_include(file => $include_file);
+
+    is($config->generate, qq(include "$include_file";\n), 'include file generated');
+
+    $config->includes->[0]->generate_with_include(1);
+    like($config->generate, qr{forgot to parse}, 'include file content cannot be generated before parsed');
+
+    $config->includes->[0]->parse;
+    is($config->generate, "$include_text", 'include file content generated');
+}
 
 __DATA__
 ddns-update-style none;

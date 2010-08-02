@@ -30,6 +30,25 @@ __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::KeyValue
 /);
 
+=head1 ATTRIBUTES
+
+=head2 generate_with_include
+
+This attribute holds a boolean value. L</generate()> will result in
+
+    include "path/from/file/attribute";
+
+when false, and the included config if true. This attribute is false
+by default.
+
+=cut
+
+has generate_with_include => (
+    is => 'rw',
+    isa => 'Bool',
+    default => 0,
+);
+
 sub _build_regex { qr{^\s* include \s "([^"]+)" ;}x }
 sub _build_root { shift->parent }
 
@@ -69,10 +88,23 @@ sub captured_to_args {
 
 =head2 generate
 
+This method can either result in C<include ...;> or the whole
+config of the included file. See L</generate_with_include> for how
+to control the behaviour.
+
 =cut
 
 sub generate {
-    return sprintf q(include "%s";), shift->file;
+    my $self = shift;
+
+    if($self->generate_with_include) {
+        my $text = $self->generate_config_from_children;
+        return $text ? $text : "# forgot to parse " .$self->file ."?";
+
+    }
+    else {
+        return qq(include ") .$self->file .qq(";);
+    }
 }
 
 =head1 AUTHOR

@@ -295,14 +295,18 @@ Loops all child node and calls L<generate()>.
 
 sub generate_config_from_children {
     my $self = shift;
-    my $indent = $self->parent ? (' ' x 4) : '';
+    my $indent = '';
     my @text;
+
+    if($self->parent and !$self->can('generate_with_include')) {
+        $indent = ' ' x 4;
+    }
 
     for(reverse $self->children) {
         my($attr) = lc +((blessed $_) =~ /::(\w+)$/ )[0] .'s';
 
-        for my $child ($self->$attr) {
-            push @text, map { "$indent$_" } $child->generate;
+        for my $node ($self->$attr) {
+            push @text, map { "$indent$_" } $node->generate;
         }
     }
 
