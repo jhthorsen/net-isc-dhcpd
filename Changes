@@ -1,5 +1,13 @@
 Revision history for Net-ISC-DHCPd
 
+0.08
+       - Add (RT59816) support for "include ...;"
+         Contributor: napetrov
+       - Change filehandle is replaced with _filehandle
+       - Change attributes holding a file is changed from Str
+         to File (from MooseX::Types::Path::Class)
+       - Change +attr=>default with builders
+
 0.07     Fri Jun 18 01:30:15 CEST 2010
        - Add (RT58391) OMAPI lookup by hardware_address, even though
          it does not appear to described in the dhcpd manual (?)
