@@ -12,6 +12,8 @@ See L<Net::ISC::DHCPd::Config> for synopsis.
 
 use Moose::Role;
 
+requires 'generate';
+
 =head1 ATTRIBUTES
 
 =head2 parent
@@ -108,7 +110,7 @@ has regex => (
 
 Regex to search for before ending the current node block.
 
-Will not be used if the node does not have any possible L<children>.
+Will not be used if the node does not have any possible L</children>.
 
 =cut
 
@@ -151,7 +153,7 @@ sub _build__filehandle {
  $int = $self->parse
 
 Parses a current node recursively. Does this by reading line by line from
-L<file>, and use the rules from the possible child elements and endpoint.
+L</file>, and use the rules from the possible child elements and endpoint.
 
 =cut
 
@@ -207,7 +209,7 @@ sub parse {
 
  $hash_ref = $self->captured_to_args(@list);
 
-Called when a L<regex> matches, with a list of captured strings.
+Called when a L</regex> matches, with a list of captured strings.
 
 =cut
 
@@ -219,7 +221,7 @@ sub captured_to_args {
  
  $self->captured_endpoint(@list)
 
-Called when a L<endpoint> matches, with a list of captured strings.
+Called when a L</endpoint> matches, with a list of captured strings.
 
 =cut
 
@@ -232,7 +234,7 @@ sub captured_endpoint {
  My::Class->create_children(@classnames)
 
 This method is used internally to create extra attributes in classes and
-construct the L<children> attribute.
+construct the L</children> attribute.
 
 =cut
 
@@ -289,7 +291,7 @@ sub create_children {
 
  $config_text = $self->generate_config_from_children;
 
-Loops all child node and calls L<generate()>.
+Loops all child node and calls L</generate>.
 
 =cut
 
@@ -312,6 +314,14 @@ sub generate_config_from_children {
 
     return join "\n", @text;
 }
+
+=head2 generate
+
+    @lines = $self->generate;
+
+A C<generate()> must be defined in the consuming class. This method should
+a list of lines (zero or more), which will be indented and concatenated
+inside L</generate_config_from_children>.
 
 =head1 COPYRIGHT & LICENSE
 

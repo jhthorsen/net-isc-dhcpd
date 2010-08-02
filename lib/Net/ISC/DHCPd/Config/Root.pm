@@ -32,7 +32,7 @@ has file => (
 
  $self = $self->parent;
 
-This override L<Net::ISC::DHCPd::Config::Role::parent> attribute
+This override L<Net::ISC::DHCPd::Config::Role/parent> attribute
 with an undef value. This is used to see that we are at the top level.
 
 =cut

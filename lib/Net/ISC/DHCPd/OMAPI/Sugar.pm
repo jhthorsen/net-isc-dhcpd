@@ -8,9 +8,7 @@ Net::ISC::DHCPd::OMAPI::Sugar - Moose sugar for omapi classes
 
  use Net::ISC::DHCPd::OMAPI::Sugar; # not use Moose
 
- omapi_attr foo => (
-    isa => State,
- );
+ omapi_attr foo => ( isa => State, ... );
 
 =cut
 
@@ -34,7 +32,8 @@ C<%attr> is by default:
    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
  )
 
-It will also set "coerce => 1", when "isa" is one of L<MOOSE TYPES>.
+It will also set "coerce => 1", when "isa" is one of L<Moose>
+types from L<Net::ISC::DHCPd::Types>.
 
 =cut
 

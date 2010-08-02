@@ -77,8 +77,9 @@ sub filehandle {
 
  $int = $self->parse;
 
-Read lines from L<file>, and parses every lease it can find.
-Returns the number of leases found. Will add each found lease to L<leases>.
+Read lines from L</file>, and parses every lease it can find.
+Returns the number of leases found. Will add each found lease to
+L</leases>.
 
 =cut
 
@@ -112,7 +113,7 @@ sub parse {
  $bool = $self->add_lease($lease_obj);
 
 All another L<Net::ISC::DHCPd::Leases::Lease> object to the
-L<leases> attribute>.
+L</leases> attribute>.
 
 =cut
 

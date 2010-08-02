@@ -60,7 +60,7 @@ has code => (
 =head2 prefix
 
 Human readable prefix of all child
-L<Net::ISC::DHCPd::Config::OptionsSpace::Option> objects.
+L<Net::ISC::DHCPd::Config::OptionSpace::Option> objects.
 
 =cut
 
@@ -83,7 +83,7 @@ sub _build_endpoint {
 
 =head2 captured_to_args
 
-See L<Net::ISC::DHCPd::Config::Role::captured_to_args()>.
+See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 
 =cut
 
@@ -93,7 +93,7 @@ sub captured_to_args {
 
 =head2 captured_endpoint
 
-See L<Net::ISC::DHCPd::Config::Role::captured_endpoint()>.
+See L<Net::ISC::DHCPd::Config::Role/captured_endpoint>.
 
 =cut
 
@@ -110,7 +110,7 @@ sub captured_endpoint {
 
 =head2 generate
 
-See L<Net::ISC::DHCPd::Config::Role::generate()>.
+See L<Net::ISC::DHCPd::Config::Role/generate>.
 
 =cut
 

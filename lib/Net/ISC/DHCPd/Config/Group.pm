@@ -45,7 +45,7 @@ sub _build_regex { qr{^ \s* group}x }
 
 =head2 generate
 
-See L<Net::ISC::DHCPd::Config::Role::generate()>.
+See L<Net::ISC::DHCPd::Config::Role/generate>.
 
 =cut
 

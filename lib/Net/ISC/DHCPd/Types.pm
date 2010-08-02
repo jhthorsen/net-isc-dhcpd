@@ -8,7 +8,6 @@ Net::ISC::DHCPd::Types - Moose type constraint declaration
 
  use Net::ISC::DHCPd::Types @types;
  has foo => ( isa => SomeType, ... );
- 1;
 
 =cut
 

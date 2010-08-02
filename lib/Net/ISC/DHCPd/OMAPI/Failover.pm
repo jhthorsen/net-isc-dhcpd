@@ -260,7 +260,7 @@ in this failover relationship.
 
 Actions: examine.
 
-See L<is_primary()>.
+See L</is_primary>.
 
 =cut
 

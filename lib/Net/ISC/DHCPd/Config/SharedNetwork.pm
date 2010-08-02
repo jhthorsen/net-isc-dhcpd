@@ -42,7 +42,7 @@ sub _build_regex { qr{^\s* shared-network}x }
 
 =head2 generate
 
-See L<Net::ISC::DHCPd::Config::Role::generate()>.
+See L<Net::ISC::DHCPd::Config::Role/generate>.
 
 =cut
 

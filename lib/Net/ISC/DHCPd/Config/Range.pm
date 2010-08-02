@@ -15,7 +15,7 @@ See L<Net::ISC::DHCPd::Config> for synopsis.
 
 =head1 NOTES
 
-L<upper> and L<lower> attributes might change from L<NetAddr::IP> to
+L</upper> and L</lower> attributes might change from L<NetAddr::IP> to
 plain strings in the future.
 
 =cut
@@ -59,7 +59,7 @@ sub _build_regex { qr{^\s* range \s (\S+) \s (\S*) ;}x }
 
 =head2 captured_to_args
 
-See L<Net::ISC::DHCPd::Config::Role::captured_to_args()>.
+See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 
 =cut
 
@@ -72,7 +72,7 @@ sub captured_to_args {
 
 =head2 generate
 
-See L<Net::ISC::DHCPd::Config::Role::generate()>.
+See L<Net::ISC::DHCPd::Config::Role/generate>.
 
 =cut
 

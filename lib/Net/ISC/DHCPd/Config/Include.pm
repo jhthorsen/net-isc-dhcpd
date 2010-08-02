@@ -34,7 +34,7 @@ __PACKAGE__->create_children(qw/
 
 =head2 generate_with_include
 
-This attribute holds a boolean value. L</generate()> will result in
+This attribute holds a boolean value. L</generate> will result in
 
     include "path/from/file/attribute";
 
@@ -73,8 +73,8 @@ included files from the config. Reason for this is that the
 C<parse()> method returns the number of lines in a single file.
 and counting lines from included files will break this behaviour.
 
-See also L<Net::ISC::DHCPd::Config::Role::parse> and
-L<Net::ISC::DHCPd::Config::SYNOPSIS>.
+See also L<Net::ISC::DHCPd::Config::Role/parse> and
+L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
@@ -91,7 +91,7 @@ around parse => sub {
 
 =head2 captured_to_args
 
-See L<Net::ISC::DHCPd::Config::Role::captured_to_args()>.
+See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 
 =cut
 
@@ -105,7 +105,7 @@ This method can either result in C<include ...;> or the whole
 config of the included file. See L</generate_with_include> for how
 to control the behaviour.
 
-See also L<Net::ISC::DHCPd::Config::Role::generate()>.
+See also L<Net::ISC::DHCPd::Config::Role/generate>.
 
 =cut
 

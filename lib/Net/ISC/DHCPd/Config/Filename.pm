@@ -43,7 +43,7 @@ sub _build_regex { qr{^\s* filename \s (\S+) ;}x }
 
 =head2 captured_to_args
 
-See L<Net::ISC::DHCPd::Config::Role::captured_to_args()>.
+See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 
 =cut
 
@@ -53,7 +53,7 @@ sub captured_to_args {
 
 =head2 generate
 
-See L<Net::ISC::DHCPd::Config::Role::generate()>.
+See L<Net::ISC::DHCPd::Config::Role/generate>.
 
 =cut
 

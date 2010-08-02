@@ -10,7 +10,7 @@ This module contains methods which can be called on each of the
 L<Net::ISC::DHCPd::OMAPI> subclasses.
 
 Changing object attributes will not alter the attributes on server. To do
-so, either use L<set()> directly or use L<write()> after altering attributes.
+so use L</write> to update the server.
 
 =cut
 
@@ -200,8 +200,7 @@ around write => \&_around;
 
  $bool = $self->unset(@attributes);
 
-Will unset values for an object in DHCP server. See L<set()> for details
-about C<@attributes>.
+Will unset values for an object in DHCP server.
 
 =cut
 
