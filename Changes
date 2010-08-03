@@ -1,5 +1,8 @@
 Revision history for Net-ISC-DHCPd
 
+0.0802   Tue Aug  3 08:23:56 CEST 2010
+       - Remove html/
+
 0.0801   Mon Aug  2 19:34:37 CEST 2010
        - Fix POD links: L<...>
 
