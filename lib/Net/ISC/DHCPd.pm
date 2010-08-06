@@ -10,13 +10,42 @@ Net::ISC::DHCPd - Interacts with ISC DHCPd
 
 =head1 SYNOPSIS
 
- my $dhcpd = Net::ISC::DHCPd->new(
-                 config => { file => "path/to/config" },
-                 leases => { file => "path/to/leases" },
-                 omapi => { ... },
-             );
+    my $dhcpd = Net::ISC::DHCPd->new(
+                    config => { file => "path/to/config" },
+                    leases => { file => "path/to/leases" },
+                    omapi => { key => "some key" },
+                );
 
-See tests for more documentation.
+    $self->test('config') or die $self->errstr;
+
+    # start the dhcpd server
+    $dhcpd->start({
+        user => 'john-doe',
+        group => 'users',
+        interfaces => 'eth0',
+    }) or die $dhcpd->errstr;
+    print $dhcpd->status;
+
+    $dhcpd->restart or die $dhcpd->errstr;
+    print $dhcpd->status;
+
+    $dhcpd->stop or die $dhcpd->errstr;
+    print $dhcpd->status;
+
+See the tests bundled to this distribution for more examples.
+
+=head1 DESCRIPTION
+
+This namespace contains three semi-separate projects, which this module
+binds together: L<dhcpd.conf|Net::ISC::DHCPd::Config>,
+L<dhcpd.leases|Net::ISC::DHCPd::Leases> and L<omapi|Net::ISC::DHCPd::OMAPI>.
+It is written with L<Moose> which provides classes and roles to represents
+things like a host, a lease or any other thing.
+
+The distribution as a whole is targeted an audience who configure and/or
+analyze the L<Internet Systems Consortium DHCP Server|http://www.isc.org/software/dhcp>.
+If you are not familiar with the server, check out
+L<the man pages|http://www.google.com/search?q=man+dhcpd>.
 
 =cut
 
@@ -34,10 +63,9 @@ our $VERSION = '0.0802';
 
 =head2 config
 
- $config_obj = $self->config
- $bool = $self->has_config;
-
-Instance of L<Net::ISC::DHCPd::Config> class.
+This attribute holds a read-only L<Net::ISC::DHCPd::Config> object.
+It can be set from the constructor, using either an object or a hash-ref.
+The hash-ref will then be passed on to the constructor.
 
 =cut
 
@@ -48,14 +76,13 @@ has config => (
     lazy_build => 1,
 );
 
-*_build_config = sub { _build_child_obj(Config => @_) };
+__PACKAGE__->meta->add_method(_build_config => sub { _build_child_obj(Config => @_) });
 
 =head2 leases
 
- $leases_obj = $self->leases
- $bool = $self->has_leases;
-
-Instance of L<Net::ISC::DHCPd::Leases> class.
+This attribute holds a read-only L<Net::ISC::DHCPd::Leases> object.
+It can be set from the constructor, using either an object or a hash-ref.
+The hash-ref will then be passed on to the constructor.
 
 =cut
 
@@ -66,14 +93,13 @@ has leases => (
     lazy_build => 1,
 );
 
-*_build_leases = sub { _build_child_obj(Leases => @_) };
+__PACKAGE__->meta->add_method(_build_leases => sub { _build_child_obj(Leases => @_) });
 
 =head2 omapi
 
- $omapi_obj = $self->omapi;
- $bool = $self->has_omapi;
-
-Instance of L<Net::ISC::DHCPd::OMAPI> class.
+This attribute holds a read-only L<Net::ISC::DHCPd::OMAPI> object.
+It can be set from the constructor, using either an object or a hash-ref.
+The hash-ref will then be passed on to the constructor.
 
 =cut
 
@@ -84,13 +110,12 @@ has omapi => (
     lazy_build => 1,
 );
 
-*_build_omapi = sub { _build_child_obj(OMAPI => @_) };
+__PACKAGE__->meta->add_method(_build_omapi => sub { _build_child_obj(OMAPI => @_) });
 
 =head2 binary
 
- $path_to_binary = $self->binary;
-
-Default: "dhcpd3"
+This attribute holds a L<Path::Class::File> object to the dhcpd binary.
+It is read-only and the default is "dhcpd3".
 
 =cut
 
@@ -103,9 +128,8 @@ has binary => (
 
 =head2 pidfile
 
- $path_class_object = $self->pidfile;
-
-Default: /var/run/dhcp3-server/dhcpd.pid
+This attribute holds a L<Path::Class::File> object to the dhcpd binary.
+It is read-only and the default is "/var/run/dhcp3-server/dhcpd.pid".
 
 =cut
 
@@ -119,13 +143,9 @@ has pidfile => (
 
 =head2 process
 
- $proc_obj = $self->process;
- $self->process($proc_obj);
- $self->process(\%args);
- $self->has_process;
- $self->clear_process;
-
-The object holding the dhcpd process.
+This attribute holds a read-only L<Net::ISC::DHCPd::Process> object.
+It can be set from the constructor, using either an object or a hash-ref.
+The hash-ref will then be passed on to the constructor.
 
 =cut
 
@@ -142,9 +162,7 @@ sub _build_process {
 
 =head2 errstr
 
- $string = $self->errstr;
-
-Holds the last know error.
+Holds the last know error as a plain string.
 
 =cut
 
@@ -158,25 +176,16 @@ has errstr => (
 
 =head2 start
 
- $bool = $self->start($args);
+    $any = $self->start(\%args);
 
 Will start the dhcpd server, as long as there is no existing process.
+See L</SYNOPSIS> for example. C<%args> can have C<user>, C<group> and
+C<interfaces> which all points to strings. This method returns and
+integer or undef: "1" means "started". "0" means "already running"
+and C<undef> means failed to start the server. Check L</errstr> on
+failure.
 
-C<$args>:
-
- {
-   user       || getpwuid $<
-   group      || getgrgid $<
-   interfaces || ""
- }
-
-Returns:
-
- 1     => OK
- 0     => Already running
- undef => Failed. Check errstr()
-
-TODO: Enable it to start the server as a differnet user/group.
+TODO: Enable it to start the server as a different user/group.
 
 =cut
 
@@ -235,10 +244,9 @@ sub start {
 
  $bool = $self->stop;
 
-Return:
-
- 1:     OK
- undef: Failed. Check errstr()
+This method will stop a running server. A true return value means that
+the server got stopped, while false means it could not be stopped.
+Check L<errstr> on failure.
 
 =cut
 
@@ -262,10 +270,9 @@ sub stop {
 
  $bool = $self->restart;
 
-Return:
-
- 1     => OK
- undef => Failed. Check errstr()
+This method will restart a running server or start a stopped server.
+A true return value means that the server got started, while false
+means it could not be started/restarted. Check L<errstr> or failure.
 
 =cut
 
@@ -287,12 +294,9 @@ sub restart {
 
 =head2 status
 
- $string = $self->status;
+ $str = $self->status;
 
-Returns the status of the DHCPd server:
-
- stopped
- running
+Returns the status of the DHCPd server: "stopped" or "running".
 
 =cut
 
@@ -313,10 +317,11 @@ sub status {
  $bool = $self->test("config");
  $bool = $self->test("leases");
 
-Will test either config or leases file.
-
- 1:     OK
- undef: Failed. Check errstr()
+Will test either the config or leases file. It returns a boolean value
+which indicates if it is valid or not: True means it is valid, while
+false means it is invalid. Check L</errstr> on failure - it will contain
+a descriptive string from either this module, C<$!> or the exit value
+(integer stored as a string).
 
 =cut
 

@@ -20,15 +20,41 @@ Net::ISC::DHCPd::Config - Parse and create ISC DHCPd config
         $include->parse;
     }
 
-    print $config->subnets->[0]->dump;
     print $config->includes->[0]->hosts->[0]->dump;
+
+    $config->add_host({
+        name => 'foo',
+        filenames => [{ file => 'pxelinux.0' }],
+    });
+
+    if($config->find_hosts({ name => 'foo' })) {
+        say "Found host by name='foo'";
+    }
+    if($config->remove_includes({ file => 'some/file' })) {
+        say "Removed included file by file='some/file'";
+    }
+
     print $config->generate;
 
 =head1 DESCRIPTION
 
+An object constructed from this class represents the config for a
+given dhcpd server. The L<config file|/file> passed on to the construted
+can either be read or written to. As shown in the L</SYNOPSIS>, the
+object has the method C<parse>, which will read the config (line by line)
+and create the appropriate objects representing each part of the config.
+The result is an object L<graph|http://en.wikipedia.org/wiki/Graph_theory>
+where the objects has pointer back to the L</parent> and any number of
+children of different types. (Ex: L</hosts>, L</subnets>, ...)
+
+It is also possible to start from scratch with an empty object, and
+use any of the C<add_foo> methods to create the object graph. After
+creating/modifying the graph, the actual config text can be retrieved
+using L</generate>.
+
 This class does the role L<Net::ISC::DHCPd::Config::Root>.
 
-=head1 POSSIBLE CONFIG TREE
+=head1 POSSIBLE CONFIG GRAPH
 
  Config
   |- Config::Include
@@ -92,18 +118,86 @@ __PACKAGE__->create_children(qw/
 sub _build_root { $_[0] }
 sub _build_regex { qr{\x00} } # should not be used
 
-=head1 METHODS
-
-=head2 filehandle
-
-This method will be deprecated.
-
-=cut
-
-sub filehandle {
+__PACKAGE__->meta->add_method(filehandle => sub {
     Carp::cluck('->filehandle is replaced with private attribute _filehandle');
     shift->_filehandle;
-}
+});
+
+=head1 ATTRIBUTES
+
+=head2 file
+
+See L<Net::ISC::DHCPd::Config::Root/file>.
+
+=head2 parent
+
+See L<Net::ISC::DHCPd::Config::Role/parent>.
+
+=head2 root
+
+See L<Net::ISC::DHCPd::Config::Role/root>.
+
+=head2 children
+
+See L<Net::ISC::DHCPd::Config::Role/children>.
+
+=head2 hosts
+
+List of parsed L<Net::ISC::DHCPd::Config::Host> objects.
+See L<Net::ISC::DHCPd::Config::Role/children> for details on how to
+add, update or remove these objects.
+
+=head2 subnets
+
+List of parsed L<Net::ISC::DHCPd::Config::Subnet> objects.
+See L<Net::ISC::DHCPd::Config::Role/children> for details on how to
+add, update or remove these objects.
+
+=head2 sharednetworks
+
+List of parsed L<Net::ISC::DHCPd::Config::SharedNetwork> objects.
+See L<Net::ISC::DHCPd::Config::Role/children> for details on how to
+add, update or remove these objects.
+
+=head2 functions
+
+List of parsed L<Net::ISC::DHCPd::Config::Function> objects.
+See L<Net::ISC::DHCPd::Config::Role/children> for details on how to
+add, update or remove these objects.
+
+=head2 optionspaces
+
+List of parsed L<Net::ISC::DHCPd::Config::OptionSpace> objects.
+See L<Net::ISC::DHCPd::Config::Role/children> for details on how to
+add, update or remove these objects.
+
+=head2 options
+
+List of parsed L<Net::ISC::DHCPd::Config::Option> objects.
+See L<Net::ISC::DHCPd::Config::Role/children> for details on how to
+add, update or remove these objects.
+
+=head2 includes
+
+List of parsed L<Net::ISC::DHCPd::Config::Include> objects.
+See L<Net::ISC::DHCPd::Config::Role/children> for details on how to
+add, update or remove these objects.
+
+=head2 keyvalues
+
+List of parsed L<Net::ISC::DHCPd::Config::KeyValue> objects.
+See L<Net::ISC::DHCPd::Config::Role/children> for details on how to
+add, update or remove these objects.
+
+=head1 METHODS
+
+=head2 parse
+
+See L<Net::ISC::DHCPd::Config::Role/parse>.
+
+=head2 generate
+
+See L<Net::ISC::DHCPd::Config::Root/generate>.
 
 =head1 COPYRIGHT & LICENSE
 

@@ -2,7 +2,7 @@ Revision history for Net-ISC-DHCPd
 
 0.09
        - Improved documentation
-       - Changed $dhcpd->test(...): errstr() can hold the output
+       - Change $dhcpd->test(...): errstr() can hold the output
          from the dhcpd3 binary, instead of the numeric exit value.
 
 0.0802   Tue Aug  3 08:23:56 CEST 2010

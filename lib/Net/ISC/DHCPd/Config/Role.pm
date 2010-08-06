@@ -145,7 +145,6 @@ sub _build__filehandle {
     return $file->openr;
 }
 
-
 =head1 METHODS
 
 =head2 parse

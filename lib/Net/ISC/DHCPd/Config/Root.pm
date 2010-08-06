@@ -43,18 +43,6 @@ has parent => (
     default => sub { undef },
 );
 
-=head2 subnets
-
-List of parsed L<Net::ISC::DHCPd::Config::Subnet> objects.
-
-=head2 hosts
-
-List of parsed L<Net::ISC::DHCPd::Config::Host> objects.
-
-=head2 options
-
-List of parsed L<Net::ISC::DHCPd::Config::Option> objects.
-
 =head1 METHODS
 
 =head2 generate
