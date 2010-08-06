@@ -274,9 +274,11 @@ sub restart {
     my $proc;
     
     if($self->has_process and !$self->stop) {
+        $self->errstr("could not stop server");
         return undef;
     }
     unless($self->start) {
+        $self->errstr("could not start server");
         return undef;
     }
 
