@@ -96,7 +96,8 @@ Default: "dhcpd3"
 
 has binary => (
     is => 'ro',
-    isa => 'Str',
+    isa => File,
+    coerce => 1,
     default => 'dhcpd3',
 );
 
