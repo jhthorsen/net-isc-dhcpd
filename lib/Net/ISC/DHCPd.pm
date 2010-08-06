@@ -323,27 +323,33 @@ Will test either config or leases file.
 sub test {
     my $self = shift;
     my $what = shift || q();
-    my $exit;
+    my($child_error, $errno, $output);
 
     if($what eq 'config') {
         my $tmp = File::Temp->new;
         print $tmp $self->config->generate;
-        $exit = $self->_run('-t', '-cf', $tmp->filename);
+        $output = $self->_run('-t', '-cf', $tmp->filename);
+        ($child_error, $errno) = ($?, $!);
     }
     elsif($what eq 'leases') {
-        $exit = $self->_run('-t', '-lf', $self->leases->file);
+        $output = $self->_run('-t', '-lf', $self->leases->file);
+        ($child_error, $errno) = ($?, $!);
     }
     else {
         $self->errstr('Invalid argument');
         return;
     }
 
-    if($exit and $exit == -1) {
-        $self->errstr($!);
+    # let's set this anyway...
+    $self->errstr($output);
+
+    if($child_error and $child_error == -1) {
+        $self->errstr($errno);
+        ($!, $?) = ($errno, $child_error);
         return;
     }
-    elsif($exit) {
-        $self->errstr($exit >> 8);
+    elsif($child_error) {
+        ($!, $?) = ($errno, $child_error);
         return;
     }
 
@@ -353,32 +359,34 @@ sub test {
 sub _run {
     my $self = shift;
     my @args = @_;
-    my $exit;
 
-    local *OLDERR;
-    local *OLDOUT;
-    open OLDERR, ">&", \*STDERR;
-    open OLDOUT, ">&", \*STDOUT;
-    close STDERR;
-    close STDOUT;
+    pipe my $reader, my $writer or return '';
 
-    $exit = system $self->binary, @args;
+    if(my $pid = fork) { # parent
+        close $writer;
+        wait; # for child process...
+        local $/;
+        return readline $reader;
+    }
+    elsif(defined $pid) { # child
+        close $reader;
+        open STDERR, '>&', $writer or confess $!;
+        open STDOUT, '>&', $writer or confess $!;
+        { exec $self->binary, @args }
+        confess "Exec() failed";
+    }
 
-    open STDERR, ">&", \*OLDERR;
-    open STDOUT, ">&", \*OLDOUT;
-
-    return $exit;
+    return ''; # fork failed. check $!
 }
 
 # used from attributes
 sub _build_child_obj {
     my $type = shift;
     my $self = shift;
-    my $args = shift || {};
 
-    eval "require Net::ISC::DHCPd::$type" or confess $@;
+    Class::MOP::load_class("Net::ISC::DHCPd::$type");
 
-    return "Net::ISC::DHCPd::$type"->new($args);
+    return "Net::ISC::DHCPd::$type"->new(@_);
 }
 
 =head1 BUGS

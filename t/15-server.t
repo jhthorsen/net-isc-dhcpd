@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use lib 'lib';
-use Test::More tests => 11;
+use Test::More tests => 13;
 
 use_ok("Net::ISC::DHCPd");
 use_ok("Net::ISC::DHCPd::Process");
@@ -12,11 +12,11 @@ ok(!Net::ISC::DHCPd::Process->can('kill'), "cannot kill()");
 ok(setup_process_class(), "applied MyProcessRole") or diag $@;
 ok(Net::ISC::DHCPd::Process->can('kill'), "can kill()");
 
-my $binary = './t/data/dhcpd3';
+my $binary = 't/data/dhcpd3';
 my $isc = Net::ISC::DHCPd->new(
               binary => $binary,
               leases => {
-                  file => './t/data/dhcpd.leases',
+                  file => 't/data/dhcpd.leases',
               },
           );
 
@@ -27,6 +27,10 @@ is($isc->status, "stopped", "process is stopped");
 ok($isc->process({}), "process set by hash");
 ok($isc->test('config'), "mock config is valid") or diag $isc->errstr;
 ok($isc->test('leases'), "mock leases is valid") or diag $isc->errstr;
+
+$isc->leases->file('/fooooooooooooooooooooooooooooooo');
+ok(!$isc->test('leases'), "mock leases is now invalid") or diag $isc->errstr;
+like($isc->errstr, qr{Invalid leases file}, 'script output "Invalid leases file"');
 
 sub setup_process_class {
     eval qq[

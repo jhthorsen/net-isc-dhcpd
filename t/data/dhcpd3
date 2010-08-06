@@ -1,11 +1,15 @@
 #!/usr/bin/perl
 
+$! = 2;
+
 if($ARGV[0] eq '-t') {
     if($ARGV[1] eq '-cf') {
-        exit +(-e $ARGV[2] ? 0 : 2);
+        die "Invalid config file: $!" unless -e $ARGV[2];
+        exit 0;
     }
     elsif($ARGV[1] eq '-lf') {
-        exit +(-e $ARGV[2] ? 0 : 3);
+        die "Invalid leases file: $!" unless -e $ARGV[2];
+        exit 0;
     }
 }
 else {
