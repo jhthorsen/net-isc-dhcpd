@@ -13,18 +13,18 @@ An instance from this class, comes from / will produce one of the
 blocks below, dependent on L</name> is set or not.
     
     shared-network $name_attribute_value {
-        $subnets_attribute_value
         $keyvalues_attribute_value
+        $subnets_attribute_value
     }
 
     shared-network {
-        $subnets_attribute_value
         $keyvalues_attribute_value
+        $subnets_attribute_value
     }
 
 =head1 SYNOPSIS
 
-See L<Net::ISC::DHCPd::Config> for synopsis.
+See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 

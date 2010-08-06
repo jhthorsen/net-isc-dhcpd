@@ -6,31 +6,36 @@ Net::ISC::DHCPd::Process - Skeleton process class
 
 =head1 SYNOPSIS
 
- package MyProcessRole;
- use Moose;
- use Net::ISC::DHCPd::Process
+    package MyProcessRole;
+    use Moose::Role;
+    use Net::ISC::DHCPd::Process
 
- has program => ( is => 'rw' );
- has args => ( is => 'rw' );
- has user => ( is => 'rw' );
- has group => ( is => 'rw' );
+    has program => ( is => 'rw' );
+    has args => ( is => 'rw' );
+    has user => ( is => 'rw' );
+    has group => ( is => 'rw' );
 
- after BUILDALL => sub {
-   my $self = shift;
-   my $args = shift;
+    after BUILDALL => sub {
+        my $self = shift;
+        my $args = shift;
 
-   if($args->{'start'}) {
-     # spawn process
-   }
- };
+        if($args->{'start'}) {
+            # spawn process
+        }
+    };
 
- sub kill {
-   # kill process
- }
+    sub kill {
+        # kill process
+    }
 
- MyProcessRole->meta->apply( Net::ISC::DHCPd::Process->meta );
+    MyProcessRole->meta->apply( Net::ISC::DHCPd::Process->meta );
 
- 1;
+    1;
+
+=head1 DESCRIPTION
+
+This module is subject for a major rewrite. Patches and comments
+are welcome!
 
 =cut
 

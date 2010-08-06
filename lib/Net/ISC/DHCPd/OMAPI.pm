@@ -4,11 +4,37 @@ package Net::ISC::DHCPd::OMAPI;
 
 Net::ISC::DHCPd::OMAPI - Talk to a dhcp server
 
+=head1 SYNOPSIS
+
+    my $omapi = Net::ISC::DHCPd::OMAPI->new(
+                    key => "dhcpd secret",
+                );
+
+    # connect is lazy
+    $omapi->connect
+
+    my $lease = $omapi->new_object(lease => (
+                    ip_address => "10.19.83.200",
+                ));
+
+    if($lease->read) {
+        printf("Got hardware_address=%s from ip_address=%s\n",
+            $lease->hardware_address,
+            $lease->ip_address,
+        );
+    }
+
+To enable debug output, execute this chunk of code before loading the module:
+
+    BEGIN { Net::ISC::DHCPd::OMAPI::_DEBUG = sub { 1 } }
+
 =head1 DESCRIPTION
 
 This module provides an API to query and possible change the ISC DHCPd
 server. The module use OMAPI (Object Management API) which does not
-require the server to be restarted for changes to apply.
+require the server to be restarted for changes to apply. It does
+unfortunately support the protocol natively, but instead fork
+C<omshell(1)> which this module read and write commands to.
 
 OMAPI is simply a communications mechanism that allows you to manipulate
 objects, which is stored in the dhcpd.leases file.
@@ -19,12 +45,6 @@ L<Net::ISC::DHCPd::OMAPI::Failover>,
 L<Net::ISC::DHCPd::OMAPI::Group>,
 L<Net::ISC::DHCPd::OMAPI::Host>,
 and L<Net::ISC::DHCPd::OMAPI::Lease>.
-
-=head1 NOTE
-
-To enable debug output, execute this chunk of code before loading the module:
-
- BEGIN { Net::ISC::DHCPd::OMAPI::_DEBUG = sub { 1 } }
 
 =cut
 
@@ -48,9 +68,8 @@ our $OMSHELL = 'omshell';
 
 =head2 server
 
- $str = $self->server;
-
-Returns the server address. Default is 127.0.0.1.
+This attribute is read-only and holds a string describing the
+remote dhcpd server address. Default value is "127.0.0.1".
 
 =cut
 
@@ -62,9 +81,8 @@ has server => (
 
 =head2 port
 
- $int = $self->port;
-
-Returns the server port. Default is 7911.
+This attribute is read-only and holds an integer representing
+the remote dhcpd server port. Default value is "7911".
 
 =cut
 
@@ -76,9 +94,10 @@ has port => (
 
 =head2 key
 
- $str = $self->key;
-
-Returns the server key: "$name $secret".
+This attribute is read-only and holds a string representing the
+server secret key. It is in the format C<$name $secret> and the
+default value is an empty string. An empty string is used for
+servers without a secret to log in.
 
 =cut
 
@@ -90,9 +109,7 @@ has key => (
 
 =head2 errstr
 
- $str = $self->errstr;
-
-Returns the last known error.
+Holds the last know error as a plain string.
 
 =cut
 
@@ -127,7 +144,7 @@ sub _build__fh  {
     $pid = fork;
 
     if(!defined $pid) { # failed
-        $@ = $!;
+        $self->errstr($@ = $!);
         return;
     }
     elsif($pid) { # parent
@@ -202,9 +219,11 @@ sub _cmd {
 
 =head2 connect
 
- $bool = $self->connect;
+    $bool = $self->connect;
 
-Will open a connection to the dhcp server. Check C<$@> on failure.
+Will open a connection to the dhcp server. Check L</errstr> on failure.
+A connection means starting the program C<omshell(1)> and trying to
+log in, if the dhcpd L</key> is set.
 
 =cut
 
@@ -238,9 +257,11 @@ sub connect {
 
 =head2 disconnect
 
- $bool = $self->disconnect;
+    $bool = $self->disconnect;
 
-Will disconnect from the server.
+Will disconnect from the server. This means killing the C<omshell(1)>
+program, which then actually will make sure the connection is shut
+down.
 
 =cut
 
@@ -268,11 +289,14 @@ sub disconnect {
 
 =head2 new_object
 
- $object = $self->new_object($type => %constructor_args);
+    $object = $self->new_object($type => %constructor_args);
+
+This method will create a new OMAPI object, which can be used to query
+and/or manipulate the running dhcpd server.
 
 C<$type> can be "group", "host", or "lease". Will return a new config object.
 
-Example, with C<$type="host">:
+Example, with C<$type='host'>:
 
  Net::ISC::DHCPd::Config::Host->new(%constructor_args);
 

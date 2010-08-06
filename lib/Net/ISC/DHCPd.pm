@@ -34,6 +34,10 @@ Net::ISC::DHCPd - Interacts with ISC DHCPd
 
 See the tests bundled to this distribution for more examples.
 
+This module is subject for a major rewrite. Patches and comments
+are welcome - reason for this is that L<Net::ISC::DHCPd::Process>
+does not work as expected.
+
 =head1 DESCRIPTION
 
 This namespace contains three semi-separate projects, which this module
@@ -199,9 +203,9 @@ sub start {
         return 0;
     }
 
-    $user  = $args->{'user'}  || getpwuid $<;
+    $user = $args->{'user'}  || getpwuid $<;
     $group = $args->{'group'} || getgrgid $<;
-    $args  = [
+    $args = [
         '-f', # foreground
         '-d', # log to STDERR
         '-cf' => $self->config->file,
@@ -210,8 +214,8 @@ sub start {
         $args->{'interfaces'} || q(),
     ];
 
-    $user  = scalar(getpwnam $user);
-    $group = scalar(getgrnam $group);
+    $user = getpwnam $user;
+    $group = getgrnam $group;
 
     MAKE_DIR:
     for my $file ($self->config->file, $self->leases->file, $self->pidfile) {
@@ -231,10 +235,9 @@ sub start {
 
     $self->process({
         program => $self->binary,
-        args    => $args,
-        user    => $user,
-        group   => $group,
-        start   => 1,
+        args => $args,
+        user => $user,
+        group => $group,
     });
 
     return $self->process ? 1 : undef;

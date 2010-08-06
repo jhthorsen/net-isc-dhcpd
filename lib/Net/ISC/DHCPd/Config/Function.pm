@@ -9,9 +9,15 @@ Net::ISC::DHCPd::Config::Function - Function config parameters
 See L<Net::ISC::DHCPd::Config::Role> for methods and attributes without
 documentation.
 
+An instance from this class, comes from / will produce:
+
+    on $name_attribute_value {
+        $body_attribute_value
+    }
+
 =head1 SYNOPSIS
 
-See L<Net::ISC::DHCPd::Config> for synopsis.
+See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
@@ -23,9 +29,8 @@ with 'Net::ISC::DHCPd::Config::Role';
 
 =head2 name
 
- $string = $self->name
-
-Name of the the function.
+This attribute holds a plain string, representing the name
+of the function. Example: "commit".
 
 =cut
 
@@ -36,13 +41,9 @@ has name => (
 
 =head2 body
 
- $text = $self->body
- $int = $self->body_length;
- $bool = $self->replace_body($pattern, $replacement);
- $self->append_body($text);
- $self->prepend_body($text);
-
 The body text of the function, without trailing newline at end.
+The function body is not parsed, so the containing text can be
+anything.
 
 =cut
 
@@ -100,10 +101,27 @@ sub BUILD {
     $_[0]->body($_[0]->body);
 }
 
+=head2 body_length
+
+Returns the length of the function L</body>.
+
+=head2 replace_body
+
+Can search and replace parts of function L</body>.
+
+=head2 append_body
+
+Will append a string to the function L</body>.
+
+=head2 prepend_body
+
+Will prepend a string to the function L</body>.
+
 =head2 slurp
 
-This method will slurp the content of the function, instead of
-trying to parse the statements.
+This method is used by L<Net::ISC::DHCPd::Config::Role/parse>, and will
+slurp the content of the function, instead of trying to parse the
+statements.
 
 =cut
 

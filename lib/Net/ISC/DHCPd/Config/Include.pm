@@ -9,9 +9,13 @@ Net::ISC::DHCPd::Config::Include - Hold content of included file
 See L<Net::ISC::DHCPd::Config::Role> for methods and attributes without
 documentation.
 
+An instance from this class, comes from / will produce:
+
+    include "$file_attribute_value";
+
 =head1 SYNOPSIS
 
-See L<Net::ISC::DHCPd::Config> for synopsis.
+See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 

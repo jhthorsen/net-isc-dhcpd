@@ -9,9 +9,19 @@ Net::ISC::DHCPd::Config::KeyValue - Misc option config parameter
 See L<Net::ISC::DHCPd::Config::Role> for methods and attributes without
 documentation.
 
+An instance from this class, comes from / will produce one of the
+lines below, dependent on L</quoted>.
+
+    $name_attribute_value "$value_attribute_value";
+    $name_attribute_value $value_attribute_value;
+
+This means that this class represents "anything" that does not
+fall into any of the other categories and can be expressed as a
+key-value pair.
+
 =head1 SYNOPSIS
 
-See L<Net::ISC::DHCPd::Config> for synopsis.
+See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
@@ -23,9 +33,7 @@ with 'Net::ISC::DHCPd::Config::Role';
 
 =head2 name
 
- $string = $self->name;
-
-Name of the option.
+Name of the option - See L</DESCRIPTION> for details.
 
 =cut
 
@@ -36,9 +44,7 @@ has name => (
 
 =head2 value
 
- $string = $self->value;
-
-Value of the option.
+Value of the option - See L</DESCRIPTION> for details.
 
 =cut
 
@@ -48,8 +54,6 @@ has value => (
 );
 
 =head2 quoted
-
- $bool = $self->quoted;
 
 This flag tells if the option value should be quoted or not.
 

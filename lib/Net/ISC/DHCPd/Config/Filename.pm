@@ -9,9 +9,13 @@ Net::ISC::DHCPd::Config::Filename - Filename config parameter
 See L<Net::ISC::DHCPd::Config::Role> for methods and attributes without
 documentation.
 
+An instance from this class, comes from / will produce:
+
+    filename "$file_attribute_value";
+
 =head1 SYNOPSIS
 
-See L<Net::ISC::DHCPd::Config> for synopsis.
+See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
@@ -25,9 +29,7 @@ with 'Net::ISC::DHCPd::Config::Role';
 
 =head2 file
 
- $string = $self->file;
-
-Holds a L<Path::Class::File> object.
+This attribute hold a L<Path::Class::File> object.
 
 =cut
 

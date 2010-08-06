@@ -2,17 +2,26 @@ package Net::ISC::DHCPd::Config::Role;
 
 =head1 NAME
 
-Net::ISC::DHCPd::Config::Role - Generic config methods and attributes
+Net::ISC::DHCPd::Config::Role - Role with generic config methods and attributes
 
-=head1 SYNOPSIS
+=head1 DESCRIPTION
 
-See L<Net::ISC::DHCPd::Config> for synopsis.
+This role contains common methods and attributes for each of the config
+classes in the L<Net::ISC::DHCPd::Config> namespace.
 
 =cut
 
 use Moose::Role;
 
 requires 'generate';
+
+my %CREATE_CHILD_ATTRIBUTE_ARGUMENTS = (
+    is => 'rw',
+    isa => 'ArrayRef',
+    lazy => 1,
+    auto_deref => 1,
+    default => sub { [] },
+);
 
 =head1 ATTRIBUTES
 
@@ -55,7 +64,7 @@ sub _build_root {
 
 =head2 depth
 
-How far this node is from the root node.
+Integer value that counts how far this node is from the root node.
 
 =cut
 
@@ -105,7 +114,7 @@ of the config class, with "s" at the end in some cases.
 
 =item foos
 
-C<foos> is the name the attrbute as well as the accessor. The accessor
+C<foos> is the name the attribute as well as the accessor. The accessor
 will auto-deref the array-ref to a list if called in list context. (yes:
 be aware of this!).
 
@@ -144,7 +153,8 @@ sub _build_children { [] }
 
 =head2 regex
 
-Regex to match for the node to be added.
+Regex used to scan a line of config text, which then spawns an
+a new node to the config tree. This is used inside l</parse>.
 
 =cut
 
@@ -157,7 +167,6 @@ has regex => (
 =head2 endpoint
 
 Regex to search for before ending the current node block.
-
 Will not be used if the node does not have any possible L</children>.
 
 =cut
@@ -197,10 +206,12 @@ sub _build__filehandle {
 
 =head2 parse
 
- $int = $self->parse
-
-Parses a current node recursively. Does this by reading line by line from
-L</file>, and use the rules from the possible child elements and endpoint.
+Will read a line of the time from the current config
+L<file|Net::ISC::DHCPd::Config::Root/file>. For each line, this method
+will loop though each object in L</children> and try to match the line
+against a given child and create a new node in the object graph if it
+match the L</regex>. This method is called recursively for each child
+when possible.
 
 =cut
 
@@ -211,19 +222,15 @@ sub parse {
     my $n = 0;
 
     LINE:
-    while(++$n) {
-        my $line = readline $fh;
+    while(1) {
+        defined(my $line = readline $fh) or last LINE;
         my $res;
-
-        if(not defined $line) {
-            $n--;
-            last LINE;
-        }
+        $n++;
 
         if($self->can('slurp')) {
             my $action = $self->slurp($line); # next or last
             no warnings;
-            eval $action;
+            eval $action; # evil way to be able to do "last" or "next"
         }
 
         if($line =~ $endpoint) {
@@ -239,7 +246,7 @@ sub parse {
 
         CHILD:
         for my $child ($self->children) {
-            my @c   = $line =~ $child->regex or next CHILD;
+            my @c = $line =~ $child->regex or next CHILD;
             my $add = 'add_' .lc +(ref($child) =~ /::(\w+)$/)[0];
             my $new = $self->$add( $child->captured_to_args(@c) );
 
@@ -257,6 +264,8 @@ sub parse {
  $hash_ref = $self->captured_to_args(@list);
 
 Called when a L</regex> matches, with a list of captured strings.
+This method then returns a hash-ref passed on to the constructor when
+a new node in the object graph is constructed.
 
 =cut
 
@@ -266,7 +275,7 @@ sub captured_to_args {
 
 =head2 captured_endpoint
  
- $self->captured_endpoint(@list)
+    $self->captured_endpoint(@list)
 
 Called when a L</endpoint> matches, with a list of captured strings.
 
@@ -278,20 +287,11 @@ sub captured_endpoint {
 
 =head2 create_children
 
- My::Class->create_children(@classnames)
-
-This method is used internally to create extra attributes in classes and
-construct the L</children> attribute.
+This method takes a list of classes, and creates builder method for
+the L</children> attribute, an attribute and helper methods. See
+L</children> for more details.
 
 =cut
-
-my %CREATE_CHILD_ATTRIBUTE_ARGUMENTS = (
-    is => 'rw',
-    isa => 'ArrayRef',
-    lazy => 1,
-    auto_deref => 1,
-    default => sub { [] },
-);
 
 sub create_children {
     my $self = shift;
@@ -325,9 +325,7 @@ sub create_children {
         $obj = $class->new;
     }
 
-    unless(blessed $self) {
-        $meta->add_method(_build_children => sub { \@children });
-    }
+    $meta->add_method(_build_children => sub { \@children });
 
     return \@children;
 }
@@ -380,9 +378,10 @@ sub _remove_children {
 
 =head2 generate_config_from_children
 
- $config_text = $self->generate_config_from_children;
-
-Loops all child node and calls L</generate>.
+Loops all child nodes in reverse order and calls L</generate> on each
+of them. Each L</generate> method must return a list of strings which
+will be indented correctly and concatenated with newline inside this
+method, before returned as one string.
 
 =cut
 
@@ -408,11 +407,9 @@ sub generate_config_from_children {
 
 =head2 generate
 
-    @lines = $self->generate;
-
-A C<generate()> must be defined in the consuming class. This method should
-a list of lines (zero or more), which will be indented and concatenated
-inside L</generate_config_from_children>.
+A C<generate()> must be defined in the consuming class. This method
+must return a list of lines (zero or more), which will be indented
+and concatenated inside L</generate_config_from_children>.
 
 =head1 COPYRIGHT & LICENSE
 

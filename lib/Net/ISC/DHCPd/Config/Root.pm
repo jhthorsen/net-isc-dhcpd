@@ -2,7 +2,12 @@ package Net::ISC::DHCPd::Config::Root;
 
 =head1 NAME
 
-Net::ISC::DHCPd::Config::Root - Role to parse and create ISC DHCPd config
+Net::ISC::DHCPd::Config::Root - Role for root config classes
+
+=head1 DESCRIPTION
+
+This role is applied to root classes, such as L<Net::ISC::DHCPd::Config>
+and L<Net::ISC::DHCPd::Config::Include>.
 
 =cut
 
@@ -31,9 +36,8 @@ has file => (
 
 =head2 generate
 
- $config_text = $self->generate;
-
-Will turn object tree into a actual config, which can be written to file.
+Will use L<Net::ISC::DHCPd::Config::Role/generate_config_from_children>
+to convert the object graph into text.
 
 =cut
 

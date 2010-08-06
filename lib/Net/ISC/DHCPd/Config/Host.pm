@@ -9,9 +9,17 @@ Net::ISC::DHCPd::Config::Host - Host config parameter
 See L<Net::ISC::DHCPd::Config::Role> for methods and attributes without
 documentation.
 
+An instance from this class, comes from / will produce:
+
+    host $name_attribute_value {
+        $keyvalues_attribute_value
+        $filenames_attribute_value
+        $options_attribute_value
+    }
+
 =head1 SYNOPSIS
 
-See L<Net::ISC::DHCPd::Config> for synopsis.
+See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
@@ -44,11 +52,13 @@ before add_filename => sub {
     }
 };
 
-Should only be one item in this list.
+=head2 keyvalues
+
+A list of parsed L<Net::ISC::DHCPd::Config::KeyValue> objects.
 
 =head2 name
 
- $string = $self->name;
+This attribute holds a string describing the host.
 
 =cut
 

@@ -9,9 +9,17 @@ Net::ISC::DHCPd::Config::Pool - Pool config parameter
 See L<Net::ISC::DHCPd::Config::Role> for methods and attributes without
 documentation.
 
+An instance from this class, comes from / will produce:
+
+    pool {
+        $keyvalue_attribute_value
+        $range_attribute_value
+        $options_attribute_value
+    }
+
 =head1 SYNOPSIS
 
-See L<Net::ISC::DHCPd::Config> for synopsis.
+See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 

@@ -98,8 +98,6 @@ has _parser => (
 
 =head2 parse
 
- $int = $self->parse;
-
 Read lines from L</file>, and parses every lease it can find.
 Returns the number of leases found. Will add each found lease to
 L</leases>.
@@ -157,12 +155,8 @@ sub find_leases {
 
 =head2 add_lease
 
- $bool = $self->add_lease($lease_obj);
-
-All another L<Net::ISC::DHCPd::Leases::Lease> object to the
-L</leases> attribute>.
-
-This does not make much sense! See L</DESCRIPTION> for details.
+This method does not make much sense, and will probably get removed.
+See L</DESCRIPTION> for more details.
 
 =cut
 

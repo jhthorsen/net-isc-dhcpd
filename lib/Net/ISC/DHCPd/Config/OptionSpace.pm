@@ -9,9 +9,16 @@ Net::ISC::DHCPd::Config::OptionSpace - Optionspace config parameter
 See L<Net::ISC::DHCPd::Config::Role> for methods and attributes without
 documentation.
 
+An instance from this class, comes from / will produce:
+
+    option space $prefix_attribute_value;
+    $options_attribute_value
+    option $name_attribute_value code \
+        $code_attribute_value = encapsulate $prefix_attribute_value;
+ 
 =head1 SYNOPSIS
 
-See L<Net::ISC::DHCPd::Config> for synopsis.
+See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
@@ -29,13 +36,9 @@ __PACKAGE__->create_children(qw/
 
 A list of parsed L<Net::ISC::DHCPd::Config::OptionSpace::Option> objects.
 
-=cut
-
 =head2 name
 
- $string = $self->name;
-
-Name of the option namespace.
+Name of the option namespace as a string.
 
 =cut
 
@@ -46,9 +49,7 @@ has name => (
 
 =head2 code
 
- $dhcp_option_code = $self->code
-
-DHCP option number/code.
+DHCP option number/code as an int.
 
 =cut
 

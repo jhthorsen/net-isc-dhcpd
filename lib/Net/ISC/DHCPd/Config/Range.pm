@@ -9,9 +9,13 @@ Net::ISC::DHCPd::Config::Range - Range config parameter
 See L<Net::ISC::DHCPd::Config::Role> for methods and attributes without
 documentation.
 
+An instance from this class, comes from / will produce:
+
+    range $lower_attribute_value $upper_attribute_value;
+
 =head1 SYNOPSIS
 
-See L<Net::ISC::DHCPd::Config> for synopsis.
+See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =head1 NOTES
 
@@ -29,9 +33,8 @@ with 'Net::ISC::DHCPd::Config::Role';
 
 =head2 upper
 
- $ip_obj = $self->upper;
-
-Returns undef or a L<NetAddr::IP> object.
+This attribute holds a L<NetAddr::IP> object, representing the
+highest IP address in the range.
 
 =cut
 
@@ -42,9 +45,8 @@ has upper => (
 
 =head2 lower
 
- $ip_obj = $self->lower;
-
-Returns undef or a L<NetAddr::IP> object.
+This attribute holds a L<NetAddr::IP> object, representing the
+lowest IP address in the range.
 
 =cut
 
