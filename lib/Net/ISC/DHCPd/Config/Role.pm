@@ -18,13 +18,14 @@ requires 'generate';
 
 =head2 parent
 
-The parent node in the config tree.
+The parent node in the config tree. This must be an object which does
+this role.
 
 =cut
 
 has parent => (
     is => 'rw',
-    isa => 'Net::ISC::DHCPd::Config::Role',
+    does => 'Net::ISC::DHCPd::Config::Role',
     weak_ref => 1,
 );
 

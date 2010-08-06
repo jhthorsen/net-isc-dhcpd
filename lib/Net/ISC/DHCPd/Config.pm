@@ -137,6 +137,21 @@ See L<Net::ISC::DHCPd::Config::Role/parent>.
 
 See L<Net::ISC::DHCPd::Config::Role/root>.
 
+=head2 parent
+
+This attribute is different from L<Net::ISC::DHCPd::Config::Role/parent>:
+It holds an undefined value, which is used to indicate that this object
+is the top node in the tree. See L<Net::ISC::DHCPd::Config::Include>
+if you want a different behavior.
+
+=cut
+
+has parent => (
+    is => 'ro',
+    isa => 'Undef',
+    default => sub { undef },
+);
+
 =head2 children
 
 See L<Net::ISC::DHCPd::Config::Role/children>.

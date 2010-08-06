@@ -15,9 +15,8 @@ with 'Net::ISC::DHCPd::Config::Role';
 
 =head2 file
 
- $str = $self->file;
-
-Holds the path to the config file.
+This attribute holds a L<Path::Class::File> object representing
+path to a config file. Default value is "/etc/dhcp3/dhcpd.conf".
 
 =cut
 
@@ -26,21 +25,6 @@ has file => (
     isa => File,
     coerce => 1,
     default => sub { Path::Class::File->new('', 'etc', 'dhcp3', 'dhcpd.conf') },
-);
-
-=head2 parent
-
- $self = $self->parent;
-
-This override L<Net::ISC::DHCPd::Config::Role/parent> attribute
-with an undef value. This is used to see that we are at the top level.
-
-=cut
-
-has parent => (
-    is => 'ro',
-    isa => 'Undef|Net::ISC::DHCPd::Config', # TODO: Need to remove union
-    default => sub { undef },
 );
 
 =head1 METHODS
