@@ -4,6 +4,7 @@ Revision history for Net-ISC-DHCPd
        - Add find_foos() and remove_foos() helper methods for child
          objects
        - Add find_leases() helper method
+       - Add shared-network can have a name
        - Change $dhcpd->test(...): errstr() can hold the output
          from the dhcpd3 binary, instead of the numeric exit value.
        - Change "leases" attribute has auto_deref
