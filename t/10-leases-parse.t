@@ -32,6 +32,8 @@ my $time = timeit($count, sub {
     is($lease->client_hostname, undef, "lease->0 hostname");
     is($lease->circuit_id, undef, "lease->0 circuit id");
     is($lease->remote_id, undef, "lease->0 remote id");
+
+    is($leases->find_leases({ hardware_address => '00:12:f0:50:06:48' }), 1, 'found lease with hardware_address=00:12:f0:50:06:48');
 });
 
 diag(($lines * $count) .": " .timestr($time));

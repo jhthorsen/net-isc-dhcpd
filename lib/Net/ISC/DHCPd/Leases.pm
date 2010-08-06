@@ -17,6 +17,10 @@ Net::ISC::DHCPd::Leases - Parse ISC DHCPd leases
         say "lease has ended" if($lease->ends < time);
     }
 
+    if(my $n = $leases->find_leases({ ends => time }) {
+        say "$n lease(s) has expired now";
+    }
+
 =head1 DESCRIPTION
 
 An object constructed from this class represents a leases file for
@@ -127,12 +131,38 @@ sub parse {
     return $n;
 }
 
+=head2 find_leases
+
+This method will return zero or more L<Net::ISC::DHCPd::Leases::Lease>
+objects as a list. It takes a hash-ref which will be matched against
+the attributes of the child leases.
+
+=cut
+
+sub find_leases {
+    my $self = shift;
+    my $query = shift or return;
+    my @leases;
+
+    LEASE:
+    for my $lease ($self->leases) {
+        for my $key (keys %$query) {
+            next LEASE unless($lease->$key eq $query->{$key});
+        }
+        push @leases, $lease;
+    }
+
+    return @leases;
+}
+
 =head2 add_lease
 
  $bool = $self->add_lease($lease_obj);
 
 All another L<Net::ISC::DHCPd::Leases::Lease> object to the
 L</leases> attribute>.
+
+This does not make much sense! See L</DESCRIPTION> for details.
 
 =cut
 

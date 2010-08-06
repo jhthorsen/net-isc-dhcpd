@@ -116,7 +116,7 @@ to add/construct a new child.
 
 =item find_foos
 
-This method will return zero or more objects in list context. It takes
+This method will return zero or more objects as a list. It takes
 a hash-ref which will be matched against the object attributes of
 the children.
 
