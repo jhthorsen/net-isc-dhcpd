@@ -11,7 +11,7 @@ my $count  = $ENV{'COUNT'} || 1;
 my $leases = "./t/data/dhcpd.leases";
 my $lines  = 104;
 
-plan tests => 1 + 10 * $count;
+plan tests => 1 + 11 * $count;
 
 use_ok("Net::ISC::DHCPd::Leases");
 
@@ -21,7 +21,7 @@ my $time = timeit($count, sub {
 
     is(ref $leases, "Net::ISC::DHCPd::Leases", "leases object constructed");
     is($leases->parse, $lines, "all leases lines parsed");
-    is(@{ $leases->leases }, 10, "got leases");
+    is(scalar(@_=$leases->leases), 10, "got leases");
 
     $lease = $leases->leases->[0];
 
