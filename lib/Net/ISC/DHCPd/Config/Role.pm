@@ -80,7 +80,54 @@ sub _build_depth {
 
 =head2 children
 
-List of possible child nodes.
+Holds a list of possible child objects as objects. This list is used
+when L</parse> or L</generate_config_from_children> is called.
+The child list has a default value set from L</create_children> in each
+of the config modules. This is a static list, which reflects the actual
+documentation from C<dhcpd.conf(5)>. Example:
+
+    package Net::ISC::DHCPd::Config::Foo;
+    __PACKAGE__->create_children("Net::ISC::DHCPd::Config::Host");
+
+    package main;
+    $config = Net::ISC::DHCPd::Config::Foo->new;
+    $config->add_host({ ... });
+    @host_objects = $config->find_hosts({ ... });
+    $config->remove_host({ ... });
+    @host_objects = $config->hosts;
+
+The L</create_children> method will autogenerate three methods and an
+attribute. The name of the attribute and methods will be the last part
+of the config class, with "s" at the end in some cases.
+
+=over 4
+
+=item foos
+
+C<foos> is the name the attrbute as well as the accessor. The accessor
+will auto-deref the array-ref to a list if called in list context. (yes:
+be aware of this!).
+
+=item add_foo
+
+Instead of pushing values directly to the C<foos> list, an C<add_foo>
+method is available. It can take either a hash, hash-ref or an object
+to add/construct a new child.
+
+=item find_foos
+
+This method will return zero or more objects in list context. It takes
+a hash-ref which will be matched against the object attributes of
+the children.
+
+=item remove_foo
+
+This method will remove zero or more children from the C<foos> attribute.
+The method takes a hash-ref which will be used to match against the
+child list. It returns the number of child nodes actually matched and
+removed.
+
+=back
 
 =cut
 
@@ -237,6 +284,14 @@ construct the L</children> attribute.
 
 =cut
 
+my %CREATE_CHILD_ATTRIBUTE_ARGUMENTS = (
+    is => 'rw',
+    isa => 'ArrayRef',
+    lazy => 1,
+    auto_deref => 1,
+    default => sub { [] },
+);
+
 sub create_children {
     my $self = shift;
     my $meta = $self->meta;
@@ -244,18 +299,17 @@ sub create_children {
 
     for my $obj (@children) {
         my $class = $obj; # copy classname
-        my $name  = lc +($class =~ /::(\w+)$/)[0];
-        my $attr  = $name .'s';
+        my $name = lc +($class =~ /::(\w+)$/)[0];
+        my $attr = $name .'s';
 
         Class::MOP::load_class($class);
 
         unless($meta->get_attribute($attr)) {
+            $meta->add_method("add_${name}" => sub { shift->_add_child(@_, $attr, $class) });
+            $meta->add_method("find_${name}s" => sub { shift->_find_children(@_, $attr) });
+            $meta->add_method("remove_${name}s" => sub { shift->_remove_children(@_, $attr) });
             $meta->add_attribute($attr => (
-                is => 'rw',
-                isa => 'ArrayRef',
-                lazy => 1,
-                auto_deref => 1,
-                default => sub { [] },
+                %CREATE_CHILD_ATTRIBUTE_ARGUMENTS,
                 trigger => sub {
                     for my $e (@{ $_[1] }) {
                         next if(blessed $e);
@@ -264,15 +318,6 @@ sub create_children {
                     }
                 },
             ));
-
-            $meta->add_method("add_${name}" => sub {
-                my $self = shift;
-                my $args = @_ == 1 ? $_[0] : {@_};
-
-                push @{ $self->$attr }, $class->new(%$args, parent => $self);
-
-                return ${ $self->$attr }[-1];
-            });
         }
 
         # replace class bareword with object in @children
@@ -284,6 +329,52 @@ sub create_children {
     }
 
     return \@children;
+}
+
+sub _add_child {
+    my $class = pop;
+    my $accessor = pop;
+    my $self = shift;
+    my $args = @_ == 1 ? $_[0] : {@_};
+
+    push @{ $self->$accessor }, $class->new(%$args, parent => $self);
+
+    return ${ $self->$accessor }[-1];
+}
+
+sub _find_children {
+    my $accessor = pop;
+    my $self = shift;
+    my $query = shift or return;
+    my @children;
+
+    CHILD:
+    for my $child ($self->$accessor) {
+        for my $key (keys %$query) {
+            next CHILD unless($child->$key eq $query->{$key});
+        }
+        push @children, $child;
+    }
+
+    return @children;
+}
+
+sub _remove_children {
+    my $accessor = pop;
+    my $self = shift;
+    my $query = shift or return;
+    my $children = $self->$accessor;
+    my @removed;
+
+    CHILD:
+    for my $i (0..$#$children) {
+        for my $key (keys %$query) {
+            next CHILD unless($children->[$i]->$key eq $query->{$key});
+        }
+        push @removed, splice @$children, $i, 1;
+    }
+
+    return @removed;
 }
 
 =head2 generate_config_from_children

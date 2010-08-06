@@ -10,7 +10,7 @@ my $count  = $ENV{'COUNT'} || 1;
 my $config = "./t/data/dhcpd.conf";
 my $lines  = 51;
 
-plan tests => 1 + 28 * $count;
+plan tests => 1 + 32 * $count;
 
 use_ok("Net::ISC::DHCPd::Config");
 
@@ -45,6 +45,11 @@ my $time = timeit($count, sub {
     is($subnet_opt->value, "isc.org", "subnet option value");
     ok($subnet_opt->quoted, "subnet option is quoted");
     is(scalar(@_=$subnet->pools), 3, "three subnet pools found");
+
+    is($config->find_subnets({ address => 'foo' }), 0, 'could not find subnets with "foo" as network address');
+    is($config->find_subnets({ address => '10.0.0.96/27' }), 1, 'found subnets with "10.0.0.96/27" as network address');
+    is($config->remove_subnets({ address => '10.0.0.96/27' }), 1, 'removed subnets with "10.0.0.96/27" as network address');
+    is($config->find_subnets({ address => '10.0.0.96/27' }), 0, 'could not find subnets with "10.0.0.96/27" as network address');
 
     my $range = $subnet->pools->[0]->ranges->[0];
     is($range->lower, "10.0.0.98/32", "lower pool range");
