@@ -10,7 +10,7 @@ use Test::More;
 my $count = 1;
 my $text = do { local $/; <DATA> };
 
-plan tests => 1 + 2 * $count + 3;
+plan tests => 1 + 5 * $count + 3;
 
 use_ok("Net::ISC::DHCPd::Config");
 
@@ -41,6 +41,7 @@ my $time = timeit($count, sub {
     );
     $config->add_subnet(
         address => NetAddr::IP->new('10.0.0.96/27'),
+        filenames => [{ file => 'pxefoo.0' }],
         options => [
             {
                 name => 'routers',
@@ -60,22 +61,34 @@ my $time = timeit($count, sub {
     );
     $config->add_host(
         name => 'foo',
+        filenames => [{ file => 'pxelinux.0' }],
         keyvalues => [
             {
                 name => 'fixed-address',
                 value => '10.19.83.102',
             },
         ],
-        filenames => [
-            {
-                file => 'pxelinux.0',
-            },
-        ],
     );
 
     #print $config->generate;
-
     is($config->generate, $text, "config generated");
+
+    eval { $config->hosts->[0]->add_filename({ file => 'bar!' }) };
+    like($@, qr{Host cannot have more than one}, "Host cannot have more than one filename");
+
+    eval { $config->subnets->[0]->add_filename({ file => 'bar!' }) };
+    like($@, qr{Subnet cannot have more than one}, "Subnet cannot have more than one filename");
+
+    TODO: {
+        local $TODO = "need to improve '...cannot have more than one'";
+        eval {
+            $config->add_host({
+                name => 'bar',
+                filenames => [{ file => 'a' },{ file => 'a' }],
+            });
+        };
+        like($@, qr{Subnet cannot have more than one}, "Subnet cannot have more than one filename");
+    }
 });
 
 diag($count .": " .timestr($time));
@@ -115,6 +128,7 @@ on commit {
 }
 subnet 10.0.0.96 netmask 255.255.255.224 {
     option routers 10.0.0.97;
+    filename pxefoo.0;
     pool {
         range 10.0.0.126 10.0.0.116;
     }

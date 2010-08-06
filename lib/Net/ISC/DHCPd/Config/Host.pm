@@ -33,7 +33,16 @@ A list of parsed L<Net::ISC::DHCPd::Config::Option> objects.
 
 =head2 filenames
 
-A list of parsed L<Net::ISC::DHCPd::Config::Filename> objects.
+A list of parsed L<Net::ISC::DHCPd::Config::Filename> objects. There can
+be only one element in this list.
+
+=cut
+
+before add_filename => sub {
+    if(0 < int @{ $_[0]->filenames }) {
+        confess 'Host cannot have more than one filename';
+    }
+};
 
 Should only be one item in this list.
 

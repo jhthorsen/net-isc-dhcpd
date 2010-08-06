@@ -48,9 +48,16 @@ A list of parsed L<Net::ISC::DHCPd::Config::Host> objects.
 
 =head2 filenames
 
-A list of parsed L<Net::ISC::DHCPd::Config::Filename> objects.
+A list of parsed L<Net::ISC::DHCPd::Config::Filename> objects. There can
+be only be one node in this list.
 
-Should only be one item in this list.
+=cut
+
+before add_filename => sub {
+    if(0 < int @{ $_[0]->filenames }) {
+        confess 'Subnet cannot have more than one filename';
+    }
+};
 
 =head2 pools
 
