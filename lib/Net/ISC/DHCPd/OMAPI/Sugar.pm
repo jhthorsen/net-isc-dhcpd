@@ -70,7 +70,6 @@ sub omapi_attr {
 Moose::Exporter->setup_import_methods(
     with_caller => [qw/omapi_attr/],
     as_is => \@types,
-    also => 'Moose',
 );
 
 =head1 COPYRIGHT & LICENSE

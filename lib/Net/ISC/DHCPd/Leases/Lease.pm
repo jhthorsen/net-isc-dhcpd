@@ -4,17 +4,21 @@ package Net::ISC::DHCPd::Leases::Lease;
 
 Net::ISC::DHCPd::Leases::Lease - Lease object
 
+=head1 SYNOPSIS
+
+See L<Net::ISC::DHCPd::Leases>.
+
 =head1 DESCRIPTION
 
-This class extends L<Net::ISC::DHCPd::OMAPI::Lease>.
+This class does the role L<Net::ISC::DHCPd::Role::Lease>.
 
 =cut
 
 use Moose;
 
-extends 'Net::ISC::DHCPd::OMAPI::Lease';
+with qw/Net::ISC::DHCPd::Role::Lease/;
 
-has '+parent' => ( required => 0 );
+=head1 ATTRIBUTES
 
 =head1 COPYRIGHT & LICENSE
 

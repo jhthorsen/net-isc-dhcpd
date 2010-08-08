@@ -24,6 +24,7 @@ L<Net::ISC::DHCPd::OMAPI::Meta::Attribute>.
 =cut
 
 use Net::ISC::DHCPd::OMAPI::Sugar;
+use Moose;
 
 with 'Net::ISC::DHCPd::OMAPI::Actions';
 
