@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use lib qw(lib);
 use Test::More;
-plan tests => 31;
+plan tests => 32;
 use_ok('Net::ISC::DHCPd');
 use_ok('Net::ISC::DHCPd::Config');
 use_ok('Net::ISC::DHCPd::Config::Filename');
@@ -31,5 +31,6 @@ use_ok('Net::ISC::DHCPd::OMAPI::Lease');
 use_ok('Net::ISC::DHCPd::OMAPI::Meta::Attribute');
 use_ok('Net::ISC::DHCPd::OMAPI::Sugar');
 use_ok('Net::ISC::DHCPd::Process');
+use_ok('Net::ISC::DHCPd::Process::Role');
 use_ok('Net::ISC::DHCPd::Role::Lease');
 use_ok('Net::ISC::DHCPd::Types');

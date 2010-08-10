@@ -2,69 +2,30 @@ package Net::ISC::DHCPd::Process;
 
 =head1 NAME
 
-Net::ISC::DHCPd::Process - Skeleton process class
-
-=head1 SYNOPSIS
-
-    package MyProcessRole;
-    use Moose::Role;
-    use Net::ISC::DHCPd::Process
-
-    has program => ( is => 'rw' );
-    has args => ( is => 'rw' );
-    has user => ( is => 'rw' );
-    has group => ( is => 'rw' );
-
-    after BUILDALL => sub {
-        my $self = shift;
-        my $args = shift;
-
-        if($args->{'start'}) {
-            # spawn process
-        }
-    };
-
-    sub kill {
-        # kill process
-    }
-
-    MyProcessRole->meta->apply( Net::ISC::DHCPd::Process->meta );
-
-    1;
+Net::ISC::DHCPd::Process - Default process class
 
 =head1 DESCRIPTION
-
-This module is subject for a major rewrite. Patches and comments
-are welcome!
 
 =cut
 
 use Moose;
 
+with 'Net::ISC::DHCPd::Process::Role';
+
 =head1 METHODS
 
-=head2 new
+=head2 start
 
- $self = $class->new($args)
- $self = $class->new(%args)
+=cut
 
-Spawns a dhcpd process, running in the background.
+sub start {
+    my $self = shift;
+    my $child_exit = system { $self->name } @{ $self->args };
 
-Args:
+    # pid?
 
- program
- args
- user
- group
- start
-
-=head2 pid
-
- $pid = $self->pid
-
-=head2 kill
-
- $bool = $self->kill($signal)
+    return $child_exit ? 0 : 1;
+}
 
 =head1 COPYRIGHT & LICENSE
 

@@ -140,6 +140,7 @@ It is read-only and the default is "/var/run/dhcp3-server/dhcpd.pid".
 has pidfile => (
     is => 'ro',
     isa => File,
+    coerce => 1,
     default => sub {
         Path::Class::File->new('', 'var', 'run', 'dhcp3-server', 'dhcpd.pid');
     },
@@ -154,15 +155,13 @@ The hash-ref will then be passed on to the constructor.
 =cut
 
 has process => (
-    is => 'rw',
+    is => 'ro',
     isa => ProcessObject,
     coerce => 1,
     lazy_build => 1,
 );
 
-sub _build_process {
-    confess 'process() cannot be build. Usage: $self->process($process_obj)';
-}
+__PACKAGE__->meta->add_method(_build_omapi => sub { _build_child_obj(Process => @_) });
 
 =head2 errstr
 
@@ -196,26 +195,24 @@ TODO: Enable it to start the server as a different user/group.
 sub start {
     my $self = shift;
     my $args = shift || {};
-    my($user, $group);
+    my($user, $group, $uid, $gid);
 
     if($self->has_process and $self->process->kill(0)) {
-        $self->errstr('allready running');
+        $self->errstr('already running');
         return 0;
     }
 
     $user = $args->{'user'}  || getpwuid $<;
-    $group = $args->{'group'} || getgrgid $<;
+    $group = $args->{'group'} || getgrgid $(;
     $args = [
-        '-f', # foreground
-        '-d', # log to STDERR
         '-cf' => $self->config->file,
         '-lf' => $self->leases->file,
         '-pf' => $self->pidfile,
         $args->{'interfaces'} || q(),
     ];
 
-    $user = getpwnam $user;
-    $group = getgrnam $group;
+    $uid = getpwnam $user || $<;
+    $gid = getgrnam $group || $(;
 
     MAKE_DIR:
     for my $file ($self->config->file, $self->leases->file, $self->pidfile) {
@@ -227,20 +224,13 @@ sub start {
             return;
         }
 
-        unless(chown $user, $group, $dir) {
+        unless(chown $uid, $gid, $dir) {
             $self->errstr("could not chown($user, $group $dir): $!");
             return;
         }
     }
 
-    $self->process({
-        program => $self->binary,
-        args => $args,
-        user => $user,
-        group => $group,
-    });
-
-    return $self->process ? 1 : undef;
+    return $self->process->start;
 }
 
 =head2 stop
@@ -261,8 +251,8 @@ sub stop {
         return undef;
     }
 
-    unless($self->process->kill('TERM')) {
-        $self->errstr("Could not send signal to process");
+    unless($self->process->stop) {
+        $self->errstr("Could not stop process");
         return undef;
     }
 
