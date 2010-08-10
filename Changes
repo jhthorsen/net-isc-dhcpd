@@ -1,11 +1,12 @@
 Revision history for Net-ISC-DHCPd
 
-0.09
+0.09     Tue Aug 10 20:50:37 CEST 2010
        - Add find_foos() and remove_foos() methods for child Config objects
        - Add find_leases() method for child Lease objects
        - Add shared-network can have a name
        - Add Net::ISC::DHCPd::Role::Lease
        - Change max one "filename" per Host and Subnet object
+         - This needs to be improved: Check is only run on add_filename()
        - Change $dhcpd->test(...): errstr() can hold the output
          from the dhcpd3 binary, instead of the numeric exit value.
        - Change "leases" attribute has auto_deref

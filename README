@@ -2,114 +2,119 @@ NAME
     Net::ISC::DHCPd - Interacts with ISC DHCPd
 
 VERSION
-    0.0802
+    0.09
 
 SYNOPSIS
-     my $dhcpd = Net::ISC::DHCPd->new(
-                     config => { file => "path/to/config" },
-                     leases => { file => "path/to/leases" },
-                     omapi => { ... },
-                 );
+        my $dhcpd = Net::ISC::DHCPd->new(
+                        config => { file => "path/to/config" },
+                        leases => { file => "path/to/leases" },
+                        omapi => { key => "some key" },
+                    );
 
-    See tests for more documentation.
+        $self->test('config') or die $self->errstr;
+
+        # start the dhcpd server
+        $dhcpd->start({
+            user => 'john-doe',
+            group => 'users',
+            interfaces => 'eth0',
+        }) or die $dhcpd->errstr;
+        print $dhcpd->status;
+
+        $dhcpd->restart or die $dhcpd->errstr;
+        print $dhcpd->status;
+
+        $dhcpd->stop or die $dhcpd->errstr;
+        print $dhcpd->status;
+
+    See the tests bundled to this distribution for more examples.
+
+    This module is subject for a major rewrite. Patches and comments are
+    welcome - reason for this is that Net::ISC::DHCPd::Process does not work
+    as expected.
+
+DESCRIPTION
+    This namespace contains three semi-separate projects, which this module
+    binds together: dhcpd.conf, dhcpd.leases and omapi. It is written with
+    Moose which provides classes and roles to represents things like a host,
+    a lease or any other thing.
+
+    The distribution as a whole is targeted an audience who configure and/or
+    analyze the <Internet Systems Consortium DHCP Server>. If you are not
+    familiar with the server, check out <the man pages>.
 
 ATTRIBUTES
   config
-     $config_obj = $self->config
-     $bool = $self->has_config;
-
-    Instance of Net::ISC::DHCPd::Config class.
+    This attribute holds a read-only Net::ISC::DHCPd::Config object. It can
+    be set from the constructor, using either an object or a hash-ref. The
+    hash-ref will then be passed on to the constructor.
 
   leases
-     $leases_obj = $self->leases
-     $bool = $self->has_leases;
-
-    Instance of Net::ISC::DHCPd::Leases class.
+    This attribute holds a read-only Net::ISC::DHCPd::Leases object. It can
+    be set from the constructor, using either an object or a hash-ref. The
+    hash-ref will then be passed on to the constructor.
 
   omapi
-     $omapi_obj = $self->omapi;
-     $bool = $self->has_omapi;
-
-    Instance of Net::ISC::DHCPd::OMAPI class.
+    This attribute holds a read-only Net::ISC::DHCPd::OMAPI object. It can
+    be set from the constructor, using either an object or a hash-ref. The
+    hash-ref will then be passed on to the constructor.
 
   binary
-     $path_to_binary = $self->binary;
-
-    Default: "dhcpd3"
+    This attribute holds a Path::Class::File object to the dhcpd binary. It
+    is read-only and the default is "dhcpd3".
 
   pidfile
-     $path_class_object = $self->pidfile;
-
-    Default: /var/run/dhcp3-server/dhcpd.pid
+    This attribute holds a Path::Class::File object to the dhcpd binary. It
+    is read-only and the default is "/var/run/dhcp3-server/dhcpd.pid".
 
   process
-     $proc_obj = $self->process;
-     $self->process($proc_obj);
-     $self->process(\%args);
-     $self->has_process;
-     $self->clear_process;
-
-    The object holding the dhcpd process.
+    This attribute holds a read-only Net::ISC::DHCPd::Process object. It can
+    be set from the constructor, using either an object or a hash-ref. The
+    hash-ref will then be passed on to the constructor.
 
   errstr
-     $string = $self->errstr;
-
-    Holds the last know error.
+    Holds the last know error as a plain string.
 
 METHODS
   start
-     $bool = $self->start($args);
+        $any = $self->start(\%args);
 
     Will start the dhcpd server, as long as there is no existing process.
+    See "SYNOPSIS" for example. %args can have "user", "group" and
+    "interfaces" which all points to strings. This method returns and
+    integer or undef: "1" means "started". "0" means "already running" and
+    "undef" means failed to start the server. Check "errstr" on failure.
 
-    $args:
-
-     {
-       user       || getpwuid $<
-       group      || getgrgid $<
-       interfaces || ""
-     }
-
-    Returns:
-
-     1     => OK
-     0     => Already running
-     undef => Failed. Check errstr()
-
-    TODO: Enable it to start the server as a differnet user/group.
+    TODO: Enable it to start the server as a different user/group.
 
   stop
      $bool = $self->stop;
 
-    Return:
-
-     1:     OK
-     undef: Failed. Check errstr()
+    This method will stop a running server. A true return value means that
+    the server got stopped, while false means it could not be stopped. Check
+    errstr on failure.
 
   restart
      $bool = $self->restart;
 
-    Return:
-
-     1     => OK
-     undef => Failed. Check errstr()
+    This method will restart a running server or start a stopped server. A
+    true return value means that the server got started, while false means
+    it could not be started/restarted. Check errstr or failure.
 
   status
-     $string = $self->status;
+     $str = $self->status;
 
-    Returns the status of the DHCPd server:
-
-     stopped
-     running
+    Returns the status of the DHCPd server: "stopped" or "running".
 
   test
      $bool = $self->test("config");
      $bool = $self->test("leases");
 
-    Will test either config or leases file.
-
-     1:     OK
-     undef: Failed. Check errstr()
+    Will test either the config or leases file. It returns a boolean value
+    which indicates if it is valid or not: True means it is valid, while
+    false means it is invalid. Check "errstr" on failure - it will contain a
+    descriptive string from either this module, $! or the exit value
+    (integer stored as a string).
 
 BUGS
     Please report any bugs or feature requests to "bug-net-isc-dhcpd at
