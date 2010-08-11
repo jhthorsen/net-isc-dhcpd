@@ -11,6 +11,7 @@ This role is subject for change. Feedback is very much welcome!
 =cut
 
 use Time::HiRes qw/usleep/;
+use MooseX::Types::Path::Class qw(File);
 use Moose::Role;
 
 requires 'start';
@@ -74,25 +75,67 @@ has group => (
     predicate => 'has_group',
 );
 
+=head2 pidfile
+
+This attribute holds a L<Path::Class::File> object to the dhcpd binary.
+It is read-only and the default is "/var/run/dhcp3-server/dhcpd.pid".
+
+=cut
+
+has pidfile => (
+    is => 'ro',
+    isa => File,
+    coerce => 1,
+    default => sub {
+        Path::Class::File->new('', 'var', 'run', 'dhcp3-server', 'dhcpd.pid');
+    },
+);
+
 =head2 pid
-
-    $int = $self->pid;
-    $bool = $self->has_pid;
-    $self->clear_pid;
-
-Holds the process id of the child process.
 
 =cut
 
 has pid => (
     is => 'ro',
     isa => 'Int',
-    writer => '_set_pid',
-    predicate => 'has_pid',
-    clearer => 'clear_pid',
+    init_arg => undef,
+    lazy_build => 1,
 );
 
+sub _build_pid {
+    open my $PID, '<', $_[0]->pidfile or return 0;
+    my $pid = readline $PID or return 0;
+    chomp $pid;
+    return $pid || 0;
+}
+
 =head1 METHODS
+
+=head2 restart
+
+ $bool = $self->restart;
+
+This method will restart a running server or start a stopped server.
+A true return value means that the server got started, while false
+means it could not be started/restarted. Check L<errstr> or failure.
+
+=cut
+
+sub restart {
+    my $self = shift;
+    my $proc;
+    
+    if($self->pid > 0 and !$self->stop) {
+        $self->errstr("could not stop server");
+        return undef;
+    }
+    unless($self->start) {
+        $self->errstr("could not start server");
+        return undef;
+    }
+
+    return 1;
+}
 
 =head2 stop
 
@@ -121,6 +164,26 @@ Use the internal C<kill()> to signal the process.
 sub kill {
     my($self, $signal) = @_;
     return kill $self->pid, $signal;
+}
+
+=head2 status
+
+ $str = $self->status;
+
+Returns the status of the DHCPd server: "stopped" or "running".
+
+=cut
+
+sub status {
+    my $self = shift;
+
+    if($self->has_process) {
+        if($self->process->kill(0)) {
+            return "running";
+        }
+    }
+
+    return "stopped";
 }
 
 =head1 BUGS
