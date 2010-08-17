@@ -33,4 +33,11 @@ $lease->hardware_address($ARGV[0]) if($ARGV[0] =~ /:/);
 $lease->ip_address($ARGV[0]) if($ARGV[0] =~ /\./);
 $lease->read or die "Could not read lease: ", $omapi->errstr, "\n";
 
-print $lease->dump(1);
+DUMP_LEASE_OBJECT_TO_SCREEN: {
+    no warnings;
+    local $Data::Dumper::Indent = 1;
+    local $Data::Dumper::Pair = ": ";
+    local $Data::Dumper::Quotekeys = 0;
+    local $Data::Dumper::Sortkeys = 1;
+    print $lease->dump(2);
+}
