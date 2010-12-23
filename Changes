@@ -1,6 +1,7 @@
 Revision history for Net-ISC-DHCPd
 
 0.10
+       - Fix (RT64173) remove set() fom pod, since it does not exist
        - Change (RT64174) OMAPI lease attribute "ends" can be modified
          Contributor: kornerr
 
