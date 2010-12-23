@@ -19,7 +19,6 @@ L<Net::ISC::DHCPd::OMAPI::Meta::Attribute>.
  $lease = $omapi->new_object("lease", { $attr => $value });
  $lease->$attr($value); # same as in constructor
  $lease->read; # retrieve server information
- $lease->set($attr => $value); # alter an modify attr
  $lease->write; # write to server
 
 =cut

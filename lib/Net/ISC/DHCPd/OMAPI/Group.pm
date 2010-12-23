@@ -18,7 +18,6 @@ L<Net::ISC::DHCPd::OMAPI::Meta::Attribute>.
  $group = $omapi->new_object("group", { $attr => $value });
  $group->$attr($value); # same as in constructor
  $group->read; # retrieve server information
- $group->set($attr => $value); # alter an update attr
  $group->write; # write to server
 
 =cut

@@ -16,9 +16,8 @@ L<Net::ISC::DHCPd::OMAPI::Meta::Attribute>.
  $omapi = Net::ISC::DHCPd::OMAPI->new(...);
  $omapi->connect
  $control = $omapi->new_object("control", { $attr => $value });
- $control->$attr($value); # same as in constructor
  $control->read; # retrieve server information
- $control->set($attr => $value); # alter an update attr
+ $control->$attr($value); # update a value
  $control->write; # write to server
 
 =cut

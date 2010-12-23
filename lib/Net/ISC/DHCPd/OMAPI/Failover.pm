@@ -18,7 +18,6 @@ L<Net::ISC::DHCPd::OMAPI::Meta::Attribute>.
  $failover = $omapi->new_object("failover", { $attr => $value });
  $failover->$attr($value); # same as in constructor
  $failover->read; # retrieve server information
- $failover->set($attr => $value); # alter an update attr
  $failover->write; # write to server
 
 =cut
