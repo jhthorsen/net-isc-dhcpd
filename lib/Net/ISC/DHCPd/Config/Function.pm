@@ -126,8 +126,7 @@ statements.
 =cut
 
 sub slurp {
-    my $self = shift;
-    my $line = shift;
+    my($self, $line) = @_;
 
     $self->_inc_depth if($line =~ /{/);
     $self->_dec_depth if($line =~ /}/);

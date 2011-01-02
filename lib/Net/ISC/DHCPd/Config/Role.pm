@@ -220,28 +220,33 @@ sub parse {
     my $fh = $self->_filehandle;
     my $endpoint = $self->endpoint;
     my $n = 0;
+    my $pos;
 
     LINE:
     while(1) {
+        $pos = $fh->getpos or die $!;
         defined(my $line = readline $fh) or last LINE;
         my $res;
         $n++;
 
         if($self->can('slurp')) {
             my $action = $self->slurp($line); # next or last
-            no warnings;
-            eval $action; # evil way to be able to do "last" or "next"
-        }
-
-        if($line =~ $endpoint) {
-            $self->captured_endpoint($1, $2, $3, $4); # urk...
-
-            if($self->root == $self) {
+            if($action eq 'next') {
                 next LINE;
             }
-            else {
+            elsif($action eq 'last') {
                 last LINE;
             }
+            elsif($action eq 'backtrack') {
+                $fh->setpos($pos);
+                $n--;
+                last LINE;
+            }
+        }
+        elsif($line =~ $endpoint) {
+            $self->captured_endpoint($1, $2, $3, $4); # urk...
+            next LINE if($self->root == $self);
+            last LINE;
         }
 
         CHILD:

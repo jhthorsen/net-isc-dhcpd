@@ -26,6 +26,9 @@ use Moose;
 
 with 'Net::ISC::DHCPd::Config::Role';
 
+# option foo-enc code 122 = encapsulate foo;
+my $ENCAPSULATE_RE = qr{option (\S+) code (\d+) = encapsulate (\S+)\s*;};
+
 __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::OptionSpace::Option
 /);
@@ -72,15 +75,37 @@ has prefix => (
 
 sub _build_regex { qr{^\s* option \s space \s (.*) ;}x }
 
-sub _build_endpoint {
-    qr{^
-        \s* option \s (\S+)
-        \s  code \s (\d+) \s =
-        \s  encapsulate \s (\S+) ;
-    }x;
-}
-
 =head1 METHODS
+
+=head2 slurp
+
+=cut
+
+sub slurp {
+    my($self, $line) = @_;
+    my $prefix = $self->prefix;
+
+    #option space foo; <--- already captured
+    #option foo.bar code 1 = ip-address;
+    #option foo.baz code 2 = ip-address;
+    #option foo-enc code 122 = encapsulate foo;
+
+    if($line =~ /(\w+)\s*/) {
+        if($line =~ $ENCAPSULATE_RE) {
+            confess "encapsulate $3 does not match option space $prefix" if($3 ne $prefix);
+            $self->name($1);
+            $self->code($2);
+        }
+        elsif($line =~ /option $prefix\./) {
+            return 'children';
+        }
+        else {
+            return 'backtrack';
+        }
+    }
+
+    return 'next';
+}
 
 =head2 captured_to_args
 
@@ -90,23 +115,6 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 
 sub captured_to_args {
     return { prefix => $_[1] }
-}
-
-=head2 captured_endpoint
-
-See L<Net::ISC::DHCPd::Config::Role/captured_endpoint>.
-
-=cut
-
-sub captured_endpoint {
-    my $self = shift;
-
-    unless($_[2] and $_[2] eq $self->prefix) {
-        confess "prefix does not match '$_[2]'";
-    }
-
-    $self->name($_[0]);
-    $self->code($_[1]);
 }
 
 =head2 generate
