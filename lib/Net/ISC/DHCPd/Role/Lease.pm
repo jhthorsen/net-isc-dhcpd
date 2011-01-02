@@ -117,15 +117,16 @@ omapi_attr dhcp_client_identifier => (
  $self->ends($int);
  $int = $self->ends;
 
-The time when the lease's current state ends, as understood by the client.
+The time when the current state of the lease ends, as understood by the client.
+Setting this to "0" will effectively makes the DHCP server drop the lease.
 
-Actions: examine.
+Actions: examine, modify.
 
 =cut
 
 omapi_attr ends => (
     isa => Time,
-    actions => [qw/examine/],
+    actions => [qw/examine modify/],
 );
 
 =head2 flags

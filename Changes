@@ -1,5 +1,9 @@
 Revision history for Net-ISC-DHCPd
 
+0.10
+       - Change (RT64174) OMAPI lease attribute "ends" can be modified
+         Contributor: kornerr
+
 0.09     Tue Aug 10 20:50:37 CEST 2010
        - Add find_foos() and remove_foos() methods for child Config objects
        - Add find_leases() method for child Lease objects
