@@ -26,7 +26,8 @@ use Moose;
 
 with 'Net::ISC::DHCPd::Config::Role';
 
-my $ENCAPSULATE_RE = qr{ option (\S+) \s code \s (\d+) \s = \s encapsulate \s (\S+) ; }x;
+# option foo-enc code 122 = encapsulate foo;
+my $ENCAPSULATE_RE = qr{option (\S+) code (\d+) = encapsulate (\S+)\s*;};
 
 __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::OptionSpace::Option
