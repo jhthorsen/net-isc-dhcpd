@@ -1,8 +1,8 @@
-package Net::ISC::DHCPd::Config::Subnet;
+package Net::ISC::DHCPd::Config::ConditionRole;
 
 =head1 NAME
 
-Net::ISC::DHCPd::Config::Subnet - Subnet config parameter
+Net::ISC::DHCPd::Config::ConditionRole - if, elsif and/or else config parameter
 
 =head1 DESCRIPTION
 
@@ -24,26 +24,31 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose;
+use Moose::Role;
 
-with 'Net::ISC::DHCPd::Config::Role';
+with 'Net::ISC::DHCPd::Config::Role' => { -excludes => [qw/ captured_to_args /] };
 
 =head1 ATTRIBUTES
 
+=head2 type
+
 =cut
 
-has children => (
+has type => (
     is => 'ro',
-    isa => 'NetAddr::IP',
+    isa => 'Str',
 );
 
-=head2 regex
-
-See L<Net::ISC::DHCPd::Config/regex>.
+=head2 logic
 
 =cut
 
-sub _build_regex { qr{^ \s* subnet \s (\S+) \s netmask \s (\S+) }x }
+has logic => (
+    is => 'ro',
+    isa => 'Str',
+);
+
+sub _build_regex { qr/^ \s* (if|elsif|else) (.*) /x }
 
 =head1 METHODS
 
@@ -54,7 +59,15 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 =cut
 
 sub captured_to_args {
-    return { address => NetAddr::IP->new(join "/", @_[1,2]) };
+    my($self, $type, $logic) = @_;
+
+    $logic =~ s/^\s+//;
+    $logic =~ s/\s+$//;
+
+    return {
+        type => $type,
+        logic => $logic,
+    };
 }
 
 =head2 generate
@@ -65,10 +78,9 @@ See L<Net::ISC::DHCPd::Config::Role/generate>.
 
 sub generate {
     my $self = shift;
-    my $net = $self->address;
 
     return(
-        'subnet ' .$net->addr .' netmask ' .$net->mask .' {',
+        $self->logic ? sprintf('%s %s {', $self->type, $self->logic) : $self->type .' {',
         $self->generate_config_from_children,
         '}',
     );

@@ -8,7 +8,7 @@ use Net::ISC::DHCPd::Config;
 
 my $config = Net::ISC::DHCPd::Config->new(file => './t/60044/dhcpd.conf');
 
-plan tests => 32;
+plan tests => 23;
 
 {
     is(ref $config, "Net::ISC::DHCPd::Config", "config object constructed");
@@ -40,7 +40,13 @@ SKIP: {
     is(scalar(@_=$config->includes), 1, "includes") or skip 'failed to find included file', 3;
     my $included = $config->includes->[0];
     like($included->file, qr{foo-included.conf}, 'foo-included.conf got included');
-    is($included->parse, 12, 'included file got parsed');
+    is($included->parse, 17, 'included file got parsed');
+    is(scalar(@_=$included->conditions), 3, 'included file contains three conditions');
     is(scalar(@_=$included->hosts), 1, 'included file contains one host');
-    #is(scalar(@_=$included->conditions), 1, 'included file contains one condition');
+    is(scalar(@_=$included->conditions->[0]->options), 1, 'one option inside condition');
+    is($included->conditions->[0]->type, 'if', 'got "if" condition');
+    is($included->conditions->[0]->logic, 'substring (option vendor-class-identifier, 0, 4) = "MSFT"', '...with logic');
+
+    is($included->conditions->[1]->type, 'elsif', 'got "elsif" condition');
+    is($included->conditions->[2]->type, 'else', 'got "else" condition');
 }

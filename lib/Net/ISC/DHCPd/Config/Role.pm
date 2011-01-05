@@ -302,6 +302,20 @@ sub create_children {
     my $self = shift;
     my $meta = $self->meta;
     my @children = @_;
+    my $condition_class = $meta->name .'::Condition';
+    my $condition_meta;
+
+    $meta->add_method(_build_children => sub { \@children });
+
+    $condition_meta = $meta->create($condition_class => (
+                          superclasses => [ 'Moose::Object' ],
+                          roles => [ 'Net::ISC::DHCPd::Config::ConditionRole' ],
+                          methods => {
+                              _build_children => sub { \@children },
+                          },
+                      ));
+
+    push @children, $condition_class;
 
     for my $obj (@children) {
         my $class = $obj; # copy classname
@@ -312,8 +326,25 @@ sub create_children {
 
         unless($meta->get_attribute($attr)) {
             $meta->add_method("add_${name}" => sub { shift->_add_child(@_, $attr, $class) });
+            $condition_meta->add_method("add_${name}" => sub { shift->_add_child(@_, $attr, $class) });
+
             $meta->add_method("find_${name}s" => sub { shift->_find_children(@_, $attr) });
+            $condition_meta->add_method("find_${name}s" => sub { shift->_find_children(@_, $attr) });
+
             $meta->add_method("remove_${name}s" => sub { shift->_remove_children(@_, $attr) });
+            $condition_meta->add_method("remove_${name}s" => sub { shift->_remove_children(@_, $attr) });
+
+            $condition_meta->add_attribute($attr => (
+                %CREATE_CHILD_ATTRIBUTE_ARGUMENTS,
+                trigger => sub {
+                    for my $e (@{ $_[1] }) {
+                        next if(blessed $e);
+                        next if(ref $e ne 'HASH');
+                        $e = $class->new(parent => $_[0], %$e);
+                    }
+                },
+            ));
+
             $meta->add_attribute($attr => (
                 %CREATE_CHILD_ATTRIBUTE_ARGUMENTS,
                 trigger => sub {
@@ -330,18 +361,18 @@ sub create_children {
         $obj = $class->new;
     }
 
-    $meta->add_method(_build_children => sub { \@children });
-
     return \@children;
 }
 
 sub _add_child {
+    my $self = shift;
     my $class = pop;
     my $accessor = pop;
-    my $self = shift;
     my $args = @_ == 1 ? $_[0] : {@_};
 
-    push @{ $self->$accessor }, $class->new(%$args, parent => $self);
+    eval { push @{ $self->$accessor }, $class->new(%$args, parent => $self) };
+    print join "\n", map { $_->name } $class->meta->get_all_attributes if $@;
+    die $@ if($@);
 
     return ${ $self->$accessor }[-1];
 }
