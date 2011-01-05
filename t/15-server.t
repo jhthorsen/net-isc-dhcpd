@@ -3,46 +3,29 @@
 use strict;
 use warnings;
 use lib 'lib';
-use Test::More tests => 13;
+use File::Temp;
+use Net::ISC::DHCPd;
+use Test::More;
 
-use_ok("Net::ISC::DHCPd");
-use_ok("Net::ISC::DHCPd::Process");
-
-ok(!Net::ISC::DHCPd::Process->can('kill'), "cannot kill()");
-ok(setup_process_class(), "applied MyProcessRole") or diag $@;
-ok(Net::ISC::DHCPd::Process->can('kill'), "can kill()");
+plan tests => 13;
 
 my $binary = 't/data/dhcpd3';
-my $isc = Net::ISC::DHCPd->new(
-              binary => $binary,
-              leases => {
-                  file => 't/data/dhcpd.leases',
-              },
-          );
+my $pid_file = File::Temp->new;
+my $dhcpd = Net::ISC::DHCPd->new(
+                binary => $binary,
+                pidfile => "$pid_file",
+                config => { file => 't/data/dhcpd.conf' },
+                leases => { file => 't/data/dhcpd.leases' },
+           );
 
-eval { $isc->process };
-like($@, qr{cannot be build}i, "process attribute cannot be build");
-is($isc->binary, $binary, "binary is set");
-is($isc->status, "stopped", "process is stopped");
-ok($isc->process({}), "process set by hash");
-ok($isc->test('config'), "mock config is valid") or diag $isc->errstr;
-ok($isc->test('leases'), "mock leases is valid") or diag $isc->errstr;
+is($dhcpd->binary, $binary, 'binary is set');
+is($dhcpd->status, 'stopped', 'process is stopped');
+ok($dhcpd->test('config'), 'mock config is valid') or diag $dhcpd->errstr;
+ok($dhcpd->test('leases'), 'mock leases is valid') or diag $dhcpd->errstr;
 
-$isc->leases->file('/fooooooooooooooooooooooooooooooo');
-ok(!$isc->test('leases'), "mock leases is now invalid") or diag $isc->errstr;
-like($isc->errstr, qr{Invalid leases file}, 'script output "Invalid leases file"');
+$dhcpd->leases->file('/fooooooooooooooooooooooooooooooo');
+ok(!$dhcpd->test('leases'), 'mock leases is now invalid') or diag $dhcpd->errstr;
+like($dhcpd->errstr, qr{Invalid leases file}, 'script output "Invalid leases file"');
 
-sub setup_process_class {
-    eval qq[
-        package MyProcessRole;
-        use Moose::Role;
-        use Net::ISC::DHCPd::Process;
-
-        sub kill { }
-
-        MyProcessRole->meta->apply( Net::ISC::DHCPd::Process->meta );
-
-        1;
-    ];
-}
-
+ok(!$dhcpd->process->has_pid, 'server has no pid');
+ok($dhcpd->start, 'server got started');

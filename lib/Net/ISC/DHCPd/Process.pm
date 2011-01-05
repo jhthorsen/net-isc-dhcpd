@@ -2,69 +2,84 @@ package Net::ISC::DHCPd::Process;
 
 =head1 NAME
 
-Net::ISC::DHCPd::Process - Skeleton process class
-
-=head1 SYNOPSIS
-
-    package MyProcessRole;
-    use Moose::Role;
-    use Net::ISC::DHCPd::Process
-
-    has program => ( is => 'rw' );
-    has args => ( is => 'rw' );
-    has user => ( is => 'rw' );
-    has group => ( is => 'rw' );
-
-    after BUILDALL => sub {
-        my $self = shift;
-        my $args = shift;
-
-        if($args->{'start'}) {
-            # spawn process
-        }
-    };
-
-    sub kill {
-        # kill process
-    }
-
-    MyProcessRole->meta->apply( Net::ISC::DHCPd::Process->meta );
-
-    1;
+Net::ISC::DHCPd::Process - Default process class
 
 =head1 DESCRIPTION
 
-This module is subject for a major rewrite. Patches and comments
-are welcome!
-
 =cut
 
+use Path::Class::Dir;
 use Moose;
+
+with 'Net::ISC::DHCPd::Process::Role';
 
 =head1 METHODS
 
-=head2 new
+=head2 start
 
- $self = $class->new($args)
- $self = $class->new(%args)
+    $bool = $self->start(\%args);
 
-Spawns a dhcpd process, running in the background.
+Will start the dhcpd server, as long as there is no existing process.
+See L</SYNOPSIS> for example. C<%args> can have C<user>, C<group> and
+C<interfaces> which all points to strings. This method returns and
+integer or undef: "1" means "started". "0" means "already running"
+and C<undef> means failed to start the server. Check L</errstr> on
+failure.
 
-Args:
+TODO: Enable it to start the server as a different user/group.
 
- program
- args
- user
- group
- start
+=cut
 
-=head2 pid
+sub start {
+    my $self = shift;
+    my $args = shift || {};
+    my($user, $group, $uid, $gid);
 
- $pid = $self->pid
+    if($self->process->kill(0)) {
+        $self->errstr('already running');
+        return 0;
+    }
 
-=head2 kill
+    $user = $self->user;
+    $group = $self->group;
+    $args = [
+        '-cf' => $self->config->file,
+        '-lf' => $self->leases->file,
+        '-pf' => $self->pidfile,
+        $args->{'interfaces'} || q(),
+    ];
 
- $bool = $self->kill($signal)
+    $uid = getpwnam $user || $<;
+    $gid = getgrnam $group || $(;
+
+    MAKE_DIR:
+    for my $file ($self->config->file, $self->leases->file, $self->pidfile) {
+        my $dir = $file->dir;
+        next if -d $dir;
+
+        unless(eval { $dir->mkpath }) {
+            $self->errstr($@);
+            return;
+        }
+
+        unless(chown $uid, $gid, $dir) {
+            $self->errstr("could not chown($user, $group $dir): $!");
+            return;
+        }
+    }
+
+    return $self->process->start;
+}
+
+
+sub start {
+    my $self = shift;
+    my $child_exit = system { $self->name } @{ $self->args };
+
+    # pid?
+
+    return $child_exit ? 0 : 1;
+}
 
 =head1 COPYRIGHT & LICENSE
 
