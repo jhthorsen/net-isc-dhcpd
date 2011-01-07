@@ -18,25 +18,7 @@ Net::ISC::DHCPd - Interacts with ISC DHCPd
 
     $self->test('config') or die $self->errstr;
 
-    # start the dhcpd server
-    $dhcpd->start({
-        user => 'john-doe',
-        group => 'users',
-        interfaces => 'eth0',
-    }) or die $dhcpd->errstr;
-    print $dhcpd->status;
-
-    $dhcpd->restart or die $dhcpd->errstr;
-    print $dhcpd->status;
-
-    $dhcpd->stop or die $dhcpd->errstr;
-    print $dhcpd->status;
-
 See the tests bundled to this distribution for more examples.
-
-This module is subject for a major rewrite. Patches and comments
-are welcome - reason for this is that L<Net::ISC::DHCPd::Process>
-does not work as expected.
 
 =head1 DESCRIPTION
 
@@ -128,24 +110,6 @@ has binary => (
     default => 'dhcpd3',
 );
 
-=head2 process
-
-This attribute holds a read-only L<Net::ISC::DHCPd::Process> object.
-It can be set from the constructor, using either an object or a hash-ref.
-The hash-ref will then be passed on to the constructor.
-
-=cut
-
-has process => (
-    is => 'ro',
-    isa => ProcessObject,
-    coerce => 1,
-    lazy_build => 1,
-    handles => [qw/ start stop restart /],
-);
-
-__PACKAGE__->meta->add_method(_build_omapi => sub { _build_child_obj(Process => @_) });
-
 =head2 errstr
 
 Holds the last know error as a plain string.
@@ -159,22 +123,6 @@ has errstr => (
 );
 
 =head1 METHODS
-
-=head2 start
-
-See L<Net::ISC::DHCPd::Process/start>.
-
-=head2 stop
-
-See L<Net::ISC::DHCPd::Process::Role/stop>.
-
-=head2 restart
-
-See L<Net::ISC::DHCPd::Process::Role/restart>.
-
-=head2 status
-
-See L<Net::ISC::DHCPd::Process::Role/status>.
 
 =head2 test
 

@@ -7,7 +7,7 @@ use File::Temp;
 use Net::ISC::DHCPd;
 use Test::More;
 
-plan tests => 13;
+plan tests => 5;
 
 my $binary = 't/data/dhcpd3';
 my $pid_file = File::Temp->new;
@@ -19,13 +19,9 @@ my $dhcpd = Net::ISC::DHCPd->new(
            );
 
 is($dhcpd->binary, $binary, 'binary is set');
-is($dhcpd->status, 'stopped', 'process is stopped');
 ok($dhcpd->test('config'), 'mock config is valid') or diag $dhcpd->errstr;
 ok($dhcpd->test('leases'), 'mock leases is valid') or diag $dhcpd->errstr;
 
 $dhcpd->leases->file('/fooooooooooooooooooooooooooooooo');
 ok(!$dhcpd->test('leases'), 'mock leases is now invalid') or diag $dhcpd->errstr;
 like($dhcpd->errstr, qr{Invalid leases file}, 'script output "Invalid leases file"');
-
-ok(!$dhcpd->process->has_pid, 'server has no pid');
-ok($dhcpd->start, 'server got started');
