@@ -1,7 +1,12 @@
 Revision history for Net-ISC-DHCPd
 
-0.10
+0.10     Fri Jan  7 07:39:58 CET 2011
+       - Fix (RT60044) partially fix for this ticket: OptionSpace can end
+         without encapsulation.
+         TODO: Conditions (if/elsif/else) are not yet supported
+         Contributor: Nikolay A Petrov
        - Fix (RT64173) remove set() fom pod, since it does not exist
+         Contributor: kornerr
        - Change (RT64174) OMAPI lease attribute "ends" can be modified
          Contributor: kornerr
 

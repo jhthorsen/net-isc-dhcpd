@@ -2,7 +2,7 @@ NAME
     Net::ISC::DHCPd - Interacts with ISC DHCPd
 
 VERSION
-    0.09
+    0.10
 
 SYNOPSIS
         my $dhcpd = Net::ISC::DHCPd->new(
@@ -13,25 +13,7 @@ SYNOPSIS
 
         $self->test('config') or die $self->errstr;
 
-        # start the dhcpd server
-        $dhcpd->start({
-            user => 'john-doe',
-            group => 'users',
-            interfaces => 'eth0',
-        }) or die $dhcpd->errstr;
-        print $dhcpd->status;
-
-        $dhcpd->restart or die $dhcpd->errstr;
-        print $dhcpd->status;
-
-        $dhcpd->stop or die $dhcpd->errstr;
-        print $dhcpd->status;
-
     See the tests bundled to this distribution for more examples.
-
-    This module is subject for a major rewrite. Patches and comments are
-    welcome - reason for this is that Net::ISC::DHCPd::Process does not work
-    as expected.
 
 DESCRIPTION
     This namespace contains three semi-separate projects, which this module
@@ -63,49 +45,10 @@ ATTRIBUTES
     This attribute holds a Path::Class::File object to the dhcpd binary. It
     is read-only and the default is "dhcpd3".
 
-  pidfile
-    This attribute holds a Path::Class::File object to the dhcpd binary. It
-    is read-only and the default is "/var/run/dhcp3-server/dhcpd.pid".
-
-  process
-    This attribute holds a read-only Net::ISC::DHCPd::Process object. It can
-    be set from the constructor, using either an object or a hash-ref. The
-    hash-ref will then be passed on to the constructor.
-
   errstr
     Holds the last know error as a plain string.
 
 METHODS
-  start
-        $any = $self->start(\%args);
-
-    Will start the dhcpd server, as long as there is no existing process.
-    See "SYNOPSIS" for example. %args can have "user", "group" and
-    "interfaces" which all points to strings. This method returns and
-    integer or undef: "1" means "started". "0" means "already running" and
-    "undef" means failed to start the server. Check "errstr" on failure.
-
-    TODO: Enable it to start the server as a different user/group.
-
-  stop
-     $bool = $self->stop;
-
-    This method will stop a running server. A true return value means that
-    the server got stopped, while false means it could not be stopped. Check
-    errstr on failure.
-
-  restart
-     $bool = $self->restart;
-
-    This method will restart a running server or start a stopped server. A
-    true return value means that the server got started, while false means
-    it could not be started/restarted. Check errstr or failure.
-
-  status
-     $str = $self->status;
-
-    Returns the status of the DHCPd server: "stopped" or "running".
-
   test
      $bool = $self->test("config");
      $bool = $self->test("leases");
