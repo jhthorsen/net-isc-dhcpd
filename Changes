@@ -1,5 +1,9 @@
 Revision history for Net-ISC-DHCPd
 
+0.1001   Sun Feb  6 19:34:21 CET 2011
+       - Fix failing test t/15-server.t: Can't exec "t/data/dhcpd3"
+         http://www.cpantesters.org/cpan/report/407056b2-1a81-11e0-9650-a8c85b103c27
+
 0.10     Fri Jan  7 07:39:58 CET 2011
        - Fix (RT60044) partially fix for this ticket: OptionSpace can end
          without encapsulation.

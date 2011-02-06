@@ -5,11 +5,14 @@ use warnings;
 use lib 'lib';
 use File::Temp;
 use Net::ISC::DHCPd;
+use Path::Class::File;
 use Test::More;
 
+my $binary = Path::Class::File->new(qw/ t data dhcpd3 /);
+
+plan skip_all => "cannot execute $binary" unless(-x $binary);
 plan tests => 5;
 
-my $binary = 't/data/dhcpd3';
 my $pid_file = File::Temp->new;
 my $dhcpd = Net::ISC::DHCPd->new(
                 binary => $binary,
