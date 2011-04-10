@@ -308,6 +308,9 @@ sub create_children {
         my $name = lc +($class =~ /::(\w+)$/)[0];
         my $attr = $name .'s';
 
+        # classs => classes
+        $attr =~ s/sss/sses/;
+
         Class::MOP::load_class($class);
 
         unless($meta->get_attribute($attr)) {

@@ -8,7 +8,7 @@ use Test::More;
 
 my $count  = $ENV{'COUNT'} || 1;
 my $config = "./t/data/dhcpd.conf";
-my $lines  = 51;
+my $lines  = 65;
 
 plan tests => 1 + 32 * $count;
 
@@ -73,6 +73,10 @@ my $time = timeit($count, sub {
     ok($function, "function defined");
     is($function->name, "commit", "commit function found");
     is($function->body, $function_body, "commit body match");
+
+    my $class = $config->classes->[0];
+    ok($class, "class defined");
+    is($class->name, "cpe", "cpe class found");
 });
 
 diag(($lines * $count) .": " .timestr($time));
