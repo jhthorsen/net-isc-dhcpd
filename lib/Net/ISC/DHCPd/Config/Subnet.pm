@@ -37,6 +37,7 @@ __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::Range
     Net::ISC::DHCPd::Config::Filename
     Net::ISC::DHCPd::Config::Option
+    Net::ISC::DHCPd::Config::KeyValue
 /);
 
 =head1 ATTRIBUTES
