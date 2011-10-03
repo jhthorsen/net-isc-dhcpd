@@ -252,6 +252,9 @@ sub parse {
                 last LINE;
             }
         }
+        elsif($line =~ /^\s*$/o) {
+            next LINE;
+        }
         elsif($line =~ $COMMENT_RE) {
             next LINE;
         }
