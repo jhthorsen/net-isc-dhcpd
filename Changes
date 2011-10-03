@@ -1,5 +1,12 @@
 Revision history for Net-ISC-DHCPd
 
+0.11     Mon Oct  3 21:17:46 CEST 2011
+       - [RT71372] Add missing ::Config::Group to children
+       - [RT71372] Quick fix to missing blocks
+       - [RT71372] Fix parsing of "next-server" inside subnet
+       - [RT71372] Add parsing of key{} blocks
+       - Add support for logging with ISC_DHCPD_TRACE=1
+
 0.1001   Sun Feb  6 19:34:21 CET 2011
        - Fix failing test t/15-server.t: Can't exec "t/data/dhcpd3"
          http://www.cpantesters.org/cpan/report/407056b2-1a81-11e0-9650-a8c85b103c27
