@@ -4,11 +4,27 @@ use lib qw(lib);
 use Test::More;
 use Net::ISC::DHCPd::Config;
 
+$ENV{'ISC_DHCPD_TRACE'} = 1;
+
 plan skip_all => 'no t/data/rt71372.conf' unless(-r 't/data/rt71372.conf');
-plan tests => 14;
+plan tests => 10;
 
 {
     my $config = Net::ISC::DHCPd::Config->new(file => 't/data/rt71372.conf');
+    my @subnets;
+
     $config->parse;
-    print $config->generate;
+
+    is(scalar(@_=$config->includes), 1, "includes");
+    is(scalar(@_=$config->keys), 1, "keys");
+    is(scalar(@_=$config->keyvalues), 10, "key values");
+    is(scalar(@_=$config->options), 2, "options");
+    is(scalar(@_=$config->subnets), 1, "subnets");
+    is(scalar(@subnets=$config->subnets), 1, "subnets");
+    is(scalar(@_=$subnets[0]->options), 9, "subnet -> options");
+    is(scalar(@_=$subnets[0]->keyvalues), 2, "subnet -> keyvalues");
+    is(scalar(@_=$subnets[0]->pools), 2, "subnet -> pools");
+    
+    local $TODO = 'should be parsed as class{}';
+    is(scalar(@_=$subnets[0]->blocks), 2, "subnet -> blocks");
 }

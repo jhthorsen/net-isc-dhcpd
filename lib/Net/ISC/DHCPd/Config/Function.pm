@@ -23,7 +23,8 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 use Moose;
 
-with 'Net::ISC::DHCPd::Config::Role';
+# TODO: Should probably be a role instead...
+extends 'Net::ISC::DHCPd::Config::Block';
 
 =head1 ATTRIBUTES
 
@@ -31,13 +32,6 @@ with 'Net::ISC::DHCPd::Config::Role';
 
 This attribute holds a plain string, representing the name
 of the function. Example: "commit".
-
-=cut
-
-has name => (
-    is => 'ro',
-    isa => 'Str',
-);
 
 =head2 body
 
@@ -47,99 +41,27 @@ anything.
 
 =cut
 
-has body => (
-    is => 'rw',
-    isa => 'Str',
-    traits => ['String'],
-    default => '',
-    handles => {
-        append_body => 'append',
-        prepend_body => 'prepend',
-        body_length => 'length',
-        replace_body => 'replace',
-    },
-);
-
-# need around modifier, since
-# trigger => sub { shift->_chomp_body },
-# results in recursion
-around body => sub {
-    my $next = shift;
-    my $self = shift;
-
-    if(my @text = @_) {
-        chomp @text;
-        return $self->$next(@text);
-    }
-
-    return $self->$next;
-};
-
-sub _build_children { [undef] }
 sub _build_regex { qr{^\s* on \s (\w+)}x }
-
-has _depth => (
-    is => 'ro',
-    isa => 'Int',
-    traits => ['Counter'],
-    default => 1,
-    handles => {
-        _inc_depth => 'inc',
-        _dec_depth => 'dec',
-    },
-);
 
 =head1 METHODS
 
-=head2 BUILD
-
-Will make sure L</body> does not contain trailing newlines.
-
-=cut
-
-sub BUILD {
-    $_[0]->body($_[0]->body);
-}
-
-=head2 body_length
-
-Returns the length of the function L</body>.
-
-=head2 replace_body
-
-Can search and replace parts of function L</body>.
-
 =head2 append_body
 
-Will append a string to the function L</body>.
+Should probably be deprecated.
 
 =head2 prepend_body
 
-Will prepend a string to the function L</body>.
+Should probably be deprecated.
 
-=head2 slurp
+=head2 body_length
 
-This method is used by L<Net::ISC::DHCPd::Config::Role/parse>, and will
-slurp the content of the function, instead of trying to parse the
-statements.
+Should probably be deprecated.
 
 =cut
 
-sub slurp {
-    my($self, $line) = @_;
-
-    $self->_inc_depth if($line =~ /{/);
-    $self->_dec_depth if($line =~ /}/);
-
-    if($self->_depth) {
-        $self->append_body($line);
-        return 'next';
-    }
-    else {
-        $self->body($self->body);
-        return 'last';
-    }
-}
+sub append_body { $_[0]->body($_[0]->body .$_[1]) }
+sub prepend_body { $_[0]->body($_[1] .$_[0]->body) }
+sub body_length { length $_[0]->body }
 
 =head2 captured_to_args
 
