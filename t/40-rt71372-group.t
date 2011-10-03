@@ -9,8 +9,6 @@ plan tests => 14;
 
 {
     my $config = Net::ISC::DHCPd::Config->new(file => 't/data/rt71372.conf');
-
     $config->parse;
-
     print $config->generate;
 }
