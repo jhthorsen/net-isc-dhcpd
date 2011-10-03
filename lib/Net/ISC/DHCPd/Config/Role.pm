@@ -9,12 +9,21 @@ Net::ISC::DHCPd::Config::Role - Role with generic config methods and attributes
 This role contains common methods and attributes for each of the config
 classes in the L<Net::ISC::DHCPd::Config> namespace.
 
+=head1 VARIABLES
+
+=head2 ISC_DHCPD_TRACE
+
+Setting this environment variable will print to STDERR which lines which
+could not be parsed.
+
 =cut
 
 use Moose::Role;
+use constant _DEBUG => !! $ENV{'ISC_DHCPD_TRACE'};
 
 requires 'generate';
 
+my $COMMENT_RE = qr{^\s*#};
 my %CREATE_CHILD_ATTRIBUTE_ARGUMENTS = (
     is => 'rw',
     isa => 'ArrayRef',
@@ -243,6 +252,9 @@ sub parse {
                 last LINE;
             }
         }
+        elsif($line =~ $COMMENT_RE) {
+            next LINE;
+        }
         elsif($line =~ $endpoint) {
             $self->captured_endpoint($1, $2, $3, $4); # urk...
             next LINE if($self->root == $self);
@@ -257,7 +269,16 @@ sub parse {
 
             $n += $new->parse('recursive') if(@_ = $new->children);
 
-            last CHILD;
+            next LINE;
+        }
+
+        if(_DEBUG) {
+            chomp $line;
+            warn sprintf qq[Could not parse "%s" at %s line %s\n],
+                $line,
+                $self->root->file,
+                $fh->input_line_number
+                ;
         }
     }
 
