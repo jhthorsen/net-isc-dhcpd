@@ -75,7 +75,7 @@ sub generate {
 
     return(
         'shared-network ' .($self->name ? $self->name . ' ' : '') . '{',
-        $self->generate_config_from_children,
+        $self->_generate_config_from_children,
         '}',
     );
 }

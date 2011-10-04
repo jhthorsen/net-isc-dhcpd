@@ -1,5 +1,15 @@
 Revision history for Net-ISC-DHCPd
 
+0.12     Tue Oct  4 15:06:11 CEST 2011
+       - [RT71372] Contributor: Michael Rath
+       - Change child nodes has the same order as input
+       - Config::Block has _body (ArrayRef) instead of body (Str)
+       - Config::Block body text is indented as expected
+       - Config::Key->_build_regex handle quotes
+       - Add trailing ";" to Config::Key block (not sure why though...)
+       - Add support for comments before elements. Generated output will
+         also have comments
+
 0.11     Mon Oct  3 21:17:46 CEST 2011
        - [RT71372] Add missing ::Config::Group to children
        - [RT71372] Quick fix to missing blocks

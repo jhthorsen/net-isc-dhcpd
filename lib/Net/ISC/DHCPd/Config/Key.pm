@@ -46,7 +46,7 @@ has [qw/ name algorithm secret /] => (
 );
 
 sub _build_children { [undef] }
-sub _build_regex { qr{^\s* key \s "?(\S+)"? }x }
+sub _build_regex { qr{^\s* key \s (")?(\S+)\1 }x }
 
 =head1 METHODS
 
@@ -61,10 +61,6 @@ statements.
 sub slurp {
     my($self, $line) = @_;
 
-    #warn "---------------- $line ---";
-    #----------------         algorithm hmac-md5;
-
-
     return 'last' if($line =~ /^\s*}/);
     $self->algorithm($1) if($line =~ /algorithm \s+ (\S+);/x);
     $self->secret($2) if($line =~ /secret \s+ ("?)(\S+)\1;/x);
@@ -78,7 +74,7 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 =cut
 
 sub captured_to_args {
-    return { name => $_[1] };
+    return { name => $_[2] }; # $_[1] == quote or empty string
 }
 
 =head2 generate
@@ -94,7 +90,7 @@ sub generate {
         sprintf('key "%s" {', $self->name),
         $self->algorithm ? (sprintf '    algorithm %s;', $self->algorithm) : (),
         $self->secret ? (sprintf '    secret "%s";', $self->secret) : (),
-        '}',
+        '};', # TODO: should this really be here?
     );
 }
 

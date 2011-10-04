@@ -23,14 +23,7 @@ use constant _DEBUG => !! $ENV{'ISC_DHCPD_TRACE'};
 
 requires 'generate';
 
-my $COMMENT_RE = qr{^\s*#};
-my %CREATE_CHILD_ATTRIBUTE_ARGUMENTS = (
-    is => 'rw',
-    isa => 'ArrayRef',
-    lazy => 1,
-    auto_deref => 1,
-    default => sub { [] },
-);
+my $COMMENT_RE = qr{^\s*\#\s*};
 
 =head1 ATTRIBUTES
 
@@ -160,6 +153,32 @@ has children => (
 
 sub _build_children { [] }
 
+# actual children
+has _children => (
+    is => 'ro',
+    isa => 'ArrayRef',
+    default => sub { [] },
+);
+
+=head2 comments
+
+    @str = $self->comments;
+
+Will return all the comments before this element appeared in the config file.
+The comments will not contain leading hash symbol spaces, nor trailing newline.
+
+=cut
+
+has _comments => (
+    is => 'ro',
+    traits => ['Array'],
+    init_arg => 'comments',
+    default => sub { [] },
+    handles => {
+        comments => 'elements',
+    },
+);
+
 =head2 regex
 
 Regex used to scan a line of config text, which then spawns an
@@ -213,6 +232,28 @@ sub _build__filehandle {
 
 =head1 METHODS
 
+=head2 BUILD
+
+Used to convert input arguments to child nodes.
+
+=cut
+
+sub BUILD {
+    my($self, $args) = @_;
+    my $meta = $self->meta;
+
+    for my $key (keys %$args) {
+        my $list = $args->{$key};
+        my $method = "add_$key";
+        $method =~ s/s$//;
+        if(ref $list eq 'ARRAY' and $meta->has_method($method)) {
+            for my $element (@$list) {
+                $self->$method($element);
+            }
+        }
+    }
+}
+
 =head2 parse
 
 Will read a line of the time from the current config
@@ -228,8 +269,7 @@ sub parse {
     my $self = shift;
     my $fh = $self->_filehandle;
     my $endpoint = $self->endpoint;
-    my $n = 0;
-    my $pos;
+    my($n, $pos, @comments);
 
     LINE:
     while(1) {
@@ -255,7 +295,9 @@ sub parse {
         elsif($line =~ /^\s*$/o) {
             next LINE;
         }
-        elsif($line =~ $COMMENT_RE) {
+        elsif($line =~ s/$COMMENT_RE//) {
+            chomp $line;
+            push @comments, $line;
             next LINE;
         }
         elsif($line =~ $endpoint) {
@@ -268,9 +310,14 @@ sub parse {
         for my $child ($self->children) {
             my @c = $line =~ $child->regex or next CHILD;
             my $add = 'add_' .lc +(ref($child) =~ /::(\w+)$/)[0];
-            my $new = $self->$add( $child->captured_to_args(@c) );
+            my $args = $child->captured_to_args(@c);
+            my $obj;
 
-            $n += $new->parse('recursive') if(@_ = $new->children);
+            $args->{'comments'} = [@comments];
+            @comments = ();
+            $obj = $self->$add($args);
+
+            $n += $obj->parse('recursive') if(@_ = $obj->children);
 
             next LINE;
         }
@@ -327,57 +374,86 @@ sub create_children {
     my $meta = $self->meta;
     my @children = @_;
 
-    for my $obj (@children) {
-        my $class = $obj; # copy classname
+    for my $class (@children) {
         my $name = lc +($class =~ /::(\w+)$/)[0];
         my $attr = $name .'s';
 
         Class::MOP::load_class($class);
 
-        unless($meta->get_attribute($attr)) {
-            $meta->add_method("add_${name}" => sub { shift->_add_child(@_, $attr, $class) });
-            $meta->add_method("find_${name}s" => sub { shift->_find_children(@_, $attr) });
-            $meta->add_method("remove_${name}s" => sub { shift->_remove_children(@_, $attr) });
-            $meta->add_attribute($attr => (
-                %CREATE_CHILD_ATTRIBUTE_ARGUMENTS,
-                trigger => sub {
-                    for my $e (@{ $_[1] }) {
-                        next if(blessed $e);
-                        next if(ref $e ne 'HASH');
-                        $e = $class->new(parent => $_[0], %$e);
-                    }
-                },
-            ));
+        unless($meta->find_method_by_name($attr)) {
+            $meta->add_method("add_${name}" => sub { shift->_add_child($class, @_) });
+            $meta->add_method("find_${name}s" => sub { shift->_find_children($class, @_) });
+            $meta->add_method("remove_${name}s" => sub { shift->_remove_children($class, @_) });
+            $meta->add_method($attr => sub {
+                my $self = shift;
+                return $self->_set_children($class, @_) if(@_);
+                return $self->_get_children_by_class($class);
+            });
         }
-
-        # replace class bareword with object in @children
-        $obj = $class->new;
     }
 
-    $meta->add_method(_build_children => sub { \@children });
+    $meta->add_method(_build_children => sub { [ map { $_->new } @children ] });
 
     return \@children;
 }
 
+sub _set_children {
+    my($self, $attr, $class, $children) = @_;
+
+    for my $child (@$children) {
+        $child = $class->new(parent => $self, %$child) if(ref $child eq 'HASH');
+    }
+
+    @{ $self->_children } = @$children;
+}
+
+sub _get_children_by_class {
+    my($self, $class) = @_;
+    my @children = grep { $class eq blessed $_ } @{ $self->_children };
+
+    return wantarray ? @children : \@children;
+}
+
 sub _add_child {
-    my $class = pop;
-    my $accessor = pop;
     my $self = shift;
-    my $args = @_ == 1 ? $_[0] : {@_};
+    my $class = shift;
+    my $child = @_ == 1 ? $_[0] : {@_};
+    my $children = $self->_children;
 
-    push @{ $self->$accessor }, $class->new(%$args, parent => $self);
+    if(ref $child eq 'HASH') {
+        $child = $class->new(parent => $self, %$child);
+    }
 
-    return ${ $self->$accessor }[-1];
+    # make sure children are grouped
+    for my $n (reverse 0..@$children-1) {
+        if($class eq blessed $children->[0]) {
+            splice @$children, $n + 1, 0, $child;
+            $children = undef;
+            last;
+        }
+    }
+
+    # append child at end unless sibling was found
+    if($children) {
+        push @$children, $child;
+    }
+
+    return $child;
 }
 
 sub _find_children {
-    my $accessor = pop;
-    my $self = shift;
-    my $query = shift or return;
+    my($self, $class, $query) = @_;
     my @children;
 
+    if(ref $query ne 'HASH') {
+        return;
+    }
+
     CHILD:
-    for my $child ($self->$accessor) {
+    for my $child (@{ $self->_children }) {
+        if($class ne blessed $child) {
+            next CHILD;
+        }
         for my $key (keys %$query) {
             next CHILD unless($child->$key eq $query->{$key});
         }
@@ -388,18 +464,25 @@ sub _find_children {
 }
 
 sub _remove_children {
-    my $accessor = pop;
     my $self = shift;
+    my $class = shift;
     my $query = shift or return;
-    my $children = $self->$accessor;
+    my $children = $self->_children;
+    my $i = 0;
     my @removed;
 
     CHILD:
-    for my $i (0..$#$children) {
+    while($i < @$children) {
+        if($class ne blessed $children->[$i]) {
+            next CHILD;
+        }
         for my $key (keys %$query) {
             next CHILD unless($children->[$i]->$key eq $query->{$key});
         }
         push @removed, splice @$children, $i, 1;
+        $i--;
+    } continue {
+        $i++;
     }
 
     return @removed;
@@ -415,6 +498,10 @@ method, before returned as one string.
 =cut
 
 sub generate_config_from_children {
+    return join "\n", shift->_generate_config_from_children;
+}
+
+sub _generate_config_from_children {
     my $self = shift;
     my $indent = '';
     my @text;
@@ -423,15 +510,12 @@ sub generate_config_from_children {
         $indent = ' ' x 4;
     }
 
-    for(reverse $self->children) {
-        my($attr) = lc +((blessed $_) =~ /::(\w+)$/ )[0] .'s';
-
-        for my $node ($self->$attr) {
-            push @text, map { "$indent$_" } $node->generate;
-        }
+    for my $child (@{ $self->_children }) {
+        push @text, map { "$indent# $_" } $child->comments;
+        push @text, map { "$indent$_" } $child->generate;
     }
 
-    return join "\n", @text;
+    return @text;
 }
 
 =head2 generate

@@ -68,27 +68,13 @@ This text is not parsed, so the containing text can be anything.
 
 =cut
 
-has body => (
+has _body => (
     is => 'rw',
-    isa => 'Str',
-    default => '',
+    isa => 'ArrayRef',
+    default => sub { [] },
 );
 
-# need around modifier, since
-# trigger => sub { shift->_chomp_body },
-# results in recursion
-around body => sub {
-    my $next = shift;
-    my $self = shift;
-
-    if(@_) {
-        my $text = shift;
-        chomp $text;
-        return $self->$next($text);
-    }
-
-    return $self->$next;
-};
+sub body { join "\n", @{ shift->_body } }
 
 sub _build_children { [undef] }
 sub _build_regex { qr/^\s* ([\w-]+) \s+ (\S*) \s* { /x }
@@ -108,12 +94,14 @@ has _depth => (
 
 =head2 BUILD
 
-Will make sure L</body> does not contain trailing newlines.
+Will convert body (as string) in C<new()> into a list which is used
+internally.
 
 =cut
 
 sub BUILD {
-    $_[0]->body($_[0]->body);
+    my($self, $args) = @_;
+    push @{ $self->_body }, split /\n/, $args->{'body'} if(defined $args->{'body'});
 }
 
 =head2 slurp
@@ -131,12 +119,12 @@ sub slurp {
     $self->_dec_depth if($line =~ /}/);
 
     if($self->_depth) {
-        my $body = $self->body;
-        $self->body(length $body ? "$body\n$line" : $line);
+        chomp $line;
+        $line =~ s/^\s{4}//;
+        push @{ $self->_body }, $line;
         return 'next';
     }
     else {
-        $self->body($self->body);
         return 'last';
     }
 }
@@ -162,12 +150,11 @@ See L<Net::ISC::DHCPd::Config::Role/generate>.
 
 sub generate {
     my $self = shift;
+    my $format = $self->quoted ? '%s "%s" {' : '%s %s {';
 
     return(
-        $self->quoted ?
-              sprintf('%s "%s" {', $self->type, $self->name)
-            : sprintf('%s %s {', $self->type, $self->name),
-        $self->body,
+        sprintf($format, $self->type, $self->name),
+        @{ $self->_body },
         '}',
     );
 }

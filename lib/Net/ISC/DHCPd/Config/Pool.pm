@@ -56,7 +56,8 @@ See L<Net::ISC::DHCPd::Config::Role/generate>.
 =cut
 
 sub generate {
-    return 'pool {', shift->generate_config_from_children, '}';
+    my $self = shift;
+    return 'pool {', $self->_generate_config_from_children, '}';
 }
 
 =head1 COPYRIGHT & LICENSE

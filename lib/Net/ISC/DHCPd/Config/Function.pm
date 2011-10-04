@@ -59,8 +59,8 @@ Should probably be deprecated.
 
 =cut
 
-sub append_body { $_[0]->body($_[0]->body .$_[1]) }
-sub prepend_body { $_[0]->body($_[1] .$_[0]->body) }
+sub append_body { push @{ shift->_body }, @_ }
+sub prepend_body { unshift @{ shift->_body }, @_ }
 sub body_length { length $_[0]->body }
 
 =head2 captured_to_args

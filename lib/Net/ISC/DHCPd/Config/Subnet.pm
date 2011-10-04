@@ -116,7 +116,7 @@ sub generate {
 
     return(
         'subnet ' .$net->addr .' netmask ' .$net->mask .' {',
-        $self->generate_config_from_children,
+        $self->_generate_config_from_children,
         '}',
     );
 }

@@ -6,10 +6,11 @@ BEGIN { $ENV{'ISC_DHCPD_TRACE'} = 1 }
 use Net::ISC::DHCPd::Config;
 
 plan skip_all => 'no t/data/rt71372.conf' unless(-r 't/data/rt71372.conf');
-plan tests => 12;
+plan tests => 14;
 
 {
     my $config = Net::ISC::DHCPd::Config->new(file => 't/data/rt71372.conf');
+    my $config_text = do { open my $FH, 't/data/rt71372.conf'; local $/; <$FH> };
     my @subnets;
 
     $config->parse;
@@ -25,7 +26,12 @@ plan tests => 12;
     is(scalar(@_=$subnets[0]->options), 9, "subnet -> options");
     is(scalar(@_=$subnets[0]->keyvalues), 2, "subnet -> keyvalues");
     is(scalar(@_=$subnets[0]->pools), 2, "subnet -> pools");
+    is($subnets[0]->pools->[0]->_comments->[0], q(pool "Studenten_DHCP"), "subnet -> pool -> comment");
     
-    local $TODO = 'should be parsed as class{}';
-    is(scalar(@_=$subnets[0]->blocks), 2, "subnet -> blocks");
+    {
+        local $TODO = 'should be parsed as class{}';
+        is(scalar(@_=$subnets[0]->blocks), 2, "subnet -> blocks");
+    }
+
+    is($config->generate, $config_text, 'config output == config input');
 }

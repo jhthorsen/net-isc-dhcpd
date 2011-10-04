@@ -62,7 +62,7 @@ my $time = timeit($count, sub {
     my $shared_subnets = $config->sharednetworks->[0]->subnets;
     is(int(@$shared_subnets), 2, "shared subnets found");
 
-    my $function_body = join("\n", map { "    $_" }
+    my $function_body = join("\n",
         q(set leasetime = encode-int(lease-time, 32);),
         q(if(1) {),
         q(    set hw_addr   = substring(hardware, 1, 8);),

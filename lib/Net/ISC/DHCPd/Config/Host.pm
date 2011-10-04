@@ -92,7 +92,7 @@ sub generate {
 
     return(
         'host ' .$self->name .' {',
-        $self->generate_config_from_children,
+        $self->_generate_config_from_children,
         '}',
     );
 }

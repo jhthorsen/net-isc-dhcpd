@@ -10,7 +10,7 @@ use Test::More;
 my $count = 1;
 my $text = do { local $/; <DATA> };
 
-plan tests => 1 + 5 * $count + 3;
+plan tests => 1 + 4 * $count + 3;
 
 use_ok("Net::ISC::DHCPd::Config");
 
@@ -78,17 +78,6 @@ my $time = timeit($count, sub {
 
     eval { $config->subnets->[0]->add_filename({ file => 'bar!' }) };
     like($@, qr{Subnet cannot have more than one}, "Subnet cannot have more than one filename");
-
-    TODO: {
-        local $TODO = "need to improve '...cannot have more than one'";
-        eval {
-            $config->add_host({
-                name => 'bar',
-                filenames => [{ file => 'a' },{ file => 'a' }],
-            });
-        };
-        like($@, qr{Subnet cannot have more than one}, "Subnet cannot have more than one filename");
-    }
 });
 
 diag($count .": " .timestr($time));
