@@ -6,7 +6,7 @@ Net::ISC::DHCPd - Interacts with ISC DHCPd
 
 =head1 VERSION
 
-0.12
+0.13
 
 =head1 SYNOPSIS
 
@@ -41,7 +41,7 @@ use MooseX::Types::Path::Class qw(File);
 use Net::ISC::DHCPd::Types ':all';
 use File::Temp;
 
-our $VERSION = eval '0.12';
+our $VERSION = eval '0.13';
 
 =head1 ATTRIBUTES
 

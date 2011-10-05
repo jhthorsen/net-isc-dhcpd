@@ -9,17 +9,16 @@ Net::ISC::DHCPd::Config::Role - Role with generic config methods and attributes
 This role contains common methods and attributes for each of the config
 classes in the L<Net::ISC::DHCPd::Config> namespace.
 
-=head1 VARIABLES
+=head1 WARNINGS
 
-=head2 ISC_DHCPD_TRACE
+This module will warn when a line in the input config could not be parsed.
+This can be turned off by adding the line below before calling L</parse>.
 
-Setting this environment variable will print to STDERR which lines which
-could not be parsed.
+    no warnings 'net_isc_dhcpd_config_parse';
 
 =cut
 
 use Moose::Role;
-use constant _DEBUG => !! $ENV{'ISC_DHCPD_TRACE'};
 
 requires 'generate';
 
@@ -322,7 +321,7 @@ sub parse {
             next LINE;
         }
 
-        if(_DEBUG) {
+        if(warnings::enabled('net_isc_dhcpd_config_parse')) {
             chomp $line;
             warn sprintf qq[Could not parse "%s" at %s line %s\n],
                 $line,
@@ -532,4 +531,7 @@ See L<Net::ISC::DHCPd>.
 
 =cut
 
+package # hack to register a new warnings category
+    net_isc_dhcpd_config_parse;
+use warnings::register;
 1;

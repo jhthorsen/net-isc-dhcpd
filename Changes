@@ -1,5 +1,16 @@
 Revision history for Net-ISC-DHCPd
 
+0.13     Wed Oct  5 12:43:42 CEST 2011
+       - Add custom warnings group for Role->parse() warnings. This can be
+         silenced with (no warnings 'net_isc_dhcpd_config_parse';)
+       - Add example config parser script
+       - Add more child nodes to Config::Include
+         * Net::ISC::DHCPd::Config::Key
+         * Net::ISC::DHCPd::Config::Group
+         * Net::ISC::DHCPd::Config::Block
+       - Add more child nodes to Config::Pool
+         * Net::ISC::DHCPd::Config::Host
+
 0.12     Tue Oct  4 15:06:11 CEST 2011
        - [RT71372] Contributor: Michael Rath
        - Change child nodes has the same order as input
