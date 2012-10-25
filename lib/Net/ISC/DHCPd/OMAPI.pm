@@ -24,10 +24,6 @@ Net::ISC::DHCPd::OMAPI - Talk to a dhcp server
         );
     }
 
-To enable debug output, execute this chunk of code before loading the module:
-
-    BEGIN { Net::ISC::DHCPd::OMAPI::_DEBUG = sub { 1 } }
-
 =head1 DESCRIPTION
 
 This module provides an API to query and possible change the ISC DHCPd
@@ -46,6 +42,16 @@ L<Net::ISC::DHCPd::OMAPI::Group>,
 L<Net::ISC::DHCPd::OMAPI::Host>,
 and L<Net::ISC::DHCPd::OMAPI::Lease>.
 
+=head1 ENVIRONMENT VARIABLES
+
+=over 4
+
+=item * DHCP_OMAPI_DEBUG=1
+
+This variable will enable debug output.
+
+=back
+
 =cut
 
 use Moose;
@@ -56,11 +62,7 @@ use Net::ISC::DHCPd::OMAPI::Failover;
 use Net::ISC::DHCPd::OMAPI::Group;
 use Net::ISC::DHCPd::OMAPI::Host;
 use Net::ISC::DHCPd::OMAPI::Lease;
-
-BEGIN {
-    *Net::ISC::DHCPd::OMAPI::_DEBUG{'CODE'}
-        or *Net::ISC::DHCPd::OMAPI::_DEBUG = sub { 0 };
-}
+use constant DEBUG => $ENV{DHCP_OMAPI_DEBUG} ? 1 : 0;
 
 our $OMSHELL = 'omshell';
 
@@ -187,7 +189,7 @@ sub _cmd {
     my $out = q();
     my $end_time;
 
-    print STDERR "\$ $cmd\n" if _DEBUG;
+    print STDERR "\$ $cmd\n" if DEBUG;
 
     unless(defined $pty->syswrite("$cmd\n")) {
         $self->errstr($!);
@@ -210,7 +212,7 @@ sub _cmd {
 
     $out =~ s/^>\s//;
 
-    print STDERR $out if _DEBUG;
+    print STDERR $out if DEBUG;
 
     return $out;
 }
