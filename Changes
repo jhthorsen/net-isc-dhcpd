@@ -2,6 +2,7 @@ Revision history for Net-ISC-DHCPd
 
 0.14
        - [RT80374] Debug is enabled with DHCP_OMAPI_DEBUG=1
+       - [RT80373] Changed part of the documentation
 
 0.13     Wed Oct  5 12:43:42 CEST 2011
        - Add custom warnings group for Role->parse() warnings. This can be

@@ -122,6 +122,8 @@ Setting this to "0" will effectively makes the DHCP server drop the lease.
 
 Actions: examine, modify.
 
+Note: This attribute can only be modified from ISC-DHCP-4.1.0.
+
 =cut
 
 omapi_attr ends => (
