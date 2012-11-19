@@ -129,11 +129,11 @@ sub generate {
     return(
         sprintf('option space %s;', $self->prefix),
         $self->generate_config_from_children,
-        sprintf('option %s code %i = encapsulate %s;',
+        $self->name ? (sprintf 'option %s code %i = encapsulate %s;',
             $self->name,
             $self->code,
             $self->prefix,
-        ),
+        ) : (),
     );
 }
 

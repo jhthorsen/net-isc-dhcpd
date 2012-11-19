@@ -37,6 +37,11 @@ Name of the key - See L</DESCRIPTION> for details.
 
 =cut
 
+has [qw/ name /] => (
+    is => 'rw',
+    isa => 'Str',
+);
+
 # match will get treated as a KeyValue
 __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::Option
