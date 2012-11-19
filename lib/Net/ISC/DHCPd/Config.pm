@@ -116,6 +116,7 @@ __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::Group
     Net::ISC::DHCPd::Config::Block
     Net::ISC::DHCPd::Config::KeyValue
+    Net::ISC::DHCPd::Config::Zone
 /);
 
 sub _build_root { $_[0] }
