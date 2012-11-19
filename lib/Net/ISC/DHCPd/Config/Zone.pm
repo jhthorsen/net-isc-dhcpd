@@ -2,7 +2,7 @@ package Net::ISC::DHCPd::Config::Zone;
 
 =head1 NAME
 
-Net::ISC::DHCPd::Config::Key - Server key
+Net::ISC::DHCPd::Config::Zone - Server Zone
 
 =head1 DESCRIPTION
 
@@ -13,9 +13,9 @@ An instance from this class, comes from / will produce the block below:
 
     $name_attribute_value $value_attribute_value;
 
-    key "$name" {
-        algorithm $algorithm;
-        secret "$secret";
+    zone $name {
+        primary $primary;
+        key $key;
     };
 
 =head1 SYNOPSIS
@@ -32,11 +32,11 @@ with 'Net::ISC::DHCPd::Config::Role';
 
 =head2 name
 
-Name of the key - See L</DESCRIPTION> for details.
+Name of the Zone - See L</DESCRIPTION> for details.
 
-=head2 algorithm
+=head2 primary
 
-=head2 secret
+=head2 key
 
 =cut
 
