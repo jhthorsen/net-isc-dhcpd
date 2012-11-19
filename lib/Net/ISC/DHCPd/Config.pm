@@ -106,6 +106,7 @@ with 'Net::ISC::DHCPd::Config::Root';
 
 __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::Host
+    Net::ISC::DHCPd::Config::Class
     Net::ISC::DHCPd::Config::Subnet
     Net::ISC::DHCPd::Config::SharedNetwork
     Net::ISC::DHCPd::Config::Function
