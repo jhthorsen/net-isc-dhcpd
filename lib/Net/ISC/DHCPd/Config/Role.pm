@@ -291,6 +291,9 @@ sub parse {
                 last LINE;
             }
         }
+        elsif($line =~ /^\s*{/) {
+            next LINE;
+        }
         elsif($line =~ /^\s*$/o) {
             next LINE;
         }
