@@ -35,6 +35,7 @@ L<the man pages|http://www.google.com/search?q=man+dhcpd>.
 
 =cut
 
+use Class::Load;
 use Moose;
 use Moose::Util::TypeConstraints;
 use MooseX::Types::Path::Class qw(File);
@@ -201,7 +202,7 @@ sub _build_child_obj {
     my $type = shift;
     my $self = shift;
 
-    Class::MOP::load_class("Net::ISC::DHCPd::$type");
+    Class::Load::load_class("Net::ISC::DHCPd::$type");
 
     return "Net::ISC::DHCPd::$type"->new(@_);
 }

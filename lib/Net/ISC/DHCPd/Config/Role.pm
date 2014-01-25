@@ -18,6 +18,7 @@ This can be turned off by adding the line below before calling L</parse>.
 
 =cut
 
+use Class::Load;
 use Moose::Role;
 
 requires 'generate';
@@ -377,7 +378,7 @@ sub create_children {
         my $name = lc +($class =~ /::(\w+)$/)[0];
         my $attr = $name .'s';
 
-        Class::MOP::load_class($class);
+        Class::Load::load_class($class);
 
         unless($meta->find_method_by_name($attr)) {
             $meta->add_method("add_${name}" => sub { shift->_add_child($class, @_) });
