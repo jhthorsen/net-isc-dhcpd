@@ -326,6 +326,13 @@ sub parse {
             next LINE;
         }
 
+        # hack to fix parser for parenthesis on the next line
+        # subnet 10.0.0.96 netmask 255.255.255.224\n{
+        # technically we need to do multiline matching to get things right
+        if ($line =~ /^\s*{\s*$/) {
+            next LINE;
+        }
+
         if(warnings::enabled('net_isc_dhcpd_config_parse')) {
             chomp $line;
             warn sprintf qq[Could not parse "%s" at %s line %s\n],
