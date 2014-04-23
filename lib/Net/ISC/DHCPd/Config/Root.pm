@@ -25,6 +25,13 @@ path to a config file. Default value is "/etc/dhcp3/dhcpd.conf".
 
 =cut
 
+
+has fh => (
+    is => 'rw',
+    isa => 'FileHandle',
+    required => 0,
+);
+
 has file => (
     is => 'rw',
     isa => File,

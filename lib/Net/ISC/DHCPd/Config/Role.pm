@@ -221,6 +221,10 @@ sub _build__filehandle {
         return $parent->_filehandle;
     }
 
+    if ($self->fh) {
+        return $self->fh;
+    }
+
     $file = $self->file;
 
     if($file->is_relative and !-e $file) {
