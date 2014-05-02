@@ -1,5 +1,9 @@
 Revision history for Net-ISC-DHCPd
 
+0.15     Fri May  2 16:38:56 UTC 2014
+       - [RT81567] Test failures due to hash randomisation in perl 5.17.6
+       - [RT90966] New Moose may break your code
+
 0.14     Thu Oct 25 19:49:38 2012
        - [RT80374] Debug is enabled with DHCP_OMAPI_DEBUG=1
        - [RT80373] Changed part of the documentation
