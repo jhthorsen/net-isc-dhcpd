@@ -246,7 +246,7 @@ sub BUILD {
     my($self, $args) = @_;
     my $meta = $self->meta;
 
-    for my $key (keys %$args) {
+    for my $key (sort keys %$args) {
         my $list = $args->{$key};
         my $method = "add_$key";
         $method =~ s/s$//;

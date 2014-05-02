@@ -116,13 +116,13 @@ on commit {
     set leasetime = encode-int(lease-time, 32);
 }
 subnet 10.0.0.96 netmask 255.255.255.224 {
-    option routers 10.0.0.97;
     filename pxefoo.0;
+    option routers 10.0.0.97;
     pool {
         range 10.0.0.126 10.0.0.116;
     }
 }
 host foo {
-    fixed-address 10.19.83.102;
     filename pxelinux.0;
+    fixed-address 10.19.83.102;
 }
