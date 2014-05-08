@@ -4,9 +4,7 @@ use Test::More;
 my $config = Net::ISC::DHCPd::Config->new(fh => \*DATA);
 is($config->parse, 50, 'Parsed 50 lines?');
 # need to be able to get at the options under the class
-#is($config->blocks->[0]->options->[0]->name, 'next-server', 'is class options 0 name == next-server');
-use Data::Dumper;
-print Dumper $config;
+is($config->classes->[0]->options->[0]->name, 'tftp-server-name', 'is class options 0 name == tftp-server-name');
 #print $config->generate;
 done_testing();
 
