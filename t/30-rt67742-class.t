@@ -3,7 +3,7 @@ use Test::More;
 use warnings;
 
 my $config = Net::ISC::DHCPd::Config->new(fh => \*DATA);
-is($config->parse, 27, 'Parsed 27 lines?');
+is($config->parse, 41, 'Parsed 41 lines?');
 is($config->classes->[0]->keyvalues->[1]->name, 'next-server', 'is class keyvalue 0 name == next-server');
 done_testing();
 
@@ -35,4 +35,18 @@ class "DlinkATA"
 {
     option tftp-server-name "test";
     match if (substring(binary-to-ascii (16,8,":", hardware), 2, 7)= "0:19:5b") or (substring(binary-to-ascii (16,8,":", hardware), 2, 7)= "0:17:9a");
+}
+
+class "cpe"
+{
+    match if (
+        not (
+            concat(
+                "1:",binary-to-ascii(16,8,":",option agent.remote-id)
+            ) = binary-to-ascii(16,8,":",hardware)
+        )
+        and (
+            binary-to-ascii (16,8,":",option agent.remote-id) = "11:22:33:44:55:66"
+        )
+    );
 }
