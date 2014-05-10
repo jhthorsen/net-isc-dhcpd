@@ -1,5 +1,7 @@
 use Net::ISC::DHCPd::Config;
 use Test::More;
+use warnings;
+use strict;
 
 my $config = Net::ISC::DHCPd::Config->new(fh => \*DATA);
 is($config->parse, 19, 'Parsed 19 lines?');

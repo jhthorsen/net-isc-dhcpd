@@ -1,5 +1,7 @@
 use Net::ISC::DHCPd::Config;
 use Test::More;
+use warnings;
+use strict;
 
 my $config = Net::ISC::DHCPd::Config->new(fh => \*DATA);
 #printf "Parsed %s lines\n\n", $config->parse; print $config->generate();
