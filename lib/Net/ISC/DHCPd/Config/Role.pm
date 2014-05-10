@@ -389,6 +389,10 @@ sub create_children {
         my $name = lc +($class =~ /::(\w+)$/)[0];
         my $attr = $name .'s';
 
+        # hack so the child method for class is classes instead of classs
+        $attr = $name . 'es' if ($name =~ /s$/);
+        
+
         Class::Load::load_class($class);
 
         unless($meta->find_method_by_name($attr)) {

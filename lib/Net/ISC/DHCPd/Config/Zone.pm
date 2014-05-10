@@ -1,8 +1,8 @@
-package Net::ISC::DHCPd::Config::Key;
+package Net::ISC::DHCPd::Config::Zone;
 
 =head1 NAME
 
-Net::ISC::DHCPd::Config::Key - Server key
+Net::ISC::DHCPd::Config::Zone - Server Zone
 
 =head1 DESCRIPTION
 
@@ -13,9 +13,9 @@ An instance from this class, comes from / will produce the block below:
 
     $name_attribute_value $value_attribute_value;
 
-    key "$name" {
-        algorithm $algorithm;
-        secret "$secret";
+    zone $name {
+        primary $primary;
+        key $key;
     };
 
 =head1 SYNOPSIS
@@ -32,21 +32,22 @@ with 'Net::ISC::DHCPd::Config::Role';
 
 =head2 name
 
-Name of the key - See L</DESCRIPTION> for details.
+Name of the Zone - See L</DESCRIPTION> for details.
 
-=head2 algorithm
+=head2 primary
 
-=head2 secret
+=head2 key
 
 =cut
 
-has [qw/ name algorithm secret /] => (
+has [qw/ name key primary /] => (
     is => 'rw', # TODO: WILL PROBABLY CHANGE!
     isa => 'Str',
 );
 
 sub _build_children { [undef] }
-sub _build_regex { qr{^\s* key \s ("?)(\S+)(\1) }x }
+# not sure if this can be quoted or not
+sub _build_regex { qr{^\s* zone \s (")?(\S+)(\1|$) }x }
 
 =head1 METHODS
 
@@ -62,8 +63,9 @@ sub slurp {
     my($self, $line) = @_;
 
     return 'last' if($line =~ /^\s*}/);
-    $self->algorithm($1) if($line =~ /algorithm \s+ (\S+);/x);
-    $self->secret($2) if($line =~ /secret \s+ ("?)(\S+)\1;/x);
+    # not sure if these can really be quoted
+    $self->primary($1) if($line =~ /primary \s+ (\S+);/x);
+    $self->key($2) if($line =~ /key \s+ ("?)(\S+)\1;/x);
     return 'next';
 }
 
@@ -87,10 +89,10 @@ sub generate {
     my $self = shift;
 
     return(
-        sprintf('key "%s" {', $self->name),
-        $self->algorithm ? (sprintf '    algorithm %s;', $self->algorithm) : (),
-        $self->secret ? (sprintf '    secret "%s";', $self->secret) : (),
-        '};', # TODO: should this really be here?
+        sprintf('zone %s {', $self->name),
+        $self->primary ? (sprintf '    primary %s;', $self->primary) : (),
+        $self->key ? (sprintf '    key %s;', $self->key) : (),
+        '}', # TODO: should this really be here?
     );
 }
 
