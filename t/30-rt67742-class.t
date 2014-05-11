@@ -3,8 +3,10 @@ use Test::More;
 use warnings;
 
 my $config = Net::ISC::DHCPd::Config->new(fh => \*DATA);
-is($config->parse, 41, 'Parsed 41 lines?');
+is($config->parse, 45, 'Parsed 41 lines?');
 is($config->classes->[0]->keyvalues->[1]->name, 'next-server', 'is class keyvalue 0 name == next-server');
+is($config->classes->[5]->keyvalues->[0]->name, 'match', 'is class 5 keyvalue 0 name == match');
+is($config->classes->[5]->keyvalues->[0]->value, 'if (        not (            concat(                "1:",binary-to-ascii(16,8,":",option agent.remote-id)            ) = binary-to-ascii(16,8,":",hardware)        )        and (            binary-to-ascii (16,8,":",option agent.remote-id) = "11:22:33:44:55:66"        )    )', 'is class 5 keyvalue 0 value == correct?');
 done_testing();
 
 
@@ -50,3 +52,7 @@ class "cpe"
         )
     );
 }
+
+subclass "consoles" "testbox";
+
+subclass "consoles" "testbox2";

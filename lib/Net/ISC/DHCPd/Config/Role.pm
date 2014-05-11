@@ -274,6 +274,7 @@ sub parse {
     my $fh = $self->_filehandle;
     my $endpoint = $self->endpoint;
     my($n, $pos, @comments);
+    my $lines = '';
 
     LINE:
     while(1) {
@@ -310,22 +311,6 @@ sub parse {
             last LINE;
         }
 
-        CHILD:
-        for my $child ($self->children) {
-            my @c = $line =~ $child->regex or next CHILD;
-            my $add = 'add_' .lc +(ref($child) =~ /::(\w+)$/)[0];
-            my $args = $child->captured_to_args(@c);
-            my $obj;
-
-            $args->{'comments'} = [@comments];
-            @comments = ();
-            $obj = $self->$add($args);
-
-            $n += $obj->parse('recursive') if(@_ = $obj->children);
-
-            next LINE;
-        }
-
         # hack to fix parser for parenthesis on the next line
         # subnet 10.0.0.96 netmask 255.255.255.224\n{
         # technically we need to do multiline matching to get things right
@@ -333,10 +318,40 @@ sub parse {
             next LINE;
         }
 
+        chomp $line;
+        $lines .= $line;
+
+        CHILD:
+        for my $child ($self->children) {
+            my @c = $lines =~ $child->regex or next CHILD;
+            my $add = 'add_' .lc +(ref($child) =~ /::(\w+)$/)[0];
+            my $args = $child->captured_to_args(@c);
+            my $obj;
+
+            $args->{'comments'} = [@comments];
+            @comments = ();
+            $lines = '';
+            $obj = $self->$add($args);
+
+            $n += $obj->parse('recursive') if(@_ = $obj->children);
+
+            next LINE;
+        }
+
+        # if we get here that means our parse failed.  If the incoming line
+        # doesn't have a semicolon then we can guess it's a partial line and
+        # append the next line to it.
+        # we could do this with Slurp but then everything would need to
+        # support slurp and odd semicolon handling.  If we figure out a way to
+        # merge the lines then the normal parser should be able to cover it.
+        if ($lines !~ /;/) {
+            next LINE;
+        }
+
+
         if(warnings::enabled('net_isc_dhcpd_config_parse')) {
-            chomp $line;
             warn sprintf qq[Could not parse "%s" at %s line %s\n],
-                $line,
+                $lines,
                 $self->root->file,
                 $fh->input_line_number
                 ;
@@ -361,7 +376,7 @@ sub captured_to_args {
 }
 
 =head2 captured_endpoint
- 
+
     $self->captured_endpoint(@list)
 
 Called when a L</endpoint> matches, with a list of captured strings.
@@ -391,7 +406,7 @@ sub create_children {
 
         # hack so the child method for class is classes instead of classs
         $attr = $name . 'es' if ($name =~ /s$/);
-        
+
 
         Class::Load::load_class($class);
 
