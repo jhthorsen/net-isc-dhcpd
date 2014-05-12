@@ -1,6 +1,6 @@
 package Net::ISC::DHCPd::Config;
 
-=head1 NAME 
+=head1 NAME
 
 Net::ISC::DHCPd::Config - Parse and create ISC DHCPd config
 
@@ -57,6 +57,8 @@ This class does the role L<Net::ISC::DHCPd::Config::Root>.
 =head1 POSSIBLE CONFIG GRAPH
 
  Config
+  |- Config::Class
+  |- Config::SubClass
   |- Config::Include
   |- Config::Subnet
   |  |- Config::Option
@@ -107,6 +109,7 @@ with 'Net::ISC::DHCPd::Config::Root';
 __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::Host
     Net::ISC::DHCPd::Config::Class
+    Net::ISC::DHCPd::Config::SubClass
     Net::ISC::DHCPd::Config::Subnet
     Net::ISC::DHCPd::Config::SharedNetwork
     Net::ISC::DHCPd::Config::Function
@@ -115,9 +118,9 @@ __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::Include
     Net::ISC::DHCPd::Config::Key
     Net::ISC::DHCPd::Config::Group
+    Net::ISC::DHCPd::Config::Zone
     Net::ISC::DHCPd::Config::Block
     Net::ISC::DHCPd::Config::KeyValue
-    Net::ISC::DHCPd::Config::Zone
 /);
 
 sub _build_root { $_[0] }
@@ -200,6 +203,18 @@ add, update or remove these objects.
 =head2 includes
 
 List of parsed L<Net::ISC::DHCPd::Config::Include> objects.
+See L<Net::ISC::DHCPd::Config::Role/children> for details on how to
+add, update or remove these objects.
+
+=head2 classes
+
+List of parsed L<Net::ISC::DHCPd::Config::Class> objects.
+See L<Net::ISC::DHCPd::Config::Role/children> for details on how to
+add, update or remove these objects.
+
+=head2 subclasses
+
+List of parsed L<Net::ISC::DHCPd::Config::SubClass> objects.
 See L<Net::ISC::DHCPd::Config::Role/children> for details on how to
 add, update or remove these objects.
 
