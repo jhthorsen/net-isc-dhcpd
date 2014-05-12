@@ -282,6 +282,16 @@ sub parse {
         defined(my $line = readline $fh) or last LINE;
         my $res;
         $n++;
+        chomp $line;
+
+        # From here we need to preprocess the line to see if it can be broken
+        # into multiple lines.  Something like group { option test; }
+        # in order to do this we may have to decouple the parser from the
+        # filehandle.  We could do it as a real preprocess before parse is
+        # called but it would screw up the line numbers for errors
+        #$line =~ s/{(?:[^\n\r])/{\n/g;
+        #$line =~ s/}(?:[^\n\r])/}\n/g;
+        #for(split(/\n/, $line)) { }
 
         if($self->can('slurp')) {
             my $action = $self->slurp($line); # next or last
@@ -301,7 +311,6 @@ sub parse {
             next LINE;
         }
         elsif($line =~ s/$COMMENT_RE//) {
-            chomp $line;
             push @comments, $line;
             next LINE;
         }
@@ -318,7 +327,7 @@ sub parse {
             next LINE;
         }
 
-        chomp $line;
+        # this is how we handle incomplete lines
         $lines .= $line;
 
         CHILD:
