@@ -11,7 +11,7 @@ documentation.
 
 An instance from this class, comes from / will produce:
 
-    group {
+    group $name {
         $keyvalues_attribute_value
         $options_attribute_value
         $hosts_attribute_value
@@ -19,6 +19,8 @@ An instance from this class, comes from / will produce:
         $sharednetworks_attribute_value
         $subnets_attribute_value
     }
+
+Group names are optional.
 
 =head1 SYNOPSIS
 
@@ -65,11 +67,53 @@ A list of parsed L<Net::ISC::DHCPd::Config::Option> objects.
 
 A list of parsed L<Net::ISC::DHCPd::Config::KeyValue> objects.
 
+=head2 name
+
+Name of the group - See L</DESCRIPTION> for details.
+
 =cut
 
-sub _build_regex { qr{^ \s* group}x }
+has name => (
+    is => 'ro',
+    isa => 'Str',
+);
+
+=head2 quoted
+
+This flag tells if the group name should be quoted or not.
+
+=cut
+
+has quoted => (
+    is => 'ro',
+    isa => 'Bool',
+);
+
+
+sub _build_regex { qr{^ \s* group \s ([\w-]+|".*?")? }x }
 
 =head1 METHODS
+
+=head2 captured_to_args
+
+See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
+
+=cut
+
+sub captured_to_args {
+    my $self   = shift;
+    my $name   = shift;
+    my $quoted = 0;
+
+    return if !defined($name);
+
+    $quoted = 1 if ($name =~ s/^"(.*)"$/$1/g);
+
+    return {
+        name   => $name,
+        quoted => $quoted,
+    };
+}
 
 =head2 generate
 
@@ -78,7 +122,14 @@ See L<Net::ISC::DHCPd::Config::Role/generate>.
 =cut
 
 sub generate {
-    return 'group {', shift->_generate_config_from_children, '}';
+    my $self = shift;
+    if (defined($self->name)) {
+        my $name = $self->name;
+        return 'group ' . ($self->quoted ? qq("$name") : $self->name) . ' {', $self->_generate_config_from_children, '}';
+    }
+
+    # default with no name
+    return 'group {', $self->_generate_config_from_children, '}';
 }
 
 =head1 COPYRIGHT & LICENSE

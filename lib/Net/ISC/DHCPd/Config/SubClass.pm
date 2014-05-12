@@ -28,7 +28,7 @@ with 'Net::ISC::DHCPd::Config::Role';
 
 =head2 name
 
-Name of the option - See L</DESCRIPTION> for details.
+Name of the subclass - See L</DESCRIPTION> for details.
 
 =cut
 
@@ -39,7 +39,7 @@ has name => (
 
 =head2 value
 
-Value of the option - See L</DESCRIPTION> for details.
+Value of the subclass - See L</DESCRIPTION> for details.
 
 =cut
 
