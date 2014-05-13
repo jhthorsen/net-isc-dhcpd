@@ -271,27 +271,39 @@ when possible.
 
 sub parse {
     my $self = shift;
+    my $linebuf = $_[1];
     my $fh = $self->_filehandle;
     my $endpoint = $self->endpoint;
     my($n, $pos, @comments);
     my $lines = '';
+    my $line_from_array=0;
 
     LINE:
     while(1) {
+        my $line;
         $pos = $fh->getpos or die $!;
-        defined(my $line = readline $fh) or last LINE;
-        my $res;
-        $n++;
-        chomp $line;
+        if (defined($linebuf->[0])) {
+            $line = pop(@{$linebuf});
+            $line_from_array=1;
+        } else {
+            defined($line = readline $fh) or last LINE;
+            $n++;
+            chomp $line;
+            $line_from_array=0;
+            # From here we need to preprocess the line to see if it can be broken
+            # into multiple lines.  Something like group { option test; }
+            # if need be, we hand over the @linebuf variable to sub objects
+            # BROKEN:
+            # comments with braces
+            $line =~ s/;((?:[^\n\r]))/;\n$1/g;
+            $line =~ s/\{((?:[^\n\r]))/\{\n$1/g;
+            $line =~ s/\}((?:[^;\n\r]))/\}\n$1/g;
+            if ($line =~ /\n/) {
+                push(@{$linebuf}, reverse split(/\n/, $line));
+                next LINE;
+            }
+        }
 
-        # From here we need to preprocess the line to see if it can be broken
-        # into multiple lines.  Something like group { option test; }
-        # in order to do this we may have to decouple the parser from the
-        # filehandle.  We could do it as a real preprocess before parse is
-        # called but it would screw up the line numbers for errors
-        #$line =~ s/{(?:[^\n\r])/{\n/g;
-        #$line =~ s/}(?:[^\n\r])/}\n/g;
-        #for(split(/\n/, $line)) { }
 
         if($self->can('slurp')) {
             my $action = $self->slurp($line); # next or last
@@ -302,8 +314,12 @@ sub parse {
                 last LINE;
             }
             elsif($action eq 'backtrack') {
-                $fh->setpos($pos);
-                $n--;
+                if ($line_from_array) {
+                    push(@{$linebuf}, $line);
+                } else {
+                    $fh->setpos($pos);
+                    $n--;
+                }
                 last LINE;
             }
         }
@@ -328,7 +344,12 @@ sub parse {
         }
 
         # this is how we handle incomplete lines
-        $lines .= $line;
+        # we need a space for lines like 'option\ndomain-name-servers'
+        if ($lines =~ /\S$/) {
+           $lines .= ' '.$line;
+        } else {
+            $lines = $line;
+        }
 
         CHILD:
         for my $child ($self->children) {
@@ -342,7 +363,8 @@ sub parse {
             $lines = '';
             $obj = $self->$add($args);
 
-            $n += $obj->parse('recursive') if(@_ = $obj->children);
+            # the recursive statement is used for Include.pm
+            $n += $obj->parse('recursive', $linebuf) if(@_ = $obj->children);
 
             next LINE;
         }
