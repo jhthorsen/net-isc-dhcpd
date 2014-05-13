@@ -292,12 +292,16 @@ sub parse {
             $line_from_array=0;
             # From here we need to preprocess the line to see if it can be broken
             # into multiple lines.  Something like group { option test; }
-            # if need be, we hand over the @linebuf variable to sub objects
-            # BROKEN:
-            # comments with braces
-            $line =~ s/;((?:[^\n\r]))/;\n$1/g;
-            $line =~ s/\{((?:[^\n\r]))/\{\n$1/g;
-            $line =~ s/\}((?:[^;\n\r]))/\}\n$1/g;
+            # lines with comments can't be handled by this so we do them first
+            if($line =~ s/$COMMENT_RE//) {
+                push @comments, $line;
+                next LINE;
+            }
+
+            $line =~ s/ ([;\{\}])                                 # after semicolon or braces
+                        ([^;\n\r])                                # if there isn't a semicolon or return
+                        /$1\n$2/gx;                               # insert a newline
+
             if ($line =~ /\n/) {
                 push(@{$linebuf}, reverse split(/\n/, $line));
                 next LINE;
@@ -324,10 +328,6 @@ sub parse {
             }
         }
         elsif($line =~ /^\s*$/o) {
-            next LINE;
-        }
-        elsif($line =~ s/$COMMENT_RE//) {
-            push @comments, $line;
             next LINE;
         }
         elsif($line =~ $endpoint) {

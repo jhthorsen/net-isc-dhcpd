@@ -23,7 +23,7 @@ zone example.com
 }
 
 # test { on the next line..
-key box  # need to make sure comments on the same line that have { are ignored
+key box
 {
     algorithm hmac-md5;
     secret "...";
