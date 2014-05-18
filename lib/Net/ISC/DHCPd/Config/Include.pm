@@ -25,6 +25,9 @@ use Path::Class::File;
 with 'Net::ISC::DHCPd::Config::Root';
 
 __PACKAGE__->create_children(qw/
+    Net::ISC::DHCPd::Config::Conditional
+    Net::ISC::DHCPd::Config::Class
+    Net::ISC::DHCPd::Config::SubClass
     Net::ISC::DHCPd::Config::Host
     Net::ISC::DHCPd::Config::Subnet
     Net::ISC::DHCPd::Config::SharedNetwork
@@ -32,6 +35,7 @@ __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::OptionSpace
     Net::ISC::DHCPd::Config::Option
     Net::ISC::DHCPd::Config::Key
+    Net::ISC::DHCPd::Config::Zone
     Net::ISC::DHCPd::Config::Group
     Net::ISC::DHCPd::Config::Block
     Net::ISC::DHCPd::Config::KeyValue
