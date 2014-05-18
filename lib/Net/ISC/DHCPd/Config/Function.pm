@@ -41,7 +41,7 @@ anything.
 
 =cut
 
-sub _build_regex { qr{^\s* on \s (\w+)}x }
+sub _build_regex { qr{^\s* on \s+ (\w+)}x }
 
 =head1 METHODS
 

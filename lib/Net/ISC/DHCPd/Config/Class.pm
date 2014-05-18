@@ -48,7 +48,7 @@ __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::KeyValue
 /);
 
-sub _build_regex { qr{^\s* class \s (")?(.*?)(\1|$) }x }
+sub _build_regex { qr{^\s* class \s+ (")?(.*?)(\1|$) }x }
 
 =head1 METHODS
 

@@ -67,7 +67,7 @@ has name => (
     isa => 'Str',
 );
 
-sub _build_regex { qr{^ \s* host \s (\S+)}x }
+sub _build_regex { qr{^ \s* host \s+ (\S+)}x }
 
 =head1 METHODS
 

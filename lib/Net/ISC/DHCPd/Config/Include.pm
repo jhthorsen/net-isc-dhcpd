@@ -56,7 +56,7 @@ has generate_with_include => (
     default => 0,
 );
 
-sub _build_regex { qr{^\s* include \s "([^"]+)" ;}x }
+sub _build_regex { qr{^\s* include \s+ "([^"]+)" ;}x }
 sub _build_root { shift->parent }
 
 sub _build__filehandle {

@@ -90,7 +90,7 @@ has quoted => (
 );
 
 
-sub _build_regex { qr{^ \s* group \s ([\w-]+|".*?")? }x }
+sub _build_regex { qr{^ \s* group \s+ ([\w-]+|".*?")? }x }
 
 =head1 METHODS
 

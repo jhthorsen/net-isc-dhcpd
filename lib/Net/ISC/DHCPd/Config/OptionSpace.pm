@@ -73,7 +73,7 @@ has prefix => (
     isa => 'Str',
 );
 
-sub _build_regex { qr{^\s* option \s space \s (.*) ;}x }
+sub _build_regex { qr{^\s* option \s+ space \s+ (.*) ;}x }
 
 =head1 METHODS
 

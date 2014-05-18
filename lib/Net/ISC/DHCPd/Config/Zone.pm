@@ -47,7 +47,7 @@ has [qw/ name key primary /] => (
 
 sub _build_children { [undef] }
 # not sure if this can be quoted or not
-sub _build_regex { qr{^\s* zone \s (")?(\S+)(\1|$) }x }
+sub _build_regex { qr{^\s* zone \s+ (")?(\S+)(\1|$) }x }
 
 =head1 METHODS
 

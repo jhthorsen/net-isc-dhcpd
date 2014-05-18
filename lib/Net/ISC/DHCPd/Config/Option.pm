@@ -60,7 +60,7 @@ has quoted => (
     isa => 'Bool',
 );
 
-sub _build_regex { qr{^\s* option \s (\S+) \s (.*) ;}x }
+sub _build_regex { qr{^\s* option \s+ (\S+) \s+ (.*) ;}x }
 
 =head1 METHODS
 

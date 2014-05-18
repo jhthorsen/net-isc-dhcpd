@@ -64,7 +64,7 @@ has quoted => (
     isa => 'Bool',
 );
 
-sub _build_regex { qr{^\s* ([\w-]+) \s (.*) ;}x }
+sub _build_regex { qr{^\s* ([\w-]+) \s+ (.*) ;}x }
 
 =head1 METHODS
 

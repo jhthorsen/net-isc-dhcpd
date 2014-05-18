@@ -46,7 +46,7 @@ has [qw/ name algorithm secret /] => (
 );
 
 sub _build_children { [undef] }
-sub _build_regex { qr{^\s* key \s ("?)(\S+)(\1) }x }
+sub _build_regex { qr{^\s* key \s+ ("?)(\S+)(\1) }x }
 
 =head1 METHODS
 

@@ -55,7 +55,7 @@ has lower => (
     isa => 'NetAddr::IP',
 );
 
-sub _build_regex { qr{^\s* range \s (\S+) \s (\S*) ;}x }
+sub _build_regex { qr{^\s* range \s+ (\S+) \s+ (\S*) ;}x }
 
 =head1 METHODS
 

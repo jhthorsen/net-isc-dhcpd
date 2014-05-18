@@ -39,7 +39,7 @@ has file => (
     coerce => 1,
 );
 
-sub _build_regex { qr{^\s* filename \s (\S+) ;}x }
+sub _build_regex { qr{^\s* filename \s+ (\S+) ;}x }
 
 =head1 METHODS
 
