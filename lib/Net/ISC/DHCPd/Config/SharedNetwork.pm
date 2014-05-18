@@ -11,7 +11,7 @@ documentation.
 
 An instance from this class, comes from / will produce one of the
 blocks below, dependent on L</name> is set or not.
-    
+
     shared-network $name_attribute_value {
         $keyvalues_attribute_value
         $subnets_attribute_value
@@ -57,12 +57,44 @@ Will be omitted if it contains an empty string.
 has name => (
     is => 'ro',
     isa => 'Str',
-    default => '',
 );
 
-sub _build_regex { qr{^\s* shared-network \W* (\w*)}x }
+=head2 quoted
+
+This flag tells if the shared-network name should be quoted or not.
+
+=cut
+
+has quoted => (
+    is => 'ro',
+    isa => 'Bool',
+);
+
+
+sub _build_regex { qr{^\s* shared-network \s+ ([\w-]+|".*?")? }x }
 
 =head1 METHODS
+
+=head2 captured_to_args
+
+See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
+
+=cut
+
+sub captured_to_args {
+    my $self = shift;
+    my $name = shift;
+    my $quoted = 0;
+    return if !defined($name);
+
+    $quoted = 1 if ($name =~ s/^"(.*)"$/$1/g);
+
+    return {
+        name   => $name,
+        quoted => $quoted,
+    };
+}
+
 
 =head2 generate
 
@@ -73,11 +105,12 @@ See L<Net::ISC::DHCPd::Config::Role/generate>.
 sub generate {
     my $self = shift;
 
-    return(
-        'shared-network ' .($self->name ? $self->name . ' ' : '') . '{',
-        $self->_generate_config_from_children,
-        '}',
-    );
+    if (defined($self->name)) {
+        my $name = $self->name;
+        return 'shared-network ' . ($self->quoted ? qq("$name") : $self->name) . ' {', $self->_generate_config_from_children, '}';
+    }
+
+    return 'shared-network {', $self->_generate_config_from_children, '}';
 }
 
 =head1 COPYRIGHT & LICENSE
