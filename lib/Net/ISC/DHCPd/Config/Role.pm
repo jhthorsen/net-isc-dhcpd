@@ -443,8 +443,8 @@ sub create_children {
 
         unless($meta->find_method_by_name($attr)) {
             $meta->add_method("add_${name}" => sub { shift->_add_child($class, @_) });
-            $meta->add_method("find_${name}s" => sub { shift->_find_children($class, @_) });
-            $meta->add_method("remove_${name}s" => sub { shift->_remove_children($class, @_) });
+            $meta->add_method("find_${attr}" => sub { shift->_find_children($class, @_) });
+            $meta->add_method("remove_${attr}" => sub { shift->_remove_children($class, @_) });
             $meta->add_method($attr => sub {
                 my $self = shift;
                 return $self->_set_children($class, @_) if(@_);
