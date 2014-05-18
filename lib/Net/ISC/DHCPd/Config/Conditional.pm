@@ -1,8 +1,8 @@
-package Net::ISC::DHCPd::Config::ConditionRole;
+package Net::ISC::DHCPd::Config::Conditional;
 
 =head1 NAME
 
-Net::ISC::DHCPd::Config::ConditionRole - if, elsif and/or else config parameter
+Net::ISC::DHCPd::Config::Conditional - if, elsif and/or else config parameter
 
 =head1 DESCRIPTION
 
@@ -24,9 +24,19 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose::Role;
+use Moose;
 
-with 'Net::ISC::DHCPd::Config::Role' => { -excludes => [qw/ captured_to_args /] };
+with 'Net::ISC::DHCPd::Config::Role';
+
+__PACKAGE__->create_children(qw/
+    Net::ISC::DHCPd::Config::Subnet
+    Net::ISC::DHCPd::Config::SharedNetwork
+    Net::ISC::DHCPd::Config::Group
+    Net::ISC::DHCPd::Config::Host
+    Net::ISC::DHCPd::Config::Option
+    Net::ISC::DHCPd::Config::KeyValue
+/);
+
 
 =head1 ATTRIBUTES
 
@@ -48,7 +58,7 @@ has logic => (
     isa => 'Str',
 );
 
-sub _build_regex { qr/^ \s* (if|elsif|else) (.*) /x }
+sub _build_regex { qr/^ \s* (if|elsif|else) (.*?)(\s+\{|$) /x }
 
 =head1 METHODS
 

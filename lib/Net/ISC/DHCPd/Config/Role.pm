@@ -431,19 +431,6 @@ sub create_children {
     my $meta = $self->meta;
     my @children = @_;
 
-    my $condition_class = $meta->name .'::Condition';
-    my $condition_meta;
-
-    $condition_meta = $meta->create($condition_class => (
-                          superclasses => [ 'Moose::Object' ],
-                          roles => [ 'Net::ISC::DHCPd::Config::ConditionRole' ],
-                          methods => {
-                              _build_children => sub { \@children },
-                          },
-                      ));
-
-    push @children, $condition_class;
-
     for my $class (@children) {
         my $name = lc (($class =~ /::(\w+)$/)[0]);
         my $attr = $name .'s';
@@ -456,20 +443,9 @@ sub create_children {
 
         unless($meta->find_method_by_name($attr)) {
             $meta->add_method("add_${name}" => sub { shift->_add_child($class, @_) });
-            $condition_meta->add_method("add_${name}" => sub { shift->_add_child($class, @_) });
-
             $meta->add_method("find_${attr}" => sub { shift->_find_children($class, @_) });
-            $condition_meta->add_method("find_${name}s" => sub { shift->_find_children($class, @_) });
-
             $meta->add_method("remove_${attr}" => sub { shift->_remove_children($class, @_) });
-            $condition_meta->add_method("remove_${name}s" => sub { shift->_remove_children($class, @_) });
-
             $meta->add_method($attr => sub {
-                my $self = shift;
-                return $self->_set_children($class, @_) if(@_);
-                return $self->_get_children_by_class($class);
-            });
-            $condition_meta->add_method($attr => sub {
                 my $self = shift;
                 return $self->_set_children($class, @_) if(@_);
                 return $self->_get_children_by_class($class);
