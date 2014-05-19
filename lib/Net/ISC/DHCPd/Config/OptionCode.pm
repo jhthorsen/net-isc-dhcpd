@@ -1,8 +1,8 @@
-package Net::ISC::DHCPd::Config::OptionSpace::Option;
+package Net::ISC::DHCPd::Config::OptionCode;
 
 =head1 NAME
 
-Net::ISC::DHCPd::Config::OptionSpace::Option - Optionspace config param data
+Net::ISC::DHCPd::Config::OptionCode - Optionspace config param data
 
 =head1 DESCRIPTION
 
@@ -12,11 +12,18 @@ documentation.
 An instance from this class, comes from / will produce one of the
 lines below, dependent on L</quoted>.
 
-    option $parent_prefix_attribute_value.$name_attribute_value \
+    option $prefix_attribute_value.$name_attribute_value \
         code $code_attribute_value = $value_attribute_value;
 
-    option $parent_prefix_attribute_value.$name_attribute_value \
+    option $prefix_attribute_value.$name_attribute_value \
         code $code_attribute_value = "$value_attribute_value";
+
+This used to be under OptionSpace, but they can actually be seperated in
+dhcpd.conf files, which means they need to be parsed seperately.  This
+actually makes the parsing easier because they're treated as individual lines.
+
+There is no real difference between these and normal options, but I'm leaving
+them seperate in the parser to keep things easy.
 
 
 =head1 SYNOPSIS
@@ -30,6 +37,17 @@ use Moose;
 with 'Net::ISC::DHCPd::Config::Role';
 
 =head1 ATTRIBUTES
+
+=head2 prefix
+
+Human readable prefix of this option.  This is the parent of the option.
+
+=cut
+
+has prefix => (
+    is => 'ro',
+    isa => 'Str',
+);
 
 =head2 name
 
@@ -76,7 +94,7 @@ has quoted => (
 );
 
 sub _build_regex {
-    qr{^\s* option \s (\S+)\.(\S+) \s code \s (\d+) \s = \s (.*) ;}x;
+    qr{^\s* option \s+ (\S+) \s+ code \s+ (\d+) \s+ = \s+ (.*) ;}x;
 }
 
 =head1 METHODS
@@ -89,15 +107,20 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 
 sub captured_to_args {
     my $self   = shift;
-    my $prefix = shift;
     my $name   = shift;
     my $code   = shift;
     my $value  = shift;
+    my %values;
     my $quoted = 0;
+    if ($name =~ /(\S+)\.(\S+)/) {
+        $name = $2;
+        $values{prefix} = $1;
+    }
 
     $quoted = 1 if($value =~ s/^"(.*)"$/$1/g);
 
     return {
+        %values,
         name   => $name,
         code   => $code,
         value  => $value,
@@ -114,12 +137,20 @@ See L<Net::ISC::DHCPd::Config::Role/generate>.
 sub generate {
     my $self = shift;
 
-    return sprintf('option %s.%s code %i = %s;',
-        $self->parent->prefix,
-        $self->name,
-        $self->code,
-        $self->value,
-    );
+    if (defined($self->prefix)) {
+        return sprintf('option %s.%s code %i = %s;',
+            $self->prefix,
+            $self->name,
+            $self->code,
+            $self->value,
+        );
+    } else {
+        return sprintf('option %s code %i = %s;',
+            $self->name,
+            $self->code,
+            $self->value,
+        );
+    }
 }
 
 =head1 COPYRIGHT & LICENSE

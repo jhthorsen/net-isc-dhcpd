@@ -33,11 +33,11 @@ my $time = timeit($count, sub {
     is($included->parse, 6, 'included file got parsed');
     is(scalar(@_=$included->hosts), 1, 'included file contains one host');
 
-    my $space = $config->optionspaces->[0];
-    is(scalar(@_=$space->options), 2, "option space options");
+    is(scalar(@_=$config->optioncodes), 3, "option code options");
+    my $space = $config->optioncodes->[2];
     is($space->name, 'foo-enc', "option space name");
     is($space->code, 122, "option space code");
-    is($space->prefix, 'foo', "option space prefix");
+    is($space->prefix, undef, "option space prefix");
 
     my $subnet = $config->subnets->[0];
     my $subnet_opt = $subnet->options->[0];

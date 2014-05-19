@@ -93,7 +93,7 @@ This class does the role L<Net::ISC::DHCPd::Config::Root>.
   |  '- Config::KeyValue
   |
   |- Config::OptionSpace
-  |  '- Config::OptionSpace::Option
+  |- Config::OptionCode
   |
   |- Config::Option
   |- Config::Declaration *
@@ -116,6 +116,7 @@ __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::SharedNetwork
     Net::ISC::DHCPd::Config::Function
     Net::ISC::DHCPd::Config::OptionSpace
+    Net::ISC::DHCPd::Config::OptionCode
     Net::ISC::DHCPd::Config::Option
     Net::ISC::DHCPd::Config::Include
     Net::ISC::DHCPd::Config::Key

@@ -23,18 +23,11 @@ my $time = timeit($count, sub {
         name => 'ddns-update-style',
         value => 'none',
     );
-    $config->add_optionspace(
-        name => 'foo-enc',
-        prefix => 'foo',
-        code => 122,
-        options => [
-            {
-                name => 'bar',
-                code => 1,
-                value => 'ip-address',
-            },
-        ],
-    );
+
+    $config->add_optionspace('name' => 'foo');
+    $config->add_optioncode('prefix' => 'foo', 'name' => 'bar', 'code' => 1, 'value' => 'ip-address');
+    $config->add_optioncode('name' => 'foo-enc', 'code' => 122, 'value' => 'encapsulate foo');
+
     $config->add_function(
         name => "commit",
         body => "    set leasetime = encode-int(lease-time, 32);\n",
@@ -110,7 +103,7 @@ diag($count .": " .timestr($time));
 __DATA__
 ddns-update-style none;
 option space foo;
-    option foo.bar code 1 = ip-address;
+option foo.bar code 1 = ip-address;
 option foo-enc code 122 = encapsulate foo;
 on commit {
     set leasetime = encode-int(lease-time, 32);

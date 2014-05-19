@@ -16,5 +16,5 @@ done_testing();
 
 __DATA__
 option space cable-labs;
-    option cable-labs.tsp-primary-dhcp-server code 1 = ip-address;
-    option cable-labs.tsp-secondary-dhcp-server code 2 = ip-address;
+option cable-labs.tsp-primary-dhcp-server code 1 = ip-address;
+option cable-labs.tsp-secondary-dhcp-server code 2 = ip-address;

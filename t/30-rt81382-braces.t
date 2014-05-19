@@ -4,10 +4,17 @@ use warnings;
 use strict;
 
 my $config = Net::ISC::DHCPd::Config->new(fh => \*DATA);
-is($config->parse, 26, 'Parsed 26 lines?');
+is($config->parse, 31, 'Parsed 31 lines?');
 is(scalar(@{$config->groups}), 4, 'Checking number of groups found');
 is($config->groups->[2]->hosts->[1]->name, 'box3-2', 'Checking random host name');
 is($config->groups->[3]->keyvalues->[0]->name, 'next-server', 'Checking if next-server is first keyvalue');
+is($config->optionspaces->[1]->name, 'cable-labs', 'Option space parsed correctly');
+is($config->optioncodes->[1]->prefix, 'cable-labs', 'prefix parsed correctly?');
+is($config->optioncodes->[1]->name, 'tsp-as-backoff-retry', 'name parsed correctly?');
+is($config->optioncodes->[1]->code, 4, 'code parsed correctly?');
+is($config->optioncodes->[1]->value, '{  unsigned integer 32, unsigned integer 32, unsigned integer 32 }', 'value parsed correctly');
+is($config->optioncodes->[2]->value, '{  unsigned integer 32, unsigned integer 32, unsigned integer 32 }', 'value parsed correctly');
+is($config->optioncodes->[2]->name, 'tsp-ap-backoff-retry', 'name parsed correctly?');
 
 # I should note that I found that nested hosts break this.  It's an invalid
 # config anyway, but it's not caught and shown as a parse error.  I think this
@@ -31,7 +38,6 @@ is($config->groups->[3]->keyvalues->[0]->name, 'next-server', 'Checking if next-
 # validation.
 
 done_testing();
-
 
 __DATA__
 option space foo;  option foo.bar code 1 = ip-address; option host-name "test host name"; option
@@ -60,3 +66,8 @@ group {
        fixed-address 192.168.0.2;
    }
 }
+
+# These don't parse correctly so I need to test for them specificially
+option space cable-labs;
+option cable-labs.tsp-as-backoff-retry code 4 = { unsigned integer 32, unsigned integer 32, unsigned integer 32 };
+option cable-labs.tsp-ap-backoff-retry code 5 = { unsigned integer 32, unsigned integer 32, unsigned integer 32 };
