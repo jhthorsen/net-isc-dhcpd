@@ -11,7 +11,7 @@ SYNOPSIS
                         omapi => { key => "some key" },
                     );
 
-        $self->test('config') or die $self->errstr;
+        $dhcpd->config->parse;
 
     See the tests bundled to this distribution for more examples.
 
@@ -43,23 +43,19 @@ ATTRIBUTES
     be set from the constructor, using either an object or a hash-ref. The
     hash-ref will then be passed on to the constructor.
 
-  binary
-    This attribute holds a Path::Class::File object to the dhcpd binary. It
-    is read-only and the default is "dhcpd3".
-
   errstr
-    Holds the last know error as a plain string.
+    Holds the last know error as a plain string.  This only applies to OMAPI.
 
 METHODS
-  test
-     $bool = $self->test("config");
-     $bool = $self->test("leases");
+  parse
+     $config->parse;
 
-    Will test either the config or leases file. It returns a boolean value
-    which indicates if it is valid or not: True means it is valid, while
-    false means it is invalid. Check "errstr" on failure - it will contain a
-    descriptive string from either this module, $! or the exit value
-    (integer stored as a string).
+    This parses the config file.
+
+  generate
+     print $config->generate;
+
+    This generates a copy of the config file in plaintext.
 
 BUGS
     Please report any bugs or feature requests to "bug-net-isc-dhcpd at
@@ -77,6 +73,10 @@ COPYRIGHT & LICENSE
 AUTHOR
     Jan Henning Thorsen, "<jhthorsen at cpan.org>"
 
+MAINTAINER
+
+    Robert Drake, "<rdrake@cpan.org>"
+
 CONTRIBUTORS
     Nito Martinez
 
@@ -86,3 +86,4 @@ CONTRIBUTORS
 
     napetrov
 
+    zoffixznet
