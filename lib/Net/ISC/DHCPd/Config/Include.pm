@@ -13,6 +13,11 @@ An instance from this class, comes from / will produce:
 
     include "$file_attribute_value";
 
+Example:
+
+    my $include = $config->includes->[0];
+    $include->parse;
+
 =head1 SYNOPSIS
 
 See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
@@ -52,6 +57,10 @@ This attribute holds a boolean value. L</generate> will result in
 
 when false, and the included config if true. This attribute is false
 by default.
+
+Example:
+    $include->generate_with_include(1);
+    $include->generate;
 
 =cut
 
@@ -113,7 +122,7 @@ sub captured_to_args {
 
 =head2 generate
 
-This method can either result in C<include ...;> or the whole
+This method can either result in C<include ...;> line or the whole
 config of the included file. See L</generate_with_include> for how
 to control the behaviour.
 
