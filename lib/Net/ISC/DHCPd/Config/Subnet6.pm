@@ -33,7 +33,7 @@ with 'Net::ISC::DHCPd::Config::Role';
 __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::Host
     Net::ISC::DHCPd::Config::Pool
-    Net::ISC::DHCPd::Config::Range
+    Net::ISC::DHCPd::Config::Range6
     Net::ISC::DHCPd::Config::Filename
     Net::ISC::DHCPd::Config::Option
     Net::ISC::DHCPd::Config::KeyValue
