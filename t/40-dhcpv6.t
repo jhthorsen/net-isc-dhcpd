@@ -10,6 +10,9 @@ seek DATA, $data_pos, 0;
 my $config = Net::ISC::DHCPd::Config->new(fh => \*DATA);
 is($config->parse, 31, 'Parsed 31 lines?');
 is($config->generate, $output, 'Does generated config match input?');
+is($config->subnet6s->[0]->address, '3ffe:501:ffff:100:0:0:0:0/64', 'subnet6s address match input?');
+is($config->subnet6s->[0]->range6s->[0]->lower->canon, '3ffe:501:ffff:100::10', 'range6s address match input?');
+is($config->subnet6s->[0]->range6s->[1]->temporary, 1, 'range6s 2 temporary?');
 done_testing();
 
 __DATA__
