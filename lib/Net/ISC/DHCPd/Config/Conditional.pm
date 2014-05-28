@@ -30,6 +30,7 @@ with 'Net::ISC::DHCPd::Config::Role';
 
 __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::Subnet
+    Net::ISC::DHCPd::Config::Subnet6
     Net::ISC::DHCPd::Config::SharedNetwork
     Net::ISC::DHCPd::Config::Group
     Net::ISC::DHCPd::Config::Host

@@ -113,6 +113,7 @@ __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::Conditional
     Net::ISC::DHCPd::Config::SubClass
     Net::ISC::DHCPd::Config::Subnet
+    Net::ISC::DHCPd::Config::Subnet6
     Net::ISC::DHCPd::Config::SharedNetwork
     Net::ISC::DHCPd::Config::Function
     Net::ISC::DHCPd::Config::OptionSpace
