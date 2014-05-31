@@ -21,7 +21,7 @@ preferred-lifetime 604800;
 option dhcp-renewal-time 3600;
 option dhcp-rebinding-time 7200;
 option dhcp6.name-servers 3ffe:501:ffff:100:200:ff:fe00:4f4e;
-ption dhcp6.domain-search "test.example.com","example.com";
+option dhcp6.domain-search "test.example.com","example.com";
 option dhcp6.info-refresh-time 21600;
 # The path of the lease file
 dhcpv6-lease-file-name "/usr/local/var/db/dhcpd6.leases";
