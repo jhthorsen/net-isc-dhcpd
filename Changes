@@ -1,5 +1,27 @@
 Revision history for Net-ISC-DHCPd
 
+0.16     Sun Jun  1 22:31:11 UTC 2014
+       - Specifying minimum perl version of 5.8.3
+         * Moose should require something similar so I don't think this will
+         * break anyone.
+       - [RT68736] Unit tests for pools
+       - [RT60044] Conditional (if/then/else) support
+       - [RT67742] Class support
+       - [RT81382] Braces on the same line/weird formatting
+       - [RT81269] OptionSpace does not require encapsulate
+         * This breaks compatibility with old optionspace names
+       - Support for named groups
+       - Support for basic DHCPv6 commands
+       - Subclass support
+       - Added more child nodes to Include
+       - Added zone statement
+       - Whitespace changes in most regexes to allow non-standard configs
+       - Multiline support for all commands
+         * If a semicolon isn't found then a line will be concatenated until a
+         * valid statement is found
+       - method auto names are now based on $attr instead of $name
+         * this affects things like find_classes, which used to be find_classs
+
 0.15     Fri May  2 16:38:56 UTC 2014
        - [RT81567] Test failures due to hash randomisation in perl 5.17.6
        - [RT90966] New Moose may break your code
