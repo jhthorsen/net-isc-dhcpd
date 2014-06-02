@@ -2,7 +2,7 @@ package Net::ISC::DHCPd::Config::Class;
 
 =head1 NAME
 
-Net::ISC::DHCPd::Config::Class;
+Net::ISC::DHCPd::Config::Class - Class config parameter
 
 =head1 DESCRIPTION
 
