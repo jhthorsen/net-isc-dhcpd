@@ -151,5 +151,5 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-
+__PACKAGE__->meta->make_immutable;
 1;

@@ -76,5 +76,5 @@ Most of the documentation is taken from C<dhcpd(8)>.
 See L<Net::ISC::DHCPd>.
 
 =cut
-
+__PACKAGE__->meta->make_immutable;
 1;

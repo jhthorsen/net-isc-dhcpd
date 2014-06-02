@@ -596,4 +596,5 @@ See L<Net::ISC::DHCPd>.
 package # hack to register a new warnings category
     net_isc_dhcpd_config_parse;
 use warnings::register;
+
 1;

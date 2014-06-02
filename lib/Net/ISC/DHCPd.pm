@@ -6,7 +6,7 @@ Net::ISC::DHCPd - Interacts with ISC DHCPd
 
 =head1 VERSION
 
-0.16
+0.17
 
 =head1 SYNOPSIS
 
@@ -43,7 +43,7 @@ use Net::ISC::DHCPd::Types ':all';
 use File::Temp;
 use v5.8.3;
 
-our $VERSION = eval '0.16';
+our $VERSION = eval '0.17';
 
 =head1 ATTRIBUTES
 
@@ -238,5 +238,5 @@ Patrick
 napetrov
 
 =cut
-
+__PACKAGE__->meta->make_immutable;
 1;

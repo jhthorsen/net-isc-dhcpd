@@ -1,5 +1,9 @@
 Revision history for Net-ISC-DHCPd
 
+0.17     Sun Jun  1 22:31:11 UTC 2014
+       - Added make_immutable everywhere which greatly speeds up everything
+       - fix to 00-load.t to remove old module and add new ones
+
 0.16     Sun Jun  1 22:31:11 UTC 2014
        - Specifying minimum perl version of 5.8.3
          * Moose should require something similar so I don't think this will

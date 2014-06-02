@@ -79,5 +79,5 @@ Moose::Exporter->setup_import_methods(
 See L<Net::ISC::DHCPd>.
 
 =cut
-
+__PACKAGE__->meta->make_immutable;
 1;
