@@ -61,6 +61,7 @@ This class does the role L<Net::ISC::DHCPd::Config::Root>.
   |- Config::SubClass
   |- Config::Include
   |- Config::Conditional
+  |- Config::FailoverPeer
   |- Config::Subnet
   |  |- Config::Option
   |  |- Config::Declaration
@@ -111,6 +112,7 @@ __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::Host
     Net::ISC::DHCPd::Config::Class
     Net::ISC::DHCPd::Config::Conditional
+    Net::ISC::DHCPd::Config::FailoverPeer
     Net::ISC::DHCPd::Config::SubClass
     Net::ISC::DHCPd::Config::Subnet
     Net::ISC::DHCPd::Config::Subnet6

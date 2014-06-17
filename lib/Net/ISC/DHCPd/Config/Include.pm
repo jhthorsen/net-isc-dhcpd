@@ -31,6 +31,7 @@ with 'Net::ISC::DHCPd::Config::Root';
 
 __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::Conditional
+    Net::ISC::DHCPd::Config::FailoverPeer
     Net::ISC::DHCPd::Config::Class
     Net::ISC::DHCPd::Config::SubClass
     Net::ISC::DHCPd::Config::Host
