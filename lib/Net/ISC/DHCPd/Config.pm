@@ -57,6 +57,7 @@ This class does the role L<Net::ISC::DHCPd::Config::Root>.
 =head1 POSSIBLE CONFIG GRAPH
 
  Config
+  |- Config::Authoritative
   |- Config::Class
   |- Config::SubClass
   |- Config::Include
@@ -109,6 +110,7 @@ use Moose;
 with 'Net::ISC::DHCPd::Config::Root';
 
 __PACKAGE__->create_children(qw/
+    Net::ISC::DHCPd::Config::Authoritative
     Net::ISC::DHCPd::Config::Host
     Net::ISC::DHCPd::Config::Class
     Net::ISC::DHCPd::Config::Conditional
