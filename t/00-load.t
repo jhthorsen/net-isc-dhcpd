@@ -1,9 +1,10 @@
 use lib qw(lib);
 use Test::More;
-plan tests => 39;
+plan tests => 40;
 use_ok('Net::ISC::DHCPd');
 use_ok('Net::ISC::DHCPd::Leases::Lease');
 use_ok('Net::ISC::DHCPd::Leases');
+use_ok('Net::ISC::DHCPd::Config::Authoritative');
 use_ok('Net::ISC::DHCPd::Config::Range6');
 use_ok('Net::ISC::DHCPd::Config::Block');
 use_ok('Net::ISC::DHCPd::Config::Zone');
