@@ -31,6 +31,7 @@ with 'Net::ISC::DHCPd::Config::Root';
 
 __PACKAGE__->create_children(qw/
     Net::ISC::DHCPd::Config::Authoritative
+    Net::ISC::DHCPd::Config::Include
     Net::ISC::DHCPd::Config::Conditional
     Net::ISC::DHCPd::Config::FailoverPeer
     Net::ISC::DHCPd::Config::Class
@@ -82,6 +83,7 @@ sub _build__filehandle {
 
     if($file->is_relative and !-e $file) {
         $file = Path::Class::File->new($self->root->file->dir, $file);
+        $self->file($file);  # needed so dir stays updated with recursive includes
     }
 
     return $file->openr;
