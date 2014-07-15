@@ -39,7 +39,13 @@ has file => (
     coerce => 1,
 );
 
-sub _build_regex { qr{^\s* filename \s+ (\S+) ;}x }
+=head2 regex
+
+See L<Net::ISC::DHCPd::Config::Role/regex>.
+
+=cut
+
+sub regex { qr{^\s* filename \s+ (\S+) ;}x }
 
 =head1 METHODS
 
@@ -50,7 +56,7 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 =cut
 
 sub captured_to_args {
-    return { file => Path::Class::File->new($_[1]) };
+    return { file => Path::Class::File->new($_[0]) };
 }
 
 =head2 generate

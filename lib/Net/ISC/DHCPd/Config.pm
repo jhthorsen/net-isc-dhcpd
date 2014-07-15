@@ -109,30 +109,40 @@ use Moose;
 
 with 'Net::ISC::DHCPd::Config::Root';
 
-__PACKAGE__->create_children(qw/
-    Net::ISC::DHCPd::Config::Authoritative
-    Net::ISC::DHCPd::Config::Host
-    Net::ISC::DHCPd::Config::Class
-    Net::ISC::DHCPd::Config::Conditional
-    Net::ISC::DHCPd::Config::FailoverPeer
-    Net::ISC::DHCPd::Config::SubClass
-    Net::ISC::DHCPd::Config::Subnet
-    Net::ISC::DHCPd::Config::Subnet6
-    Net::ISC::DHCPd::Config::SharedNetwork
-    Net::ISC::DHCPd::Config::Function
-    Net::ISC::DHCPd::Config::OptionSpace
-    Net::ISC::DHCPd::Config::OptionCode
-    Net::ISC::DHCPd::Config::Option
-    Net::ISC::DHCPd::Config::Include
-    Net::ISC::DHCPd::Config::Key
-    Net::ISC::DHCPd::Config::Group
-    Net::ISC::DHCPd::Config::Zone
-    Net::ISC::DHCPd::Config::Block
-    Net::ISC::DHCPd::Config::KeyValue
-/);
+sub children {
+    return qw/
+        Net::ISC::DHCPd::Config::Host
+        Net::ISC::DHCPd::Config::Class
+        Net::ISC::DHCPd::Config::Conditional
+        Net::ISC::DHCPd::Config::SubClass
+        Net::ISC::DHCPd::Config::Subnet
+        Net::ISC::DHCPd::Config::Subnet6
+        Net::ISC::DHCPd::Config::Include
+        Net::ISC::DHCPd::Config::SharedNetwork
+        Net::ISC::DHCPd::Config::Function
+        Net::ISC::DHCPd::Config::OptionSpace
+        Net::ISC::DHCPd::Config::OptionCode
+        Net::ISC::DHCPd::Config::Option
+        Net::ISC::DHCPd::Config::Key
+        Net::ISC::DHCPd::Config::Group
+        Net::ISC::DHCPd::Config::Zone
+        Net::ISC::DHCPd::Config::FailoverPeer
+        Net::ISC::DHCPd::Config::Authoritative
+        Net::ISC::DHCPd::Config::Block
+        Net::ISC::DHCPd::Config::KeyValue/;
+}
+
+__PACKAGE__->create_children(__PACKAGE__->children());
 
 sub _build_root { $_[0] }
-sub _build_regex { qr{\x00} } # should not be used
+
+=head2 regex
+
+See L<Net::ISC::DHCPd::Config::Role/regex>.
+
+=cut
+
+sub regex { qr{\x00} } # should not be used
 
 __PACKAGE__->meta->add_method(filehandle => sub {
     Carp::cluck('->filehandle is replaced with private attribute _filehandle');

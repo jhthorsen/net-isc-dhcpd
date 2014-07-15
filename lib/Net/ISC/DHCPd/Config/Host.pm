@@ -27,11 +27,20 @@ use Moose;
 
 with 'Net::ISC::DHCPd::Config::Role';
 
-__PACKAGE__->create_children(qw/
-    Net::ISC::DHCPd::Config::Option
-    Net::ISC::DHCPd::Config::Filename
-    Net::ISC::DHCPd::Config::KeyValue
-/);
+=head2 children
+
+See L<Net::ISC::DHCPd::Config::Role/children>.
+
+=cut
+
+sub children {
+    return qw/
+        Net::ISC::DHCPd::Config::Option
+        Net::ISC::DHCPd::Config::Filename
+        Net::ISC::DHCPd::Config::KeyValue
+    /;
+}
+__PACKAGE__->create_children(__PACKAGE__->children());
 
 =head1 ATTRIBUTES
 
@@ -67,7 +76,13 @@ has name => (
     isa => 'Str',
 );
 
-sub _build_regex { qr{^ \s* host \s+ (\S+)}x }
+=head2 regex
+
+See L<Net::ISC::DHCPd::Config::Role/regex>.
+
+=cut
+
+sub regex { qr{^ \s* host \s+ (\S+)}x }
 
 =head1 METHODS
 
@@ -78,7 +93,7 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 =cut
 
 sub captured_to_args {
-    return { name => $_[1] };
+    return { name => $_[0] };
 }
 
 =head2 generate

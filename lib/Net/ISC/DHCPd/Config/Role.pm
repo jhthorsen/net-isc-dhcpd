@@ -143,15 +143,8 @@ removed.
 
 =cut
 
-has children => (
-    is => 'ro',
-    isa => 'ArrayRef',
-    lazy => 1,
-    auto_deref => 1,
-    builder => '_build_children',
-);
-
-sub _build_children { [] }
+# should be overridden by anything that has children
+sub children { }
 
 # actual children
 has _children => (
@@ -184,13 +177,9 @@ has _comments => (
 Regex used to scan a line of config text, which then spawns an
 a new node to the config tree. This is used inside l</parse>.
 
-=cut
+THIS IS A STATIC METHOD.  SELF is not used.
 
-has regex => (
-    is => 'ro',
-    isa => 'RegexpRef',
-    builder => '_build_regex',
-);
+=cut
 
 =head2 endpoint
 
@@ -353,9 +342,11 @@ sub parse {
 
         CHILD:
         for my $child ($self->children) {
-            my @c = $lines =~ $child->regex or next CHILD;
-            my $add = 'add_' .lc +(ref($child) =~ /::(\w+)$/)[0];
-            my $args = $child->captured_to_args(@c);
+            my $regex = $child->can('regex');
+            my @c = $lines =~ $regex->() or next CHILD;
+            my $add = 'add_' .lc +($child =~ /::(\w+)$/)[0];
+            my $method = $child->can('captured_to_args');
+            my $args = $method->(@c);
             my $obj;
 
             $args->{'comments'} = [@comments];
@@ -399,6 +390,8 @@ sub parse {
 Called when a L</regex> matches, with a list of captured strings.
 This method then returns a hash-ref passed on to the constructor when
 a new node in the object graph is constructed.
+
+THIS IS A STATIC METHOD.  SELF is not used.
 
 =cut
 
@@ -452,8 +445,6 @@ sub create_children {
             });
         }
     }
-
-    $meta->add_method(_build_children => sub { [ map { $_->new } @children ] });
 
     return \@children;
 }

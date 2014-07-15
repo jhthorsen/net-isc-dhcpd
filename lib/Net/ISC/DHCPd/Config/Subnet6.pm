@@ -30,15 +30,24 @@ use NetAddr::IP qw(:lower);
 
 with 'Net::ISC::DHCPd::Config::Role';
 
-__PACKAGE__->create_children(qw/
-    Net::ISC::DHCPd::Config::Host
-    Net::ISC::DHCPd::Config::Pool
-    Net::ISC::DHCPd::Config::Range6
-    Net::ISC::DHCPd::Config::Filename
-    Net::ISC::DHCPd::Config::Option
-    Net::ISC::DHCPd::Config::KeyValue
-    Net::ISC::DHCPd::Config::Block
-/);
+=head2 children
+
+See L<Net::ISC::DHCPd::Config::Role/children>.
+
+=cut
+sub children {
+    return qw/
+        Net::ISC::DHCPd::Config::Host
+        Net::ISC::DHCPd::Config::Pool
+        Net::ISC::DHCPd::Config::Range6
+        Net::ISC::DHCPd::Config::Filename
+        Net::ISC::DHCPd::Config::Option
+        Net::ISC::DHCPd::Config::KeyValue
+        Net::ISC::DHCPd::Config::Block
+        /;
+}
+
+__PACKAGE__->create_children(__PACKAGE__->children());
 
 =head1 ATTRIBUTES
 
@@ -89,7 +98,7 @@ See L<Net::ISC::DHCPd::Config/regex>.
 
 =cut
 
-sub _build_regex { qr{^ \s* subnet6 \s+ (\S+) }x }
+sub regex { qr{^ \s* subnet6 \s+ (\S+) }x }
 
 =head1 METHODS
 
@@ -100,7 +109,7 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 =cut
 
 sub captured_to_args {
-    return { address => NetAddr::IP->new($_[1]) };
+    return { address => NetAddr::IP->new($_[0]) };
 }
 
 =head2 generate

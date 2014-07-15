@@ -70,7 +70,13 @@ has namequoted => (
     isa => 'Bool',
 );
 
-sub _build_regex { qr{^\s*subclass \s+ ([\w-]+|".*?") \s+ (.*) ;}x }
+=head2 regex
+
+See L<Net::ISC::DHCPd::Config::Role/regex>.
+
+=cut
+
+sub regex { qr{^\s*subclass \s+ ([\w-]+|".*?") \s+ (.*) ;}x }
 
 =head1 METHODS
 
@@ -81,7 +87,6 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 =cut
 
 sub captured_to_args {
-    my $self   = shift;
     my $name   = shift;
     my $value  = shift;
     my $quoted = 0;

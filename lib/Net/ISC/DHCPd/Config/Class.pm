@@ -42,13 +42,27 @@ has [qw/ name /] => (
     isa => 'Str',
 );
 
-# match will get treated as a KeyValue
-__PACKAGE__->create_children(qw/
-    Net::ISC::DHCPd::Config::Option
-    Net::ISC::DHCPd::Config::KeyValue
-/);
+=head2 children
 
-sub _build_regex { qr{^\s* class \s+ (")?(.*?)(\1|$) }x }
+See L<Net::ISC::DHCPd::Config::Role/children>.
+
+=cut
+# match will get treated as a KeyValue
+sub children {
+    return qw/
+        Net::ISC::DHCPd::Config::Option
+        Net::ISC::DHCPd::Config::KeyValue
+    /;
+}
+__PACKAGE__->create_children(__PACKAGE__->children());
+
+
+=head2 regex
+
+See L<Net::ISC::DHCPd::Config::Role/regex>.
+
+=cut
+sub regex { qr{^\s* class \s+ (")?(.*?)(\1|$) }x }
 
 =head1 METHODS
 
@@ -59,7 +73,7 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 =cut
 
 sub captured_to_args {
-    return { name => $_[2] }; # $_[1] == quote or empty string
+    return { name => $_[1] }; # $_[0] == quote or empty string
 }
 
 =head2 generate

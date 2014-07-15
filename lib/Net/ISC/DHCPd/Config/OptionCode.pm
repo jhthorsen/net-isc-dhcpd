@@ -93,7 +93,12 @@ has quoted => (
     isa => 'Bool',
 );
 
-sub _build_regex {
+=head2 regex
+
+See L<Net::ISC::DHCPd::Config::Role/regex>.
+
+=cut
+sub regex {
     qr{^\s* option \s+ (\S+) \s+ code \s+ (\d+) \s+ = \s+ (.*) ;}x;
 }
 
@@ -106,7 +111,6 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 =cut
 
 sub captured_to_args {
-    my $self   = shift;
     my $name   = shift;
     my $code   = shift;
     my $value  = shift;
