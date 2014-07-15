@@ -476,11 +476,7 @@ sub _add_child {
         $child = $class->new(parent => $self, %$child);
     }
 
-    # append child at end unless sibling was found
-    if($children) {
-        push @$children, $child;
-    }
-
+    push @$children, $child;
     return $child;
 }
 
