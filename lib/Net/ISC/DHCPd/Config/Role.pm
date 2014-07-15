@@ -476,15 +476,6 @@ sub _add_child {
         $child = $class->new(parent => $self, %$child);
     }
 
-    # make sure children are grouped
-    for my $n (reverse 0..@$children-1) {
-        if($class eq blessed $children->[0]) {
-            splice @$children, $n + 1, 0, $child;
-            $children = undef;
-            last;
-        }
-    }
-
     # append child at end unless sibling was found
     if($children) {
         push @$children, $child;
