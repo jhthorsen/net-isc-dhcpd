@@ -41,7 +41,7 @@ use Moose::Util::TypeConstraints;
 use MooseX::Types::Path::Class qw(File);
 use Net::ISC::DHCPd::Types ':all';
 use File::Temp;
-use v5.8.3;
+use v5.12.5;
 
 our $VERSION = eval '0.17';
 

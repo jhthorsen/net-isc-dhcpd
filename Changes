@@ -1,5 +1,14 @@
 Revision history for Net-ISC-DHCPd
 
+0.17.1   Wed Jul 16 08:45:36 UTC 2014
+       - Added support for the Failover Peer statement
+       - Added Authoritative.pm module (fixes gh#4)
+       - Fix type coercion in OMAPI module
+       - support for range x.x.x.x;
+       - Bumping minimum perl version to 5.12.5.  5.10.1 fails from getpos
+         errors due to changes in the way filehandles work.  5.12.5 will be
+         the version I test releases against.
+
 0.17     Sun Jun  1 22:31:11 UTC 2014
        - Added make_immutable everywhere which greatly speeds up everything
        - fix to 00-load.t to remove old module and add new ones
