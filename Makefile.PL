@@ -18,7 +18,7 @@ test_requires q(Benchmark) => 1.0;
 test_requires q(Test::More) => 0.90;
 test_requires q(Time::Local) => 1.18;
 
-bugtracker q(http://rt.cpan.org/NoAuth/Bugs.html?Dist=Net-ISC-DHCPd);
+bugtracker q(https://github.com/jhthorsen/net-isc-dhcpd/issues);
 homepage q(http://search.cpan.org/dist/Net-ISC-DHCPd);
 repository q(git://github.com/jhthorsen/net-isc-dhcpd.git);
 
