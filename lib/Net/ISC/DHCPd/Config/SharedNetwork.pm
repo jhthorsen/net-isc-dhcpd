@@ -32,11 +32,19 @@ use Moose;
 
 with 'Net::ISC::DHCPd::Config::Role';
 
-__PACKAGE__->create_children(qw/
-    Net::ISC::DHCPd::Config::Subnet
-    Net::ISC::DHCPd::Config::Subnet6
-    Net::ISC::DHCPd::Config::KeyValue
-/);
+=head2 children
+
+See L<Net::ISC::DHCPd::Config::Role/children>.
+
+=cut
+sub children {
+    return qw/
+        Net::ISC::DHCPd::Config::Subnet
+        Net::ISC::DHCPd::Config::Subnet6
+        Net::ISC::DHCPd::Config::KeyValue
+    /;
+}
+__PACKAGE__->create_children(__PACKAGE__->children());
 
 =head1 ATTRIBUTES
 
@@ -71,8 +79,13 @@ has quoted => (
     isa => 'Bool',
 );
 
+=head2 regex
 
-sub _build_regex { qr{^\s* shared-network \s+ ([\w-]+|".*?")? }x }
+See L<Net::ISC::DHCPd::Config::Role/regex>.
+
+=cut
+
+sub regex { qr{^\s* shared-network \s+ ([\w-]+|".*?")? }x }
 
 =head1 METHODS
 
@@ -83,7 +96,6 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 =cut
 
 sub captured_to_args {
-    my $self = shift;
     my $name = shift;
     my $quoted = 0;
     return if !defined($name);

@@ -85,8 +85,21 @@ has [qw/ name type address peer_address /] => (
     isa => 'Str',
 );
 
-sub _build_children { [undef] }
-sub _build_regex { qr{^\s* failover \s+ peer \s+ ("?)(\S+)(\1) }x }
+=head2 regex
+
+See L<Net::ISC::DHCPd::Config::Role/regex>.
+
+=cut
+sub regex { qr{^\s* failover \s+ peer \s+ ("?)(\S+)(\1) }x }
+
+=head2 children
+
+Modules with slurp need this special children variable to trick the parser
+into recursively processing them.
+
+=cut
+
+sub children { [undef] }
 
 =head1 METHODS
 
@@ -120,7 +133,7 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 =cut
 
 sub captured_to_args {
-    return { name => $_[2] }; # $_[1] == quote or empty string
+    return { name => $_[1] }; # $_[0] == quote or empty string
 }
 
 =head2 generate

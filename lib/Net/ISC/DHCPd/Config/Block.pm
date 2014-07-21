@@ -76,8 +76,22 @@ has _body => (
 
 sub body { join "\n", @{ shift->_body } }
 
-sub _build_children { [undef] }
-sub _build_regex { qr/^\s* ([\w-]+) \s+ (\S*) \s* { /x }
+=head2 regex
+
+See L<Net::ISC::DHCPd::Config::Role/regex>.
+
+=cut
+
+sub regex { qr/^\s* ([\w-]+) \s+ (\S*) \s* { /x }
+
+=head2 children
+
+Modules with slurp need this special children variable to trick the parser
+into recursively processing them.
+
+=cut
+
+sub children { [undef] }
 
 has _depth => (
     is => 'ro',
@@ -136,7 +150,7 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 =cut
 
 sub captured_to_args {
-    my($self, $type, $name) = @_;
+    my($type, $name) = @_;
     my $quoted = $name =~ s/^"(.*)"$/$1/ ? 1 : 0;
 
     return { type => $type, name => $name, quoted => $quoted }
