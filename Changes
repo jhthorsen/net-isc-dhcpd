@@ -1,5 +1,17 @@
 Revision history for Net-ISC-DHCPd
 
+0.1702   Mon Jul 21 04:25:45 UTC 2014
+       - fixing version format
+       - changed bugtracker to github because it's easier to manage
+       - added more tests for remove_<class>
+       - bumped minimum perl version to 5.12.5.  That was the minimum version
+         I could make the code run on.
+       - removed children must be grouped in add_child to speed up parsing
+       - changed parser to load child modules on demand (memory and speed
+         improvements)
+       - recursive includes (include files can include other files)
+       - added speed test for larger DHCP files
+
 0.17.1   Wed Jul 16 08:45:36 UTC 2014
        - Added support for the Failover Peer statement
        - Added Authoritative.pm module (fixes gh#4)
