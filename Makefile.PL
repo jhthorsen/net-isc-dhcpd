@@ -10,7 +10,7 @@ requires q(MooseX::Types) => 0.12;
 requires q(MooseX::Types::Path::Class) => 0.05;
 requires q(NetAddr::IP) => 4.0;
 requires q(Path::Class) => 0.19;
-requires q(POE::Filter::DHCPd::Lease) => 0.06;
+requires q(POE::Filter::DHCPd::Lease) => 0.07;
 requires q(Time::HiRes) => 1.90;
 requires q(Class::Load) => 0.20;
 
