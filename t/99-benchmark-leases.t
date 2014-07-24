@@ -11,13 +11,13 @@ use File::Temp;
 plan skip_all => 'set environment variable DHCP_TORTURE_TEST to run this test' unless ($ENV{'DHCP_TORTURE_TEST'});
 
 my $count  = $ENV{'COUNT'} || 1;
-plan tests => 1 + 3 * $count;
+plan tests => 1 + 2 * $count;
 
 
 my $fh = File::Temp->new();
 my $data = do {local $/;<DATA>};
 
-my $data_repeat = 100000;
+my $data_repeat = 5000;
 my $lines = ($data =~ tr/\n// + $data !~ /\n\z/) * $data_repeat;
 
 for(1..$data_repeat) {
@@ -33,6 +33,8 @@ my $time = timeit($count, sub {
     is($leases->parse(), $lines, 'all lines got parsed');
     is(scalar(@_=$leases->leases), 5*$data_repeat, 'Are there a bunch of leases?');
 });
+
+diag(($lines * $count) .": " .timestr($time));
 
 __DATA__
 

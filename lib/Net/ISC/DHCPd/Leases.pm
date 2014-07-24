@@ -1,6 +1,6 @@
 package Net::ISC::DHCPd::Leases;
 
-=head1 NAME 
+=head1 NAME
 
 Net::ISC::DHCPd::Leases - Parse ISC DHCPd leases
 
@@ -122,19 +122,16 @@ sub parse {
     my $parser = $self->_parser;
     my $n = 0;
 
-    LINE:
-    while(++$n) {
-        my $line = readline $fh;
-
-        if(not defined $line) {
-            $n--;
-            last LINE;
-        }
+    while(my $line = readline $fh) {
+        $n++;
 
         $parser->get_one_start([$line]);
-
-        if($line =~ $POE::Filter::DHCPd::Lease::END) {
-            $self->add_lease( @{ $parser->get_one } );
+        if ($line =~ /^\s*}/) {
+            my $leases = $parser->get_one;
+            #print scalar @$leases;
+            if (@$leases) {
+                $self->add_lease($leases->[0]);
+            }
         }
     }
 
