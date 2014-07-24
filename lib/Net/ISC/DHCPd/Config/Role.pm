@@ -527,6 +527,31 @@ sub _remove_children {
     return @removed;
 }
 
+
+=head2 find_all_children
+
+Loops through all child nodes with recursion looking for nodes of "class"
+type.  Returns an array of those nodes.
+
+=cut
+
+sub find_all_children {
+    my $self = shift;
+    my $class = shift;
+    my @children;
+
+    for my $child (@{ $self->_children }) {
+        if (ref($child) eq $class) {
+            push(@children, $child);
+        }
+
+        if ($child->_children) {
+            push(@children, $child->find_all_children($class));
+        }
+    }
+    return @children;
+}
+
 =head2 generate_config_from_children
 
 Loops all child nodes in reverse order and calls L</generate> on each
