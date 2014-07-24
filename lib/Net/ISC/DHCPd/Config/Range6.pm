@@ -108,7 +108,7 @@ See L<Net::ISC::DHCPd::Config::Role/generate>.
 
 sub generate {
     my $self = shift;
-    return 'range6 ' .$self->lower->canon .' '. ($self->temporary ? 'temporary' : $self->upper->canon) .';';
+    return 'range6 ' .$self->lower->short .' '. ($self->temporary ?  'temporary' : $self->upper->short) .';';
 }
 
 =head1 COPYRIGHT & LICENSE

@@ -123,7 +123,7 @@ sub generate {
     my $net = $self->address;
 
     return(
-        'subnet6 ' .$net->canon() .'/' . $net->masklen() . ' {',
+        'subnet6 ' .$net->short() .'/' . $net->masklen() . ' {',
         $self->_generate_config_from_children,
         '}',
     );
