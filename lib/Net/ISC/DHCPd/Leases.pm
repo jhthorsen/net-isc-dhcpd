@@ -75,13 +75,25 @@ has file => (
     },
 );
 
+has fh => (
+    is => 'rw',
+    isa => 'FileHandle',
+    required => 0,
+);
+
 has _filehandle => (
     is => 'ro',
-    isa => 'IO::File',
     lazy_build => 1,
 );
 
-sub _build__filehandle { shift->file->openr }
+sub _build__filehandle {
+    my $self = shift;
+    if ($self->fh) {
+        return $self->fh;
+    }
+
+    $self->file->openr;
+}
 
 __PACKAGE__->meta->add_method(filehandle => sub {
     Carp::cluck('->filehandle is replaced with private attribute _filehandle');
