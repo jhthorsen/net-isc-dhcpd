@@ -8,7 +8,7 @@ my $config = Net::ISC::DHCPd::Config->new(fh => \*DATA);
 is($config->parse, 15, 'Parsed 15 lines in config file.');
 my @subnets;
 
-is(@subnets = $config->find_all_children('Net::ISC::DHCPd::Config::Subnet'), 3, 'Found 3 subnets');
+is(@subnets = $config->find_all_children('subnets'), 3, 'Found 3 subnets');
 is($subnets[1]->address, '127.0.2.0/24', 'Second address is correct');
 
 done_testing();

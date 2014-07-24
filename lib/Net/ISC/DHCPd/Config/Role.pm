@@ -531,7 +531,10 @@ sub _remove_children {
 =head2 find_all_children
 
 Loops through all child nodes with recursion looking for nodes of "class"
-type.  Returns an array of those nodes.
+type.  Returns an array of those nodes.  You can use the full classname or
+just the end part.
+
+    my @subnet = $config->find_all_children('subnet');
 
 =cut
 
@@ -539,6 +542,12 @@ sub find_all_children {
     my $self = shift;
     my $class = shift;
     my @children;
+
+    if ($class !~ /::/) {
+        # strip plural if they put it.
+        $class =~ s/(es|s)\z//;
+        $class = 'Net::ISC::DHCPd::Config::' . ucfirst(lc($class));
+    }
 
     for my $child (@{ $self->_children }) {
         if (ref($child) eq $class) {
