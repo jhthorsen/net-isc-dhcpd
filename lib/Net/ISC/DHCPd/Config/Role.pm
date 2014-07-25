@@ -545,7 +545,8 @@ sub find_all_children {
 
     if ($class !~ /::/) {
         # strip plural if they put it.
-        $class =~ s/(es|s)\z//;
+        $class =~ s/classes/class//;
+        $class =~ s/s\z//;
         $class = 'Net::ISC::DHCPd::Config::' . ucfirst(lc($class));
     }
 
