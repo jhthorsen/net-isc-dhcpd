@@ -60,7 +60,7 @@ METHODS
 BUGS
     Please report any bugs or feature requests to "bug-net-isc-dhcpd at
     rt.cpan.org", or through the web interface at
-    <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Net-ISC-DHCPd>. I will
+    <https://github.com/jhthorsen/net-isc-dhcpd/issues>. I will
     be notified, and then you'll automatically be notified of progress on
     your bug as I make changes.
 
@@ -74,7 +74,6 @@ AUTHOR
     Jan Henning Thorsen, "<jhthorsen at cpan.org>"
 
 MAINTAINER
-
     Robert Drake, "<rdrake@cpan.org>"
 
 CONTRIBUTORS
