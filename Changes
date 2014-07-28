@@ -1,5 +1,21 @@
 Revision history for Net-ISC-DHCPd
 
+0.1703   Mon Jul 28 08:05:12 UTC 2014
+       - POE::Filter::DHCPd::Lease version bump to 0.0701 to fix parse errors
+       - speed tests added for Leases
+       - added support for using fh filehandle argument for Leases
+       - fixed Lease parser to support host {} and comments
+       - added find_all_children method to recursively find objects of a
+         certain type, like hosts or subnets
+       - bugfix for IPv6 NetAddr::IP support.  Changed 'canon' method to
+         'short' because they do almost the same thing and 'short' is
+         available in older versions of NetAddr::IP
+       - changed README file with the new issues URL
+       - changed fixed-address and hardwareethernet to be standalone objects
+         instead of keyvalues.  This makes host entries easier to parse
+       - added support for filename_callback so that includes can have their
+         paths changed before being parsed
+
 0.1702   Mon Jul 21 04:25:45 UTC 2014
        - fixing version format
        - changed bugtracker to github because it's easier to manage
