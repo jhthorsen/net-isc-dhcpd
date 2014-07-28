@@ -223,6 +223,27 @@ sub _build__filehandle {
     return $file->openr;
 }
 
+=head2 filename_callback
+
+Callback for changing file paths when include files are on different relative paths.
+
+    # here is an example:
+    my $cb = sub {
+        my $file = shift;
+        print "We're in callback and file is $file\n";
+        if ($file =~ /catphotos/) {
+            return "/dog.conf";
+        }
+    };
+
+=cut
+
+has filename_callback => (
+    is => 'rw',
+    isa => 'CodeRef',
+);
+
+
 =head1 METHODS
 
 =head2 BUILD

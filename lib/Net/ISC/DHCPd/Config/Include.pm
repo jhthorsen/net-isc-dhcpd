@@ -97,6 +97,10 @@ sub _build__filehandle {
     my $self = shift;
     my $file = $self->file;
 
+    if ($self->filename_callback) {
+        $file = Path::Class::File->new(&{$self->filename_callback}($file));
+    }
+
     if($file->is_relative and !-e $file) {
         $file = Path::Class::File->new($self->root->file->dir, $file);
         $self->file($file);  # needed so dir stays updated with recursive includes
