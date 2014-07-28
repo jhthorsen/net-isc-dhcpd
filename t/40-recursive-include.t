@@ -22,7 +22,7 @@ my $cb = sub {
 };
 
 
-$config->includes->[1]->filename_callback($cb);
+$config->filename_callback($cb);
 $config->includes->[1]->parse;
 
 is($config->includes->[1]->file, 't/data/foo-included.conf', 'Can we change filenames?');

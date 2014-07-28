@@ -97,8 +97,8 @@ sub _build__filehandle {
     my $self = shift;
     my $file = $self->file;
 
-    if ($self->filename_callback) {
-        $file = Path::Class::File->new(&{$self->filename_callback}($file));
+    if ($self->root->filename_callback) {
+        $file = Path::Class::File->new(&{$self->root->filename_callback}($file));
     }
 
     if($file->is_relative and !-e $file) {
