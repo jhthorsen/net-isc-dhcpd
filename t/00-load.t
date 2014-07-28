@@ -1,6 +1,6 @@
 use lib qw(lib);
 use Test::More;
-plan tests => 40;
+plan tests => 42;
 use_ok('Net::ISC::DHCPd');
 use_ok('Net::ISC::DHCPd::Leases::Lease');
 use_ok('Net::ISC::DHCPd::Leases');
