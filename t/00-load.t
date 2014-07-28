@@ -21,6 +21,8 @@ use_ok('Net::ISC::DHCPd::Config::OptionSpace');
 use_ok('Net::ISC::DHCPd::Config::OptionCode');
 use_ok('Net::ISC::DHCPd::Config::Class');
 use_ok('Net::ISC::DHCPd::Config::Host');
+use_ok('Net::ISC::DHCPd::Config::Host::FixedAddress');
+use_ok('Net::ISC::DHCPd::Config::Host::HardwareEthernet');
 use_ok('Net::ISC::DHCPd::Config::SubClass');
 use_ok('Net::ISC::DHCPd::Config::Role');
 use_ok('Net::ISC::DHCPd::Config::Option');
