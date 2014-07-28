@@ -27,11 +27,6 @@ plan tests => 14;
     is(scalar(@_=$subnets[0]->keyvalues), 2, "subnet -> keyvalues");
     is(scalar(@_=$subnets[0]->pools), 2, "subnet -> pools");
     is($subnets[0]->pools->[0]->_comments->[0], q(pool "Studenten_DHCP"), "subnet -> pool -> comment");
-
-    {
-        local $TODO = 'should be parsed as class{}';
-        is(scalar(@_=$subnets[0]->blocks), 2, "subnet -> blocks");
-    }
-
+    is(scalar(@_=$subnets[0]->blocks), 2, "subnet -> blocks");
     is($config->generate, $config_text, 'config output == config input');
 }

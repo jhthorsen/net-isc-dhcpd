@@ -9,7 +9,7 @@ use Test::More;
 my $count  = $ENV{'COUNT'} || 1;
 my $lines  = 51;
 
-plan tests => 1 + 32 * $count;
+plan tests => 1 + 34 * $count;
 
 use_ok("Net::ISC::DHCPd::Config");
 
@@ -58,7 +58,9 @@ my $time = timeit($count, sub {
 
     my $host = $config->hosts->[0];
     is($host->name, "foo", "host foo found");
-    is($host->keyvalues->[0]->value, "10.19.83.102", "fixed address found");
+    is($host->fixedaddresses->[0]->value, "10.19.83.102", "fixed address found");
+    is($host->hardwareethernets->[0]->value, '00:0e:35:d1:27:e3', "mac address found");
+    ok($host->hardwareethernet eq '00:0e:35:D1:27:E3', "mac address found (case compare)");
 
     my $shared_subnets = $config->sharednetworks->[0]->subnets;
     is(int(@$shared_subnets), 2, "shared subnets found");

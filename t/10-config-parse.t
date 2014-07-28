@@ -57,7 +57,7 @@ my $time = timeit($count, sub {
 
     my $host = $config->hosts->[0];
     is($host->name, "foo", "host foo found");
-    is($host->keyvalues->[0]->value, "10.19.83.102", "fixed address found");
+    is($host->fixedaddresses->[0]->value, "10.19.83.102", "fixed address found");
 
     my $shared_subnets = $config->sharednetworks->[0]->subnets;
     is(int(@$shared_subnets), 2, "shared subnets found");

@@ -35,16 +35,20 @@ See L<Net::ISC::DHCPd::Config::Role/children>.
 
 sub children {
     return qw/
+        Net::ISC::DHCPd::Config::Host::FixedAddress
+        Net::ISC::DHCPd::Config::Host::HardwareEthernet
         Net::ISC::DHCPd::Config::Option
         Net::ISC::DHCPd::Config::Filename
         Net::ISC::DHCPd::Config::KeyValue
-        Net::ISC::DHCPd::Config::Host::FixedAddress
-        Net::ISC::DHCPd::Config::Host::HardwareEthernet
     /;
 }
 __PACKAGE__->create_children(__PACKAGE__->children());
 
 =head1 ATTRIBUTES
+
+=head2 fixedaddress
+
+Convienence method that wraps     shift->fixedaddresses->[0]
 
 =head2 options
 
@@ -62,6 +66,31 @@ before add_filename => sub {
         confess 'Host cannot have more than one filename';
     }
 };
+
+before add_fixedaddress => sub {
+    if(0 < int @{ $_[0]->fixedaddresses }) {
+        confess 'Host cannot have more than one ip address';
+    }
+};
+
+before add_hardwareethernet => sub {
+    if(0 < int @{ $_[0]->hardwareethernets }) {
+        confess 'Host cannot have more than one mac address';
+    }
+};
+
+sub fixedaddress {
+    shift->fixedaddresses->[0];
+}
+
+=head2 hardwareethernet
+
+Convienence method that wraps shift->hardwareethernets->[0]
+
+=cut
+sub hardwareethernet {
+    shift->hardwareethernets->[0];
+}
 
 =head2 keyvalues
 

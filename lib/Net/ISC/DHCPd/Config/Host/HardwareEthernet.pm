@@ -24,7 +24,33 @@ use Moose;
 
 with 'Net::ISC::DHCPd::Config::Role';
 
+# not sure how I feel about the overload.  I would rather coerce the values
+# into a Mac type, but I want case preserved from input to output.  I only
+# want comparisions to be insensitive.
+
+use overload '==' => \&myequals,
+             'eq' => \&myequals,
+            q("") => \&get_value;
+
 =head1 ATTRIBUTES
+
+=head2 myequals
+
+equality check overload for case insensitive comparision
+
+=cut
+
+sub myequals {
+    return (uc($_[0]->value) eq uc($_[1]));
+}
+
+=head2 get_value
+
+for overload q("")
+
+=cut
+
+sub get_value { uc(shift->value) }
 
 =head2 value
 

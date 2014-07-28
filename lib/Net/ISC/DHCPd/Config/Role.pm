@@ -528,7 +528,8 @@ sub _remove_children {
 
 Loops through all child nodes with recursion looking for nodes of "class"
 type.  Returns an array of those nodes.  You can use the full classname or
-just the end part.
+just the end part.  For subclasses like Host::FixedAddress you would need to
+use the whole name.
 
     my @subnet = $config->find_all_children('subnet');
 
@@ -541,8 +542,8 @@ sub find_all_children {
 
     if ($class !~ /::/) {
         # strip plural if they put it.
-        $class =~ s/classes/class/;
         $class =~ s/s\z//;
+        $class =~ s/(class|address)e/$1/;
         $class = 'Net::ISC::DHCPd::Config::' . ucfirst(lc($class));
     }
 
