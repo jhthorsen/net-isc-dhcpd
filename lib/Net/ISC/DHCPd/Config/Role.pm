@@ -324,11 +324,7 @@ sub parse {
             next LINE if($self->root == $self);
             last LINE;
         }
-
-        # hack to fix parser for parenthesis on the next line
-        # subnet 10.0.0.96 netmask 255.255.255.224\n{
-        # technically we need to do multiline matching to get things right
-        if ($line =~ /^\s*{\s*$/) {
+        elsif ($line =~ /^\s*{\s*$/) {
             next LINE;
         }
 
