@@ -178,6 +178,7 @@ sub add_lease {
 
     my %lease = %{ $_[0] }; # shallow copy
     my %map = (
+        ip      => 'ip_address',
         binding => 'state',
         hostname => 'client_hostname',
         hw_ethernet => 'hardware_address',

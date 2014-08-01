@@ -11,7 +11,7 @@ my $count  = $ENV{'COUNT'} || 1;
 my $leases = "./t/data/dhcpd.leases";
 my $lines  = 104;
 
-plan tests => 1 + 11 * $count;
+plan tests => 1 + 12 * $count;
 
 use_ok("Net::ISC::DHCPd::Leases");
 
@@ -27,6 +27,7 @@ my $time = timeit($count, sub {
 
     is($lease->starts, timelocal(32, 42, 19, 13, 6, 2008), "lease->0 starts");
     is($lease->ends, timelocal(32, 42, 19, 14, 6, 2008), "lease->0 ends");
+    is($lease->ip_address, '10.19.83.199', 'lease->0 ip_address');
     is($lease->state, "free", "lease->0 binding");
     is($lease->hardware_address, "00:15:58:2f:83:bc", "lease->0 hw_ethernet");
     is($lease->client_hostname, undef, "lease->0 hostname");
