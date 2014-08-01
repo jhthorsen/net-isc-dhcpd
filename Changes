@@ -1,5 +1,9 @@
 Revision history for Net-ISC-DHCPd
 
+0.1704   Fri Aug  1 22:19:43 UTC 2014
+       - Fixed Leases.pm to support ip => ip_address mapping
+       - Fixed filename_callback to be defined at the root
+
 0.1703   Mon Jul 28 08:05:12 UTC 2014
        - POE::Filter::DHCPd::Lease version bump to 0.0701 to fix parse errors
        - speed tests added for Leases
