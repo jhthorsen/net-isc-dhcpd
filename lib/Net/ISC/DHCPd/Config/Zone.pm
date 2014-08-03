@@ -54,16 +54,6 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 # not sure if this can be quoted or not
 sub regex { qr{^\s* zone \s+ (")?(\S+)(\1|$) }x }
 
-=head2 children
-
-Modules with slurp need this special children variable to trick the parser
-into recursively processing them.
-
-=cut
-
-sub children { [undef] }
-
-
 =head1 METHODS
 
 =head2 slurp

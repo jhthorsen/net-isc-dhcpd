@@ -92,15 +92,6 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 =cut
 sub regex { qr{^\s* failover \s+ peer \s+ ("?)(\S+)(\1) }x }
 
-=head2 children
-
-Modules with slurp need this special children variable to trick the parser
-into recursively processing them.
-
-=cut
-
-sub children { [undef] }
-
 =head1 METHODS
 
 =head2 slurp

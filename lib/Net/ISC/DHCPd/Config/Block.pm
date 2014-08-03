@@ -84,15 +84,6 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 sub regex { qr/^\s* ([\w-]+) \s+ (\S*) \s* { /x }
 
-=head2 children
-
-Modules with slurp need this special children variable to trick the parser
-into recursively processing them.
-
-=cut
-
-sub children { [undef] }
-
 has _depth => (
     is => 'ro',
     isa => 'Int',

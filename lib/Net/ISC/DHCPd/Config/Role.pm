@@ -319,25 +319,7 @@ sub parse {
         }
 
 
-        if($self->can('slurp')) {
-            my $action = $self->slurp($line); # next or last
-            if($action eq 'next') {
-                next LINE;
-            }
-            elsif($action eq 'last') {
-                last LINE;
-            }
-            elsif($action eq 'backtrack') {
-                if ($line_from_array) {
-                    push(@{$linebuf}, $line);
-                } else {
-                    $fh->setpos($pos);
-                    $n--;
-                }
-                last LINE;
-            }
-        }
-        elsif($line =~ /^\s*$/o) {
+        if ($line =~ /^(?:\s*|\s*{\s*)$/) {
             next LINE;
         }
         elsif($line =~ $endpoint) {
@@ -345,13 +327,10 @@ sub parse {
             next LINE if($self->root == $self);
             last LINE;
         }
-        elsif ($line =~ /^\s*{\s*$/) {
-            next LINE;
-        }
 
         # this is how we handle incomplete lines
         # we need a space for lines like 'option\ndomain-name-servers'
-        if ($lines =~ /\S$/) {
+        if ($lines ne '') {
            $lines .= ' '.$line;
         } else {
             $lines = $line;
@@ -370,6 +349,7 @@ sub parse {
             @comments = ();
             $lines = '';
             $obj = $self->$add($args);
+            $n += $obj->_parse_slurp($linebuf) if ($obj->can('slurp'));
 
             # the recursive statement is used for Include.pm
             $n += $obj->parse('recursive', $linebuf) if(@_ = $obj->children);
@@ -398,6 +378,51 @@ sub parse {
     }
 
     return $n ? $n : '0e0';
+}
+
+=head2 _parse_slurp
+
+This is a simplified parser for the slurp method.  It's only used when slurp
+is available in a child method.
+
+=cut
+
+
+sub _parse_slurp {
+    my $self = shift;
+    my $linebuf = $_[1];
+    my $fh = $self->_filehandle;
+    my $endpoint = $self->endpoint;
+    my($n, $pos, @comments);
+
+    LINE:
+    while(1) {
+        my $line;
+        $pos = $fh->getpos or die $!;
+        if (defined($linebuf->[0])) {
+            $line = pop(@{$linebuf});
+        } else {
+            defined($line = readline $fh) or last LINE;
+            $n++;
+            chomp $line;
+        }
+
+
+        if($self->can('slurp')) {
+            my $action = $self->slurp($line); # next or last
+            if($action eq 'next') {
+                next LINE;
+            }
+            elsif($action eq 'last') {
+                last LINE;
+            }
+            elsif($action eq 'backtrack') {
+                push(@{$linebuf}, $line);
+                last LINE;
+            }
+        }
+    }
+    return $n;
 }
 
 =head2 captured_to_args
