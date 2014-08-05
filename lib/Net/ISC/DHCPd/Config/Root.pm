@@ -12,7 +12,7 @@ and L<Net::ISC::DHCPd::Config::Include>.
 =cut
 
 use Moose::Role;
-use MooseX::Types::Path::Class qw(File);
+use MooseX::Types::Path::Class 0.05 qw(File);
 
 with 'Net::ISC::DHCPd::Config::Role';
 

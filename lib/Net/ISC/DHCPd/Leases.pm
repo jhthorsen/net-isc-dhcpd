@@ -41,8 +41,8 @@ instead.
 
 use Moose;
 use Net::ISC::DHCPd::Leases::Lease;
-use POE::Filter::DHCPd::Lease;
-use MooseX::Types::Path::Class qw(File);
+use POE::Filter::DHCPd::Lease 0.0701;
+use MooseX::Types::Path::Class 0.05 qw(File);
 
 =head1 ATTRIBUTES
 

@@ -19,9 +19,9 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose;
-use Path::Class::File;
-use MooseX::Types::Path::Class qw(File);
+use Moose 0.90;
+use Path::Class::File 0.19;
+use MooseX::Types::Path::Class 0.05 qw(File);
 
 with 'Net::ISC::DHCPd::Config::Role';
 

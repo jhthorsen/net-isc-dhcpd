@@ -16,7 +16,7 @@ Net::ISC::DHCPd - Interacts with ISC DHCPd
                     omapi => { key => "some key" },
                 );
 
-    $self->test('config') or die $self->errstr;
+    $dhcpd->config->parse;
 
 See the tests bundled to this distribution for more examples.
 
@@ -35,12 +35,12 @@ L<the man pages|http://www.google.com/search?q=man+dhcpd>.
 
 =cut
 
-use Class::Load;
-use Moose;
+use Class::Load 0.20;
+use Moose 0.90;
 use Moose::Util::TypeConstraints;
-use MooseX::Types::Path::Class qw(File);
+use MooseX::Types::Path::Class 0.05 qw(File);
 use Net::ISC::DHCPd::Types ':all';
-use File::Temp;
+use File::Temp 0.20;
 use v5.12.5;
 
 our $VERSION = eval '0.1704';
@@ -114,7 +114,7 @@ has binary => (
 
 =head2 errstr
 
-Holds the last know error as a plain string.
+Holds the last know error as a plain string.  This only applies to OMAPI.
 
 =cut
 
@@ -212,7 +212,7 @@ sub _build_child_obj {
 
 Please report any bugs or feature requests to
 C<bug-net-isc-dhcpd at rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Net-ISC-DHCPd>.
+L<https://github.com/jhthorsen/net-isc-dhcpd/issues>.
 I will be notified, and then you'll automatically be notified of progress on
 your bug as I make changes.
 
@@ -226,6 +226,10 @@ under the same terms as Perl itself.
 =head1 AUTHOR
 
 Jan Henning Thorsen, C<< <jhthorsen at cpan.org> >>
+
+=head1 MAINTAINER
+
+Robert Drake, C<< <rdrake at cpan.org> >>
 
 =head1 CONTRIBUTORS
 
