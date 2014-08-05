@@ -283,7 +283,6 @@ sub parse {
     my $self = shift;
     my $fh = $_[1] || $self->_filehandle;
     my $linebuf = $_[2];
-    my $endpoint = $self->endpoint;
     my($n, $pos, @comments);
     my $lines = '';
     my $line_from_array=0;
@@ -322,7 +321,7 @@ sub parse {
         if ($line =~ /^(?:\s*|\s*{\s*)$/) {
             next LINE;
         }
-        elsif($line =~ $endpoint) {
+        elsif($line =~ $self->endpoint) {
             $self->captured_endpoint($1, $2, $3, $4); # urk...
             next LINE if($self->root == $self);
             last LINE;
@@ -391,7 +390,6 @@ sub _parse_slurp {
     my $self = shift;
     my $fh = shift;
     my $linebuf = shift;
-    my $endpoint = $self->endpoint;
     my($n, $pos, @comments);
 
     LINE:
