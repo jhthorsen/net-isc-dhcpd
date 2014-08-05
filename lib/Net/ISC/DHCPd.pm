@@ -225,6 +225,17 @@ sub _build_child_obj {
     return "Net::ISC::DHCPd::$type"->new(@_);
 }
 
+=head1 SEE ALSO
+
+=over 8
+
+=item Net::DHCP::Info
+
+C<Net::DHCP::Info> an older dhcpd.leases and dhcpd.conf parser, also written
+by Jan Henning Thorsen.  It has many limitations that these modules address.
+
+=back
+
 =head1 BUGS
 
 Please report any bugs or feature requests to

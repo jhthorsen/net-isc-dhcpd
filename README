@@ -86,6 +86,14 @@ METHODS
     a descriptive string from either this module, $! or the exit value
     (integer stored as a string).
 
+SEE ALSO
+
+    Net::DHCP::Info
+
+      Net::DHCP::Info an older dhcpd.leases and dhcpd.conf parser, also
+      written by Jan Henning Thorsen. It has many limitations that these
+      modules address.
+
 BUGS
 
     Please report any bugs or feature requests to bug-net-isc-dhcpd at
