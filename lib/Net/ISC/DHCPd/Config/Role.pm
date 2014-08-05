@@ -281,8 +281,8 @@ when possible.
 
 sub parse {
     my $self = shift;
-    my $linebuf = $_[1];
-    my $fh = $self->_filehandle;
+    my $fh = $_[1] || $self->_filehandle;
+    my $linebuf = $_[2];
     my $endpoint = $self->endpoint;
     my($n, $pos, @comments);
     my $lines = '';
@@ -349,10 +349,10 @@ sub parse {
             @comments = ();
             $lines = '';
             $obj = $self->$add($args);
-            $n += $obj->_parse_slurp($linebuf) if ($obj->can('slurp'));
+            $n += $obj->_parse_slurp($fh, $linebuf) if ($obj->can('slurp'));
 
             # the recursive statement is used for Include.pm
-            $n += $obj->parse('recursive', $linebuf) if(@_ = $obj->children);
+            $n += $obj->parse('recursive', $fh, $linebuf) if(@_ = $obj->children);
 
             next LINE;
         }
@@ -366,7 +366,6 @@ sub parse {
         if ($lines !~ /;/) {
             next LINE;
         }
-
 
         if(warnings::enabled('net_isc_dhcpd_config_parse')) {
             warn sprintf qq[Could not parse "%s" at %s line %s\n],
@@ -390,8 +389,8 @@ is available in a child method.
 
 sub _parse_slurp {
     my $self = shift;
-    my $linebuf = $_[1];
-    my $fh = $self->_filehandle;
+    my $fh = shift;
+    my $linebuf = shift;
     my $endpoint = $self->endpoint;
     my($n, $pos, @comments);
 
