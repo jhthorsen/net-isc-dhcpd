@@ -10,3 +10,5 @@
 /Net-ISC-DHCPd*tar.gz
 *swp
 *local*
+.build/
+dist.ini

@@ -126,6 +126,23 @@ has errstr => (
 
 =head1 METHODS
 
+=head2 parse
+
+ $config->parse;
+
+This parses the config file or the leases file.
+
+=cut
+
+=head2 generate
+
+ print $config->generate;
+
+This generates a copy of the config file in plaintext.
+
+=cut
+
+
 =head2 test
 
  $bool = $self->test("config");
@@ -240,6 +257,8 @@ Alexey Illarionov
 Patrick
 
 napetrov
+
+zoffixznet
 
 =cut
 __PACKAGE__->meta->make_immutable;
