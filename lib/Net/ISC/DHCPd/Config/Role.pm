@@ -337,8 +337,9 @@ sub parse {
 
         CHILD:
         for my $child ($self->children) {
-            my $regex = $child->can('regex');
-            my @c = $lines =~ $regex->() or next CHILD;
+            no strict 'refs';
+            my $regex = ${"$child".'::regex'};
+            my @c = $lines =~ $regex or next CHILD;
             my $add = 'add_' .lc +($child =~ /::(\w+)$/)[0];
             my $method = $child->can('captured_to_args');
             my $args = $method->(@c);

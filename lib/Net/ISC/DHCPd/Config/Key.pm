@@ -51,7 +51,7 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
 
-sub regex { qr{^\s* key \s+ ("?)(\S+)(\1) }x }
+our $regex = qr{^\s* key \s+ ("?)(\S+)(\1) }x;
 
 =head1 METHODS
 

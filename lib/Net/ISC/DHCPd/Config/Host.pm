@@ -113,7 +113,7 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
 
-sub regex { qr{^ \s* host \s+ (\S+)}x }
+our $regex = qr{^ \s* host \s+ (\S+)}x;
 
 =head1 METHODS
 

@@ -69,7 +69,7 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
 
-sub regex { qr{^\s* hardware \s+ ethernet \s+ (.*) ;}x }
+our $regex = qr{^\s* hardware \s+ ethernet \s+ (.*) ;}x;
 
 =head1 METHODS
 

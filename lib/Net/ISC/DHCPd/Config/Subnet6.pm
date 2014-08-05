@@ -98,7 +98,7 @@ See L<Net::ISC::DHCPd::Config/regex>.
 
 =cut
 
-sub regex { qr{^ \s* subnet6 \s+ (\S+) }x }
+our $regex = qr{^ \s* subnet6 \s+ (\S+) }x;
 
 =head1 METHODS
 

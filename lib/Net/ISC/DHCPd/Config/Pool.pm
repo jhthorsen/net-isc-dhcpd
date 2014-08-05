@@ -60,7 +60,7 @@ A list of parsed L<Net::ISC::DHCPd::Config::Range> objects.
 See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
-sub regex { qr{^ \s* pool}x }
+our $regex = qr{^ \s* pool}x;
 
 =head1 METHODS
 

@@ -90,7 +90,7 @@ has generate_with_include => (
 See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
-sub regex { qr{^\s* include \s+ "([^"]+)" ;}x }
+our $regex = qr{^\s* include \s+ "([^"]+)" ;}x;
 sub _build_root { shift->parent }
 
 sub _build__filehandle {

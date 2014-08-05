@@ -71,7 +71,7 @@ has logic => (
 See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
-sub regex { qr/^ \s* (if|elsif|else) (.*?)(\s+\{|$) /x }
+our $regex = qr/^ \s* (if|elsif|else) (.*?)(\s+\{|$) /x;
 
 =head1 METHODS
 

@@ -98,9 +98,7 @@ has quoted => (
 See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
-sub regex {
-    qr{^\s* option \s+ (\S+) \s+ code \s+ (\d+) \s+ = \s+ (.*) ;}x;
-}
+our $regex = qr{^\s* option \s+ (\S+) \s+ code \s+ (\d+) \s+ = \s+ (.*) ;}x;
 
 =head1 METHODS
 
