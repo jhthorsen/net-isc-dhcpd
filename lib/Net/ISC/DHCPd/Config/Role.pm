@@ -254,6 +254,9 @@ Used to convert input arguments to child nodes.
 
 sub BUILD {
     my($self, $args) = @_;
+    # skip the expensive method check if called through the parser.  The only
+    # time this code applies is with code like add_method( submethod => { } );
+    return if ($args->{'parse'});
     my $meta = $self->meta;
 
     for my $key (sort keys %$args) {
@@ -346,6 +349,7 @@ sub parse {
             my $obj;
 
             $args->{'comments'} = [@comments];
+            $args->{'parse'} = 1;
             @comments = ();
             $lines = '';
             $obj = $self->$add($args);
