@@ -286,14 +286,13 @@ sub parse {
     my $self = shift;
     my $fh = $_[1] || $self->_filehandle;
     my $linebuf = $_[2];
-    my($n, $pos, @comments);
+    my($n, @comments);
     my $lines = '';
     my $line_from_array=0;
 
     LINE:
     while(1) {
         my $line;
-        $pos = $fh->getpos or die $!;
         if (defined($linebuf->[0])) {
             $line = pop(@{$linebuf});
             $line_from_array=1;
@@ -395,12 +394,11 @@ sub _parse_slurp {
     my $self = shift;
     my $fh = shift;
     my $linebuf = shift;
-    my($n, $pos, @comments);
+    my($n, @comments);
 
     LINE:
     while(1) {
         my $line;
-        $pos = $fh->getpos or die $!;
         if (defined($linebuf->[0])) {
             $line = pop(@{$linebuf});
         } else {
