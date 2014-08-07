@@ -23,8 +23,6 @@ use Moose::Role;
 
 requires 'generate';
 
-my $COMMENT_RE = qr{^\s*\#\s*};
-
 =head1 ATTRIBUTES
 
 =head2 parent
@@ -289,16 +287,13 @@ sub parse {
             # From here we need to preprocess the line to see if it can be broken
             # into multiple lines.  Something like group { option test; }
             # lines with comments can't be handled by this so we do them first
-            if($line =~ s/$COMMENT_RE//) {
+            if($line =~ s/^\s*\#\s*//) {
                 push @comments, $line;
                 next LINE;
             }
 
-            $line =~ s/ ([;\{\}])                                 # after semicolon or braces
-                        ([^;\n\r])                                # if there isn't a semicolon or return
-                        /$1\n$2/gx;                               # insert a newline
-
-            if ($line =~ /\n/) {
+            # after semicolon or braces if there isn't a semicolon or return insert a newline
+            if ($line =~ s/([;\{\}])([^;\n\r])/$1\n$2/g) {
                 push(@{$linebuf}, reverse split(/\n/, $line));
                 next LINE;
             }
