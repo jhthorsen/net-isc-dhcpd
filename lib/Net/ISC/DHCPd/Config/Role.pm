@@ -272,7 +272,7 @@ sub parse {
     my $fh = $_[1] || $self->_filehandle;
     my $linebuf = $_[2];
     my($n, @comments);
-    my $lines = '';
+    my $lines;
     my $line_from_array=0;
 
     LINE:
@@ -315,7 +315,7 @@ sub parse {
 
         # this is how we handle incomplete lines
         # we need a space for lines like 'option\ndomain-name-servers'
-        if ($lines ne '') {
+        if ($lines) {
            $lines .= ' '.$line;
         } else {
             $lines = $line;
@@ -334,7 +334,7 @@ sub parse {
             $args->{'comments'} = [@comments];
             $args->{'parse'} = 1;
             @comments = ();
-            $lines = '';
+            undef $lines;
             $obj = $self->$add($args);
             $n += $obj->_parse_slurp($fh, $linebuf) if ($obj->can('slurp'));
 
@@ -356,7 +356,7 @@ sub parse {
 
         if(warnings::enabled('net_isc_dhcpd_config_parse')) {
             warn sprintf qq[Could not parse "%s" at %s line %s\n],
-                $lines,
+                $line,
                 $self->root->file,
                 $fh->input_line_number
                 ;
