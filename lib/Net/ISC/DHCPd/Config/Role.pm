@@ -287,8 +287,8 @@ sub parse {
             # From here we need to preprocess the line to see if it can be broken
             # into multiple lines.  Something like group { option test; }
             # lines with comments can't be handled by this so we do them first
-            if($line =~ s/^\s*\#\s*//) {
-                push @comments, $line;
+            if($line =~ /^\s*\#\s*(.*)/) {
+                push @comments, $1;
                 next LINE;
             }
 
