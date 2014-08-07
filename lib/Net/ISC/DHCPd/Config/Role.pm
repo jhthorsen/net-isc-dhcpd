@@ -181,21 +181,6 @@ THIS IS A STATIC METHOD.  SELF is not used.
 
 =cut
 
-=head2 endpoint
-
-Regex to search for before ending the current node block.
-Will not be used if the node does not have any possible L</children>.
-
-=cut
-
-has endpoint => (
-    is => 'ro',
-    isa => 'Maybe[RegexpRef]',
-    builder => '_build_endpoint',
-);
-
-sub _build_endpoint { qr" ^ \s* } \s* $ "x }
-
 has _filehandle => (
     is => 'ro',
     lazy_build => 1,
@@ -320,11 +305,10 @@ sub parse {
         }
 
 
-        if ($line =~ /^(?:\s*|\s*{\s*)$/) {
+        if ($line =~ /^(?:\s*|\s*\{\s*)$/) {
             next LINE;
         }
-        elsif($line =~ $self->endpoint) {
-            $self->captured_endpoint($1, $2, $3, $4); # urk...
+        elsif($line =~ /^\s*\}\s*$/) {
             next LINE if($self->root == $self);
             last LINE;
         }
@@ -439,18 +423,6 @@ THIS IS A STATIC METHOD.  SELF is not used.
 
 sub captured_to_args {
     return {};
-}
-
-=head2 captured_endpoint
-
-    $self->captured_endpoint(@list)
-
-Called when a L</endpoint> matches, with a list of captured strings.
-
-=cut
-
-sub captured_endpoint {
-    return;
 }
 
 =head2 create_children
