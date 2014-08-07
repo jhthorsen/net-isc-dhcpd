@@ -47,20 +47,9 @@ The root node in the config tree.
 has root => (
     is => 'ro',
     isa => 'Object',
-    lazy => 1,
     weak_ref => 1,
-    builder => '_build_root',
+    default => sub { $_[0] },
 );
-
-sub _build_root {
-    my $obj = shift;
-
-    while(my $tmp = $obj->parent) {
-        blessed($obj = $tmp) eq 'Net::ISC::DHCPd::Config' and last;
-    }
-
-    return $obj;
-}
 
 =head2 depth
 
@@ -467,7 +456,7 @@ sub _set_children {
     my($self, $attr, $class, $children) = @_;
 
     for my $child (@$children) {
-        $child = $class->new(parent => $self, %$child) if(ref $child eq 'HASH');
+        $child = $class->new(parent => $self, root => $self->root, %$child) if(ref $child eq 'HASH');
     }
 
     @{ $self->_children } = @$children;
@@ -487,7 +476,7 @@ sub _add_child {
     my $children = $self->_children;
 
     if(ref $child eq 'HASH') {
-        $child = $class->new(parent => $self, %$child);
+        $child = $class->new(parent => $self, root => $self->root, %$child);
     }
 
     push @$children, $child;
