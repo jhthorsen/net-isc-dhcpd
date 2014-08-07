@@ -267,11 +267,16 @@ when possible.
 
 sub parse {
     my $self = shift;
-    my $fh = $_[1] || $self->_filehandle;
+    my $fh = $_[1];
     my $linebuf = $_[2];
     my($n, @comments);
     my $lines;
     my $line_from_array=0;
+    # if $fh is a File::Temp or IO::File object then comparing on assignment
+    # above makes it convert to a number (refaddr), which takes 4µs/call
+    if (!defined($fh)) {
+        $fh = $self->_filehandle;
+    }
 
     LINE:
     while(1) {
