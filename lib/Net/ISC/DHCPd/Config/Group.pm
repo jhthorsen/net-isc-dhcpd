@@ -139,7 +139,7 @@ sub generate {
     my $self = shift;
     if (defined($self->name)) {
         my $name = $self->name;
-        return 'group ' . ($self->quoted ? qq("$name") : $self->name) . ' {', $self->_generate_config_from_children, '}';
+        return 'group ' . ($self->quoted ? qq("$name") : $name) . ' {', $self->_generate_config_from_children, '}';
     }
 
     # default with no name

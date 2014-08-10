@@ -30,6 +30,17 @@ with 'Net::ISC::DHCPd::Config::Role';
 
 =head1 ATTRIBUTES
 
+=head2 quoted
+
+This flag tells if the group name should be quoted or not.
+
+=cut
+
+has quoted => (
+    is => 'ro',
+    isa => 'Bool',
+);
+
 =head2 name
 
 Name of the key - See L</DESCRIPTION> for details.
@@ -51,7 +62,7 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
 
-our $regex = qr{^\s* key \s+ ("?)(\S+)(\1) }x;
+our $regex = qr{^\s* key \s+ ([\w-]+|".*?") }x;
 
 =head1 METHODS
 
@@ -79,7 +90,10 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 =cut
 
 sub captured_to_args {
-    return { name => $_[1] }; # $_[0] == quote or empty string
+    my $value = shift;
+    my $quoted = 0;
+    $quoted = 1 if($value =~ s/^"(.*)"$/$1/g);
+    return { quoted => $quoted, name => $value };
 }
 
 =head2 generate
@@ -90,9 +104,10 @@ See L<Net::ISC::DHCPd::Config::Role/generate>.
 
 sub generate {
     my $self = shift;
+    my $name = $self->name;
 
     return(
-        sprintf('key "%s" {', $self->name),
+        sprintf('key '. ($self->quoted ? qq("$name") : $name). ' {'),
         $self->algorithm ? (sprintf '    algorithm %s;', $self->algorithm) : (),
         $self->secret ? (sprintf '    secret "%s";', $self->secret) : (),
         '};', # semicolon is for compatibility with bind key files
