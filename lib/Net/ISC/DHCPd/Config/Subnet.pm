@@ -27,7 +27,7 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 =cut
 
 use Moose;
-use NetAddr::IP;
+use NetAddr::IP::LazyInit;
 
 with 'Net::ISC::DHCPd::Config::Role';
 
@@ -110,7 +110,7 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 =cut
 
 sub captured_to_args {
-    return { address => NetAddr::IP->new(join "/", @_) };
+    return { address => NetAddr::IP::LazyInit->new(join "/", @_) };
 }
 
 =head2 generate
