@@ -105,7 +105,7 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 =cut
 
 
-our $regex = qr{^ \s* group \s+ ([\w-]+|".*?")? }x;
+our $regex = qr{^ \s* group (?:\s+ ([\w-]+|".*?"))? }x;
 
 =head1 METHODS
 

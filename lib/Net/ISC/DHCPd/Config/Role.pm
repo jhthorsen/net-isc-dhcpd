@@ -256,103 +256,63 @@ when possible.
 
 sub parse {
     my $self = shift;
-    my $fh = $_[1];
-    my $linebuf = $_[2];
-    my($n, @comments);
-    my $lines;
-    my $line_from_array=0;
-    # if $fh is a File::Temp or IO::File object then comparing on assignment
-    # above makes it convert to a number (refaddr), which takes 4µs/call
-    if (!defined($fh)) {
-        $fh = $self->_filehandle;
-    }
+    my $fh = $self->_filehandle;
+    my $cur_obj = $self;
+    my @comments;
 
-    LINE:
-    while(1) {
-        my $line;
-        if (defined($linebuf->[0])) {
-            $line = pop(@{$linebuf});
-            $line_from_array=1;
-        } else {
-            defined($line = readline $fh) or last LINE;
-            $n++;
-            chomp $line;
-            $line_from_array=0;
-            # From here we need to preprocess the line to see if it can be broken
-            # into multiple lines.  Something like group { option test; }
-            # lines with comments can't be handled by this so we do them first
-            if($line =~ /^\s*\#\s*(.*)/) {
-                push @comments, $1;
-                next LINE;
-            }
+    read $fh, my $buffer, -s $fh or die "Couldn't read file: $!";
+    my $TOKEN_RE = qr/\s*(?|(option\s+\S+\s+code.*?=.*?)(\;)|(#)(.*?)\n|(.*?)\s*(\;|\{|\}))/s;
 
-            # after semicolon or braces if there isn't a semicolon or return insert a newline
-            if ($line =~ s/([;\{\}])([^;\n\r])/$1\n$2/g) {
-                push(@{$linebuf}, reverse split(/\n/, $line));
-                next LINE;
-            }
+    pos($buffer) = 0;
+    TOKEN:
+    while($buffer =~ m/\G$TOKEN_RE/gcso) {
+        my ($arg1, $arg2) = ($1, $2);
+        if ($arg1 eq '#') {
+            push(@comments, $arg2);
+            next TOKEN;
         }
-
-
-        if ($line =~ /^(?:\s*|\s*\{\s*)$/) {
-            next LINE;
+        if ($arg2 eq '}') {
+            $cur_obj = $cur_obj->parent;
+            next TOKEN;
         }
-        elsif($line =~ /^\s*\}\s*$/) {
-            next LINE if($self->root == $self);
-            last LINE;
+        if ($arg1 eq '') {
+            next TOKEN;
         }
-
-        # this is how we handle incomplete lines
-        # we need a space for lines like 'option\ndomain-name-servers'
-        if ($lines) {
-           $lines .= ' '.$line;
-        } else {
-            $lines = $line;
+        $arg1 =~ s/\n/ /g;
+        if ($arg2 eq ';') {
+            $arg1 .= ';';
         }
 
         CHILD:
-        for my $child ($self->children) {
+        for my $child ($cur_obj->children) {
             no strict 'refs';
             my $regex = ${"$child".'::regex'};
-            my @c = $lines =~ $regex or next CHILD;
+            my @c = $arg1 =~ $regex or next CHILD;
             my $add = 'add_' .lc +($child =~ /::(\w+)$/)[0];
             my $method = $child->can('captured_to_args');
             my $args = $method->(@c);
-            my $obj;
 
             $args->{'comments'} = [@comments];
             $args->{'parse'} = 1;
             @comments = ();
-            undef $lines;
-            $obj = $self->$add($args);
-            $n += $obj->_parse_slurp($fh, $linebuf) if ($obj->can('slurp'));
+            my $obj = $cur_obj->$add($args);
+            #$n += $obj->_parse_slurp($fh, $linebuf) if ($obj->can('slurp'));
 
             # the recursive statement is used for Include.pm
-            $n += $obj->parse('recursive', $fh, $linebuf) if(@_ = $obj->children);
-
-            next LINE;
-        }
-
-        # if we get here that means our parse failed.  If the incoming line
-        # doesn't have a semicolon then we can guess it's a partial line and
-        # append the next line to it.
-        # we could do this with Slurp but then everything would need to
-        # support slurp and odd semicolon handling.  If we figure out a way to
-        # merge the lines then the normal parser should be able to cover it.
-        if ($lines !~ /;/) {
-            next LINE;
+            #$n += $obj->parse('recursive', $fh, $linebuf) if(@_ = $obj->children);
+            $cur_obj = $obj if (@_ = $obj->children);
+            next TOKEN;
         }
 
         if(warnings::enabled('net_isc_dhcpd_config_parse')) {
-            warn sprintf qq[Could not parse "%s" at %s line %s\n],
-                $line,
-                $self->root->file,
-                $fh->input_line_number
+            warn sprintf qq[Could not parse "%s" at %s %s\n],
+                $arg1,
+                $self->root->file, ref($cur_obj)
                 ;
         }
     }
 
-    return $n ? $n : '0e0';
+#    return $n ? $n : '0e0';
 }
 
 =head2 _parse_slurp
