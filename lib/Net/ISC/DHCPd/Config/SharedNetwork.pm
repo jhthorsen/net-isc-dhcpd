@@ -39,6 +39,7 @@ See L<Net::ISC::DHCPd::Config::Role/children>.
 =cut
 sub children {
     return qw/
+        Net::ISC::DHCPd::Config::Host
         Net::ISC::DHCPd::Config::Subnet
         Net::ISC::DHCPd::Config::Subnet6
         Net::ISC::DHCPd::Config::KeyValue
