@@ -1,3 +1,4 @@
+use lib './lib';
 use Net::ISC::DHCPd::Config;
 use Test::More;
 use warnings;
@@ -37,12 +38,20 @@ is($config->optioncodes->[2]->name, 'tsp-ap-backoff-retry', 'name parsed correct
 # semi-colon.  Not ideal, but again, make sure the input config passes dhcpd
 # validation.
 
+# as further proof that we validate almost anything, this was broken for a
+# long time.
+# host box1 { option host-name "box1" }
+# when I was rewriting the parser it was failing on this entry.  I checked it
+# with dhcpd and it won't allow an option without a semicolon even if it's the
+# only thing in the braces.
+
+
 done_testing();
 
 __DATA__
 option space foo;  option foo.bar code 1 = ip-address; option host-name "test host name"; option
 domain-name-servers 192.168.1.5;
-group { next-server 192.168.0.2; host box1 { option host-name "box1" } host box1-2 {option host-name "box1-2"; hardware ethernet 66:55:44:33:22:11; fixed-address 192.168.0.2; } }
+group { next-server 192.168.0.2; host box1 { option host-name "box1"; } host box1-2 {option host-name "box1-2"; hardware ethernet 66:55:44:33:22:11; fixed-address 192.168.0.2; } }
 
 group "2" { next-server
    192.168.0.3;
