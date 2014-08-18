@@ -329,7 +329,7 @@ sub _parse_slurp {
     my $pos = shift;
     my $buffer = shift;
 
-    my $TOKEN_RE = qr/\s*(.*?)\n/;
+    my $TOKEN_RE = qr/(.*?)\n/;
     pos($buffer) = $pos;
 
     LINE:
