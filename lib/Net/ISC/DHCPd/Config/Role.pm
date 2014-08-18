@@ -261,7 +261,7 @@ sub parse {
     my @comments;
 
     read $fh, my $buffer, -s $fh or die "Couldn't read file: $!";
-    my $TOKEN_RE = qr/\s*(?|(option\s+\S+\s+code.*?=.*?)(\;)|(#)\s*(.*?)\n|(.*?)\s*(\;|\{|\}))/s;
+    my $TOKEN_RE = qr/\s*(?|(authoritative\s*)(\;)|(option\s+\S+\s+code.*?=.*?)(\;)|(#)\s*(.*?)\n|(.*?)\s*(\;|\{|\}))/s;
 
     TOKEN:
     while($buffer =~ m/\G$TOKEN_RE/gcso) {
@@ -312,6 +312,7 @@ sub parse {
         }
     }
 
+    return ($buffer =~ tr/\n// + $buffer !~ /\n\z/);
 #    return $n ? $n : '0e0';
 }
 
