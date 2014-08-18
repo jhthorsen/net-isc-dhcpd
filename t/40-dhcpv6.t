@@ -1,3 +1,4 @@
+use lib './lib';
 use Net::ISC::DHCPd::Config;
 use Test::More;
 use warnings;
