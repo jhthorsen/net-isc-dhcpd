@@ -13,8 +13,8 @@ is($config->optionspaces->[1]->name, 'cable-labs', 'Option space parsed correctl
 is($config->optioncodes->[1]->prefix, 'cable-labs', 'prefix parsed correctly?');
 is($config->optioncodes->[1]->name, 'tsp-as-backoff-retry', 'name parsed correctly?');
 is($config->optioncodes->[1]->code, 4, 'code parsed correctly?');
-is($config->optioncodes->[1]->value, '{  unsigned integer 32, unsigned integer 32, unsigned integer 32 }', 'value parsed correctly');
-is($config->optioncodes->[2]->value, '{  unsigned integer 32, unsigned integer 32, unsigned integer 32 }', 'value parsed correctly');
+is($config->optioncodes->[1]->value, '{ unsigned integer 32, unsigned integer 32, unsigned integer 32 }', 'value parsed correctly');
+is($config->optioncodes->[2]->value, '{ unsigned integer 32, unsigned integer 32, unsigned integer 32 }', 'value parsed correctly');
 is($config->optioncodes->[2]->name, 'tsp-ap-backoff-retry', 'name parsed correctly?');
 
 # I should note that I found that nested hosts break this.  It's an invalid
