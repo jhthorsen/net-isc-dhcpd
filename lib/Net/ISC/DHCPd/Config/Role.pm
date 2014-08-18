@@ -263,7 +263,6 @@ sub parse {
     read $fh, my $buffer, -s $fh or die "Couldn't read file: $!";
     my $TOKEN_RE = qr/\s*(?|(option\s+\S+\s+code.*?=.*?)(\;)|(#)(.*?)\n|(.*?)\s*(\;|\{|\}))/s;
 
-    pos($buffer) = 0;
     TOKEN:
     while($buffer =~ m/\G$TOKEN_RE/gcso) {
         my ($arg1, $arg2) = ($1, $2);
@@ -272,7 +271,7 @@ sub parse {
             next TOKEN;
         }
         if ($arg2 eq '}') {
-            $cur_obj = $cur_obj->parent;
+            $cur_obj = $cur_obj->parent ? $cur_obj->parent : $cur_obj;
             next TOKEN;
         }
         if ($arg1 eq '') {
@@ -282,6 +281,7 @@ sub parse {
         if ($arg2 eq ';') {
             $arg1 .= ';';
         }
+
 
         CHILD:
         for my $child ($cur_obj->children) {
@@ -296,7 +296,7 @@ sub parse {
             $args->{'parse'} = 1;
             @comments = ();
             my $obj = $cur_obj->$add($args);
-            $obj->_parse_slurp($buffer) if ($obj->can('slurp'));
+            pos($buffer) = $obj->_parse_slurp(pos($buffer), $buffer) if ($obj->can('slurp'));
 
             # the recursive statement is used for Include.pm
             #$n += $obj->parse('recursive', $fh, $linebuf) if(@_ = $obj->children);
@@ -325,14 +325,15 @@ is available in a child method.
 
 sub _parse_slurp {
     my $self = shift;
+    my $pos = shift;
     my $buffer = shift;
 
-    my $TOKEN_RE = qr/\s*(.*?(?:\;|\}))/;
+    my $TOKEN_RE = qr/\s*(.*?)\n/;
+    pos($buffer) = $pos;
 
-    print "Got here\n";
     LINE:
     while($buffer =~ m/\G$TOKEN_RE/gcso) {
-        my $action = $self->slurp($_); # next or last
+        my $action = $self->slurp($1); # next or last
         if($action eq 'next') {
             next LINE;
         }
@@ -341,6 +342,7 @@ sub _parse_slurp {
             print "Going back to main\n";
         }
     }
+    return pos($buffer);
 }
 
 =head2 captured_to_args
