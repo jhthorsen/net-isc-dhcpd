@@ -296,7 +296,7 @@ sub parse {
             $args->{'parse'} = 1;
             @comments = ();
             my $obj = $cur_obj->$add($args);
-            #$n += $obj->_parse_slurp($fh, $linebuf) if ($obj->can('slurp'));
+            $obj->_parse_slurp($buffer) if ($obj->can('slurp'));
 
             # the recursive statement is used for Include.pm
             #$n += $obj->parse('recursive', $fh, $linebuf) if(@_ = $obj->children);
@@ -325,37 +325,22 @@ is available in a child method.
 
 sub _parse_slurp {
     my $self = shift;
-    my $fh = shift;
-    my $linebuf = shift;
-    my($n, @comments);
+    my $buffer = shift;
 
+    my $TOKEN_RE = qr/\s*(.*?(?:\;|\}))/;
+
+    print "Got here\n";
     LINE:
-    while(1) {
-        my $line;
-        if (defined($linebuf->[0])) {
-            $line = pop(@{$linebuf});
-        } else {
-            defined($line = readline $fh) or last LINE;
-            $n++;
-            chomp $line;
+    while($buffer =~ m/\G$TOKEN_RE/gcso) {
+        my $action = $self->slurp($_); # next or last
+        if($action eq 'next') {
+            next LINE;
         }
-
-
-        if($self->can('slurp')) {
-            my $action = $self->slurp($line); # next or last
-            if($action eq 'next') {
-                next LINE;
-            }
-            elsif($action eq 'last') {
-                last LINE;
-            }
-            elsif($action eq 'backtrack') {
-                push(@{$linebuf}, $line);
-                last LINE;
-            }
+        elsif($action eq 'last') {
+            last LINE;
+            print "Going back to main\n";
         }
     }
-    return $n;
 }
 
 =head2 captured_to_args
