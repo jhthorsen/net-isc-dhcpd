@@ -48,12 +48,7 @@ This is an array of arguments supplied to the failover peer.
 
 =cut
 
-has arguments => (
-    traits => ['Hash'],
-    is => 'ro',
-    isa => 'HashRef',
-    default => sub {
-        {
+my %arguments = (
         port      => { "text" => "port %s", regex => qr/^ \s+ port \s+ (\d+);/x },
         peer_port => { "text" => "peer port %s", regex => qr/^ \s+ peer \s+ port \s+ (\d+);/x },
         address   => { "text" => "address %s", regex => qr/^ \s+ address \s+ (\S+);/x },
@@ -64,8 +59,6 @@ has arguments => (
         lb_max_seconds => { "text" => "load balance max seconds %s", regex => qr/^ \s+ load\s+balance\s+max\s+seconds \s+ (\d+);/x },
         mclt => { "text" => "mclt %s", regex => qr/^ \s+ mclt \s+ (\d+);/x },
         split => { "text" => "split %s", regex => qr/^ \s+ split \s+ (\d+);/x },
-        }
-    },
 );
 
 has _order => (
@@ -105,7 +98,7 @@ statements.
 sub slurp {
     my($self, $line) = @_;
 
-    while(my ($name, $value) = each (%{$self->arguments})) {
+    while(my ($name, $value) = each (%arguments)) {
         my $regex = $value->{regex};
         if ($line =~ $regex) {
             $self->$name($1);
@@ -140,7 +133,7 @@ sub generate {
     $return .= "\n";
 
     for(@{$self->_order}) {
-        $return .= sprintf('    '. $self->arguments->{$_}->{text} . ";\n", $self->$_);
+        $return .= sprintf('    '. $arguments{$_}->{text} . ";\n", $self->$_);
     }
 
     $return .= "}\n";
