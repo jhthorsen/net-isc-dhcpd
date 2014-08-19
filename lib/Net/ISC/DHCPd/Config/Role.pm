@@ -323,13 +323,18 @@ is available in a child method.
 
 =cut
 
+# this is broken in two ways..  if we break up lines by semicolon then we
+# can't slurp blocks defined with braces.  If we break up lines by newline
+# then we miss statements that are spread across two lines.  We could use a
+# complicated regex like our main parser, but it's just going to be reparsed
+# by the slurp() calls.
 
 sub _parse_slurp {
     my $self = shift;
     my $pos = shift;
     my $buffer = shift;
 
-    my $TOKEN_RE = qr/(\s*.*?)\n/;
+    my $TOKEN_RE = qr/(.*?)\n/;
     pos($buffer) = $pos;
 
     LINE:
@@ -340,7 +345,6 @@ sub _parse_slurp {
         }
         elsif($action eq 'last') {
             last LINE;
-            print "Going back to main\n";
         }
     }
     return pos($buffer);
