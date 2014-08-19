@@ -1,9 +1,12 @@
+use lib './lib';
 use Net::ISC::DHCPd::Config;
 use Test::More;
 use warnings;
+use strict;
 
 my $config = Net::ISC::DHCPd::Config->new(fh => \*DATA);
 is($config->parse, 41, 'Parsed xx lines?');
+is(scalar(@_=$config->failoverpeers), 3, "failoverpeers = 3");
 is($config->failoverpeers->[0]->name, 'failover', 'primary failoverpeer = failover');
 is($config->failoverpeers->[1]->name, 'failover-partner', 'secondary');
 is($config->failoverpeers->[2]->name, 'one-line', 'secondary');
