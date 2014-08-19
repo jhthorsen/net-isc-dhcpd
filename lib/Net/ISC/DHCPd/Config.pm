@@ -109,6 +109,8 @@ use Moose;
 
 with 'Net::ISC::DHCPd::Config::Root';
 
+# need to put this somewhere everyone has access to it and we don't need to
+# "use N:I:D:Config;"
 sub children {
     return qw/
         Net::ISC::DHCPd::Config::Host
