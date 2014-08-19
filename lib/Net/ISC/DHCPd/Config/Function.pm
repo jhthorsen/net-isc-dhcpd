@@ -12,7 +12,10 @@ documentation.
 An instance from this class, comes from / will produce:
 
     on $name_attribute_value {
-        $body_attribute_value
+        option_attribute;
+        keyvalue_attribute;
+        if conditional {
+        }
     }
 
 =head1 SYNOPSIS
@@ -22,24 +25,36 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 =cut
 
 use Moose;
+with 'Net::ISC::DHCPd::Config::Role';
 
-# TODO: Should probably be a role instead...
-extends 'Net::ISC::DHCPd::Config::Block';
+use Net::ISC::DHCPd::Config;
 
 =head1 ATTRIBUTES
+
+=head2 children
+
+See L<Net::ISC::DHCPd::Config::Role/children>.
+
+=cut
+
+sub children {
+    return Net::ISC::DHCPd::Config::children();
+}
+__PACKAGE__->create_children(__PACKAGE__->children());
+
 
 =head2 name
 
 This attribute holds a plain string, representing the name
 of the function. Example: "commit".
 
-=head2 body
-
-The body text of the function, without trailing newline at end.
-The function body is not parsed, so the containing text can be
-anything.
-
 =cut
+
+has name => (
+    is => 'ro',
+    isa => 'Str',
+);
+
 
 =head2 regex
 
@@ -50,24 +65,6 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 our $regex = qr{^\s* on \s+ (\w+)}x;
 
 =head1 METHODS
-
-=head2 append_body
-
-Should probably be deprecated.
-
-=head2 prepend_body
-
-Should probably be deprecated.
-
-=head2 body_length
-
-Should probably be deprecated.
-
-=cut
-
-sub append_body { push @{ shift->_body }, @_ }
-sub prepend_body { unshift @{ shift->_body }, @_ }
-sub body_length { length $_[0]->body }
 
 =head2 captured_to_args
 
@@ -90,7 +87,7 @@ sub generate {
 
     return(
         'on ' .$self->name .' {',
-        $self->body,
+        $self->_generate_config_from_children,
         '}',
     );
 }

@@ -10,7 +10,7 @@ my $count  = $ENV{'COUNT'} || 1;
 my $config = "./t/data/dhcpd.conf";
 my $lines  = 51;
 
-plan tests => 1 + 32 * $count;
+plan tests => 1 + 33 * $count;
 
 use_ok("Net::ISC::DHCPd::Config");
 
@@ -62,17 +62,11 @@ my $time = timeit($count, sub {
     my $shared_subnets = $config->sharednetworks->[0]->subnets;
     is(int(@$shared_subnets), 2, "shared subnets found");
 
-    my $function_body = join("\n",
-        q(set leasetime = encode-int(lease-time, 32);),
-        q(if(1) {),
-        q(    set hw_addr   = substring(hardware, 1, 8);),
-        q(}),
-    );
-
     my $function = $config->functions->[0];
     ok($function, "function defined");
     is($function->name, "commit", "commit function found");
-    is($function->body, $function_body, "commit body match");
+    is($function->keyvalues->[0]->name, 'set', "function first keyvalue found");
+    is($function->conditionals->[0]->type, 'if', "if conditional found");
 });
 
 diag(($lines * $count) .": " .timestr($time));

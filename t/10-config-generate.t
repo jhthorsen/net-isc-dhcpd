@@ -30,7 +30,7 @@ my $time = timeit($count, sub {
 
     $config->add_function(
         name => "commit",
-        body => "    set leasetime = encode-int(lease-time, 32);\n",
+        keyvalues => [{ name => 'set', 'value' => 'leasetime = encode-int(lease-time, 32)' }],
     );
     $config->add_subnet(
         address => NetAddr::IP->new('10.0.0.96/27'),
