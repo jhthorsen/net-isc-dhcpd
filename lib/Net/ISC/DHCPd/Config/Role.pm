@@ -311,7 +311,6 @@ sub parse {
     }
 
     return ($buffer =~ tr/\n// + $buffer !~ /\n\z/);
-#    return $n ? $n : '0e0';
 }
 
 =head2 _parse_slurp
