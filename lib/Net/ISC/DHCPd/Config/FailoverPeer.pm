@@ -98,11 +98,13 @@ statements.
 sub slurp {
     my($self, $line) = @_;
 
+    LINE:
     while(my ($name, $value) = each (%arguments)) {
         my $regex = $value->{regex};
         if ($line =~ $regex) {
             $self->$name($1);
             push(@{$self->_order}, $name);
+            last LINE;
         }
     }
 
