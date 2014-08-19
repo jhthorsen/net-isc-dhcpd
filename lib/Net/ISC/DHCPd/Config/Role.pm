@@ -298,8 +298,6 @@ sub parse {
             my $obj = $cur_obj->$add($args);
             pos($buffer) = $obj->_parse_slurp(pos($buffer), $buffer) if ($obj->can('slurp'));
 
-            # the recursive statement is used for Include.pm
-            #$n += $obj->parse('recursive', $fh, $linebuf) if(@_ = $obj->children);
             $cur_obj = $obj if ((@_ = $obj->children) && $child !~ /::Include$/);
             next TOKEN;
         }
