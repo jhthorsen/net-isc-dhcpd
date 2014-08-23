@@ -90,7 +90,7 @@ the ip address of this subnet.
 
 has address => (
     is => 'ro',
-    isa => 'NetAddr::IP',
+    isa => 'Object',
 );
 
 =head2 regex

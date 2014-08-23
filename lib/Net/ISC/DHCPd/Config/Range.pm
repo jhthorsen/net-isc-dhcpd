@@ -40,7 +40,7 @@ highest IP address in the range.
 
 has upper => (
     is => 'ro',
-    isa => 'NetAddr::IP',
+    isa => 'Object',
 );
 
 =head2 lower
@@ -52,7 +52,7 @@ lowest IP address in the range.
 
 has lower => (
     is => 'ro',
-    isa => 'NetAddr::IP',
+    isa => 'Object',
 );
 
 =head2 regex
