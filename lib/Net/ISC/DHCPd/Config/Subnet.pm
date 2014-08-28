@@ -111,7 +111,7 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 =cut
 
 sub captured_to_args {
-    return { address => NetAddr::IP::LazyInit->new(join "/", @_) };
+    return { address => NetAddr::IP::LazyInit->new(@_) };
 }
 
 =head2 generate
