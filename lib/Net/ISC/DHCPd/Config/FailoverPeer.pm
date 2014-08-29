@@ -53,7 +53,7 @@ my %arguments = (
         peer_port => { "text" => "peer port %s", regex => qr/^ \s+ peer \s+ port \s+ (\d+);/x },
         address   => { "text" => "address %s", regex => qr/^ \s+ address \s+ (\S+);/x },
         peer_address => { "text" => "peer address %s", regex => qr/^ \s+ peer \s+ address \s+ (\S+);/x },
-        type => { "text" => "%s", regex => qr/^ \s+ (primary|secondary);/x },
+        type => { "text" => "%s", regex => qr/^\s*(primary|secondary);/x },
         max_response_delay => { "text" => "max-response-delay %s", regex => qr/^ \s+ max-response-delay \s+ (\d+);/x },
         max_unacked_updates => { "text" => "max-unacked-updates %s", regex => qr/^ \s+ max-unacked-updates \s+ (\d+);/x },
         lb_max_seconds => { "text" => "load balance max seconds %s", regex => qr/^ \s+ load\s+balance\s+max\s+seconds \s+ (\d+);/x },
@@ -98,17 +98,19 @@ statements.
 sub slurp {
     my($self, $line) = @_;
 
-    LINE:
+    return 'last' if($line =~ /^}/);
+
+    # reset the hash iterator since we're using last to break out of the loop
+    # when entry found.
+    keys %arguments;
     while(my ($name, $value) = each (%arguments)) {
-        my $regex = $value->{regex};
-        if ($line =~ $regex) {
+        if ($line =~ $value->{regex}) {
             $self->$name($1);
             push(@{$self->_order}, $name);
-            last LINE;
+            last;
         }
     }
 
-    return 'last' if($line =~ /^\s*}/);
     return 'next';
 }
 

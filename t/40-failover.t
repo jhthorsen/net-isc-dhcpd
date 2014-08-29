@@ -12,6 +12,7 @@ is($config->failoverpeers->[1]->name, 'failover-partner', 'secondary');
 is($config->failoverpeers->[2]->name, 'one-line', 'secondary');
 is($config->failoverpeers->[1]->type, 'secondary', 'is type for second failover secondary?');
 is($config->failoverpeers->[2]->type, undef, 'is type for third failover undef?');
+is($config->failoverpeers->[2]->peer_port, 519, 'is peer port for third failover 519?');
 is($config->failoverpeers->[0]->peer_port, 520, 'is peer port for first failver 520?');
 is($config->subnets->[0]->pools->[0]->keyvalues->[0]->name, 'failover', 'does the failover peer option work');
 done_testing();
