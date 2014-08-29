@@ -49,16 +49,16 @@ This is an array of arguments supplied to the failover peer.
 =cut
 
 my %arguments = (
-        port      => { "text" => "port %s", regex => qr/^ \s+ port \s+ (\d+);/x },
-        peer_port => { "text" => "peer port %s", regex => qr/^ \s+ peer \s+ port \s+ (\d+);/x },
-        address   => { "text" => "address %s", regex => qr/^ \s+ address \s+ (\S+);/x },
-        peer_address => { "text" => "peer address %s", regex => qr/^ \s+ peer \s+ address \s+ (\S+);/x },
+        port      => { "text" => "port %s", regex => qr/^port \s+ (\d+);/x },
+        peer_port => { "text" => "peer port %s", regex => qr/^peer \s+ port \s+ (\d+);/x },
+        address   => { "text" => "address %s", regex => qr/^address \s+ (\S+);/x },
+        peer_address => { "text" => "peer address %s", regex => qr/^peer \s+ address \s+ (\S+);/x },
         type => { "text" => "%s", regex => qr/^\s*(primary|secondary);/x },
-        max_response_delay => { "text" => "max-response-delay %s", regex => qr/^ \s+ max-response-delay \s+ (\d+);/x },
-        max_unacked_updates => { "text" => "max-unacked-updates %s", regex => qr/^ \s+ max-unacked-updates \s+ (\d+);/x },
-        lb_max_seconds => { "text" => "load balance max seconds %s", regex => qr/^ \s+ load\s+balance\s+max\s+seconds \s+ (\d+);/x },
-        mclt => { "text" => "mclt %s", regex => qr/^ \s+ mclt \s+ (\d+);/x },
-        split => { "text" => "split %s", regex => qr/^ \s+ split \s+ (\d+);/x },
+        max_response_delay => { "text" => "max-response-delay %s", regex => qr/^max-response-delay \s+ (\d+);/x },
+        max_unacked_updates => { "text" => "max-unacked-updates %s", regex => qr/^max-unacked-updates \s+ (\d+);/x },
+        lb_max_seconds => { "text" => "load balance max seconds %s", regex => qr/^load\s+balance\s+max\s+seconds \s+ (\d+);/x },
+        mclt => { "text" => "mclt %s", regex => qr/^mclt \s+ (\d+);/x },
+        split => { "text" => "split %s", regex => qr/^split \s+ (\d+);/x },
 );
 
 has _order => (
@@ -96,7 +96,7 @@ statements.
 =cut
 
 sub slurp {
-    my($self, $line) = @_;
+    my($self, $line, $arg2) = @_;
 
     return 'last' if($line =~ /^}/);
 
