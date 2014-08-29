@@ -46,7 +46,6 @@ sub children {
         Net::ISC::DHCPd::Config::Option
         Net::ISC::DHCPd::Config::Class
         Net::ISC::DHCPd::Config::KeyValue
-        Net::ISC::DHCPd::Config::Block
     /;
 }
 __PACKAGE__->create_children(__PACKAGE__->children());

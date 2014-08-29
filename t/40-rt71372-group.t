@@ -6,7 +6,7 @@ BEGIN { $ENV{'ISC_DHCPD_TRACE'} = 1 }
 use Net::ISC::DHCPd::Config;
 
 plan skip_all => 'no t/data/rt71372.conf' unless(-r 't/data/rt71372.conf');
-plan tests => 14;
+plan tests => 13;
 
 {
     my $config = Net::ISC::DHCPd::Config->new(file => 't/data/rt71372.conf');
@@ -21,7 +21,6 @@ plan tests => 14;
     is(scalar(@_=$config->optioncodes), 2, "optioncodes");
     is(scalar(@_=$config->subnets), 1, "subnets");
     is(scalar(@_=$config->groups), 1, "groups");
-    is(scalar(@_=$config->blocks), 0, "blocks");
     is(scalar(@subnets=$config->subnets), 1, "subnets");
     is(scalar(@_=$subnets[0]->options), 9, "subnet -> options");
     is(scalar(@_=$subnets[0]->keyvalues), 2, "subnet -> keyvalues");

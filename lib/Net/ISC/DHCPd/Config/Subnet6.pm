@@ -44,7 +44,6 @@ sub children {
         Net::ISC::DHCPd::Config::Option
         Net::ISC::DHCPd::Config::Class
         Net::ISC::DHCPd::Config::KeyValue
-        Net::ISC::DHCPd::Config::Block
         /;
 }
 

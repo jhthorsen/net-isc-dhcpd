@@ -130,7 +130,6 @@ sub children {
         Net::ISC::DHCPd::Config::Zone
         Net::ISC::DHCPd::Config::FailoverPeer
         Net::ISC::DHCPd::Config::Authoritative
-        Net::ISC::DHCPd::Config::Block
         Net::ISC::DHCPd::Config::KeyValue/;
 }
 
