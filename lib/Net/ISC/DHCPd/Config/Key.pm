@@ -62,7 +62,7 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
 
-our $regex = qr{^\s* key \s+ ([\w-]+|".*?") }x;
+our $regex = qr{^key\s+([\w-]+|".*?")};
 
 =head1 METHODS
 

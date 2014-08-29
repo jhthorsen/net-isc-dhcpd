@@ -52,7 +52,7 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 =cut
 
 # not sure if this can be quoted or not
-our $regex = qr{^\s* zone \s+ (")?(\S+)(\1|$) }x;
+our $regex = qr{^zone\s+(")?(\S+)(\1|$)};
 
 =head1 METHODS
 

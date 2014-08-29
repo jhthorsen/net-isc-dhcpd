@@ -43,7 +43,7 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
 
-our $regex = qr{^\s* fixed-address \s+ (.*) ;}x;
+our $regex = qr{^fixed-address\s+(.*)};
 
 =head1 METHODS
 

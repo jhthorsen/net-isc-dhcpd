@@ -71,7 +71,7 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
 
-our $regex = qr{^\s* hardware \s+ ethernet \s+ (.*) ;}x;
+our $regex = qr{^hardware\s+ethernet\s+(.*)};
 
 =head1 METHODS
 

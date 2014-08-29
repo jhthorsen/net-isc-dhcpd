@@ -62,7 +62,7 @@ __PACKAGE__->create_children(__PACKAGE__->children());
 See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
-our $regex = qr{^\s* class \s+ (")?(.*?)(\1|$) }x;
+our $regex = qr{^class\s+(")?(.*?)(\1|$)};
 
 =head1 METHODS
 

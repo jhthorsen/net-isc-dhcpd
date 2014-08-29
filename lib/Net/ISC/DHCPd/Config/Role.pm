@@ -278,10 +278,6 @@ sub parse {
             next TOKEN;
         }
         $arg1 =~ s/\n/ /g;
-        if ($arg2 eq ';') {
-            $arg1 .= ';';
-        }
-
 
         CHILD:
         for my $child ($cur_obj->children) {

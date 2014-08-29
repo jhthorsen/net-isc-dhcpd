@@ -42,7 +42,7 @@ has space => (
 See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
-our $regex = qr{^\s* authoritative (\s*) ;}x;
+our $regex = qr{^authoritative(\s*)};
 
 =head1 METHODS
 

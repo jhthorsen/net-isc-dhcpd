@@ -61,7 +61,7 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
 
-our $regex = qr{^\s* range \s+ (\S+) (?:\s+ (\S*))? ;}x;
+our $regex = qr{^range \s+ (\S+) (?:\s+ (\S*))?}x;
 
 =head1 METHODS
 

@@ -45,7 +45,7 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
 
-our $regex = qr{^\s* filename \s+ (\S+) ;}x;
+our $regex = qr{^filename\s+(\S+)};
 
 =head1 METHODS
 

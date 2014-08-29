@@ -70,7 +70,7 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
 
-our $regex = qr{^\s* ([\w-]+) \s+ (.*) ;}x;
+our $regex = qr{^([\w-]+)\s+(.*)};
 
 =head1 METHODS
 

@@ -100,7 +100,7 @@ See L<Net::ISC::DHCPd::Config/regex>.
 
 =cut
 
-our $regex = qr{^ \s* subnet \s+ (\S+) \s+ netmask \s+ (\S+) }x;
+our $regex = qr{^subnet\s+(\S+)\s+netmask\s+(\S+)};
 
 =head1 METHODS
 

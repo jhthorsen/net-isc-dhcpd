@@ -41,7 +41,7 @@ has name => (
 See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
-our $regex = qr{^\s* option \s+ space \s+ (.*) ;}x;
+our $regex = qr{^option\s+space\s+(.*)};
 
 =head1 METHODS
 

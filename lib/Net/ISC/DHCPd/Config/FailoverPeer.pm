@@ -83,7 +83,7 @@ has [qw/ name type address peer_address /] => (
 See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
-our $regex = qr{^\s* failover \s+ peer \s+ ("?)(\S+)(\1) }x;
+our $regex = qr{^failover\s+peer\s+("?)(\S+)(\1)};
 
 =head1 METHODS
 

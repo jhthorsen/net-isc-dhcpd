@@ -82,7 +82,7 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
 
-our $regex = qr/^\s* ([\w-]+) \s+ (\S*) \s* { /x;
+our $regex = qr/^([\w-]+) \s+ (\S*) \s* { /x;
 
 has _depth => (
     is => 'ro',
