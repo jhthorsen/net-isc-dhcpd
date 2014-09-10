@@ -464,7 +464,7 @@ sub _set_children {
 
 sub _get_children_by_class {
     my($self, $class) = @_;
-    my @children = grep { $class eq blessed $_ } @{ $self->_children };
+    my @children = grep { $class eq ref $_ } @{ $self->_children };
 
     return wantarray ? @children : \@children;
 }
@@ -493,7 +493,7 @@ sub _find_children {
 
     CHILD:
     for my $child (@{ $self->_children }) {
-        if($class ne blessed $child) {
+        if($class ne ref $child) {
             next CHILD;
         }
         for my $key (keys %$query) {
@@ -515,7 +515,7 @@ sub _remove_children {
 
     CHILD:
     while($i < @$children) {
-        if($class ne blessed $children->[$i]) {
+        if($class ne ref $children->[$i]) {
             next CHILD;
         }
         for my $key (keys %$query) {

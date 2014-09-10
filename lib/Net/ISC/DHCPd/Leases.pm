@@ -172,7 +172,7 @@ See L</DESCRIPTION> for more details.
 sub add_lease {
     my $self  = shift;
 
-    if(blessed $_[0]) {
+    if(ref $_[0]) {
         return push @{$self->leases}, $_[0];
     }
 
