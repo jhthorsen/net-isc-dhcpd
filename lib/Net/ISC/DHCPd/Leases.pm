@@ -120,22 +120,15 @@ sub parse {
     my $self = shift;
     my $fh = $self->_filehandle;
     my $parser = $self->_parser;
-    my $n = 0;
 
-    while(my $line = readline $fh) {
-        $n++;
-
-        $parser->get_one_start([$line]);
-        if ($line =~ /^\s*}/) {
-            my $leases = $parser->get_one;
-            #print scalar @$leases;
-            if (@$leases) {
-                $self->add_lease($leases->[0]);
-            }
-        }
+    read $fh, my $buffer, -s $fh or die "Couldn't read file: $!";
+    $parser->get_one_start([$buffer]);
+    while(1) {
+        my $leases = $parser->get_one;
+        last unless (@$leases);
+        $self->add_lease($leases->[0]);
     }
-
-    return $n;
+    return ($buffer =~ tr/\n// + $buffer !~ /\n\z/);
 }
 
 =head2 find_leases
@@ -172,7 +165,7 @@ See L</DESCRIPTION> for more details.
 sub add_lease {
     my $self  = shift;
 
-    if(ref $_[0]) {
+    if(ref $_[0] eq 'Net::ISC::DHCPd::Leases::Lease') {
         return push @{$self->leases}, $_[0];
     }
 
