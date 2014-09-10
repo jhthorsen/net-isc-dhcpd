@@ -33,9 +33,10 @@ constructed from all the leases found in the leases file.
 
 =cut
 
-use Moose;
+use Moo;
 use Net::ISC::DHCPd::Leases::Lease;
-use MooseX::Types::Path::Class 0.05 qw(File);
+use Types::Path::Tiny qw (Path);
+use MooX::Types::MooseLike::Base qw(:all); # for ArrayRef
 use Time::Local;
 
 =head1 ATTRIBUTES
@@ -48,7 +49,7 @@ Holds a list of all the leases found after reading the leases file.
 
 has leases => (
     is => 'ro',
-    isa => 'ArrayRef',
+    isa => ArrayRef,
     auto_deref => 1,
     default => sub { [] },
 );
@@ -62,21 +63,21 @@ It is read-write and the default value is "/var/lib/dhcp3/dhcpd.leases".
 
 has file => (
     is => 'rw',
-    isa => File,
-    coerce => 1,
+    isa => Path,
+    coerce => Path->coercion,
     default => sub {
-        Path::Class::File->new('', 'var', 'lib', 'dhcp3', 'dhcpd.leases');
+        Types::Path::Tiny->new('var/lib/dhcp3/dhcpd.leases');
     },
 );
 
 has fh => (
     is => 'rw',
-    isa => 'FileHandle',
+    isa => FileHandle,
     required => 0,
 );
 
 has _filehandle => (
-    is => 'ro',
+    is => 'lazy',
     lazy_build => 1,
 );
 
@@ -86,7 +87,7 @@ sub _build__filehandle {
         return $self->fh;
     }
 
-    $self->file->openr;
+    $self->file->filehandle;
 }
 
 __PACKAGE__->meta->add_method(filehandle => sub {
