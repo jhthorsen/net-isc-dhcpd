@@ -50,6 +50,7 @@ Holds a list of all the leases found after reading the leases file.
 has leases => (
     is => 'ro',
     isa => ArrayRef,
+    # this is our current issue.  Moo doesn't support auto_deref
     auto_deref => 1,
     default => sub { [] },
 );
