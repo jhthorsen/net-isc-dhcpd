@@ -59,6 +59,7 @@ subtype Ip, as Str,
     where { /^[\d.]+$/ };
 subtype Mac, as Str,
     where { /^[a-f0-9:]{17}$/i };
+
 subtype Time, as Int;
 
 coerce State, (
@@ -110,7 +111,7 @@ coerce Ip, (
 );
 
 coerce Mac, (
-    from Str, via { join ":", /(\w\w)/g },
+    from Str, via { s/[\-\.:]//g; join ":", /(\w\w)/g },
 );
 
 coerce Time, (

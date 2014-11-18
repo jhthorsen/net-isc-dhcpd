@@ -10,7 +10,7 @@ my $count  = $ENV{'COUNT'} || 1;
 my $config = "./t/data/dhcpd.conf";
 my $lines  = 51;
 
-plan tests => 1 + 33 * $count;
+plan tests => 1 + 34 * $count;
 
 use_ok("Net::ISC::DHCPd::Config");
 
@@ -58,6 +58,7 @@ my $time = timeit($count, sub {
     my $host = $config->hosts->[0];
     is($host->name, "foo", "host foo found");
     is($host->fixedaddresses->[0]->value, "10.19.83.102", "fixed address found");
+    is($host->hardwareethernet->value, "00:0e:35:d1:27:e3", "macaddress found");
 
     my $shared_subnets = $config->sharednetworks->[0]->subnets;
     is(int(@$shared_subnets), 2, "shared subnets found");

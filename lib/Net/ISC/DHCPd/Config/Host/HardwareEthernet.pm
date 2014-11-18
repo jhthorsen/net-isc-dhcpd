@@ -21,6 +21,7 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 =cut
 
 use Moose;
+use Net::ISC::DHCPd::Types 'Mac';
 
 with 'Net::ISC::DHCPd::Config::Role';
 
@@ -60,7 +61,8 @@ Value of the option - See L</DESCRIPTION> for details.
 
 has value => (
     is => 'ro',
-    isa => 'Str',
+    isa => Mac,
+    coerce => 1,
 );
 
 =head2 regex
