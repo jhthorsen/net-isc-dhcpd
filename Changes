@@ -1,5 +1,8 @@
 Revision history for Net-ISC-DHCPd
 
+0.1707   Thu Feb 19 05:05:07 UTC 2015
+       - dropped LazyInit because I don't like the way it works
+
 0.1706   *unreleased*
        - Subtype Mac in Types.pm now accepts more macaddress formats (it
          converts them to the format ISC expects)

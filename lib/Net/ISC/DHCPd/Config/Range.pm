@@ -25,7 +25,7 @@ plain strings in the future.
 =cut
 
 use Moose;
-use NetAddr::IP::LazyInit;
+use NetAddr::IP;
 
 with 'Net::ISC::DHCPd::Config::Role';
 
@@ -74,11 +74,11 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 sub captured_to_args {
 
     if (!defined($_[1])) {
-        return { lower => NetAddr::IP::LazyInit->new($_[0]) };
+        return { lower => NetAddr::IP->new($_[0]) };
     } else {
         return {
-            lower => NetAddr::IP::LazyInit->new($_[0]),
-            upper => NetAddr::IP::LazyInit->new($_[1]),
+            lower => NetAddr::IP->new($_[0]),
+            upper => NetAddr::IP->new($_[1]),
         };
     }
 }

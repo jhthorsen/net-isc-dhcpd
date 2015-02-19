@@ -234,6 +234,11 @@ sub _build_child_obj {
 C<Net::DHCP::Info> an older dhcpd.leases and dhcpd.conf parser, also written
 by Jan Henning Thorsen.  It has many limitations that these modules address.
 
+=item kea.isc.org
+
+C<kea.isc.org> a replacement DHCP server from ISC that is high-performance and
+supports an API and on-line configuration directly.
+
 =back
 
 =head1 BUGS

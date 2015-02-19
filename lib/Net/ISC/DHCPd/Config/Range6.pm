@@ -29,7 +29,7 @@ plain strings in the future.
 =cut
 
 use Moose;
-use NetAddr::IP::LazyInit qw(:lower);
+use NetAddr::IP qw(:lower);
 
 with 'Net::ISC::DHCPd::Config::Role';
 
@@ -93,9 +93,9 @@ sub captured_to_args {
     if ($_[1] eq 'temporary') {
         $args->{'temporary'}=1;
     } else {
-        $args->{'upper'}=NetAddr::IP::LazyInit->new($_[1]);
+        $args->{'upper'}=NetAddr::IP->new($_[1]);
     }
-    $args->{'lower'}=NetAddr::IP::LazyInit->new($_[0]);
+    $args->{'lower'}=NetAddr::IP->new($_[0]);
 
     return $args;
 }

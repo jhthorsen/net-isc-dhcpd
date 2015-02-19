@@ -77,6 +77,11 @@ SEE ALSO
             also written by Jan Henning Thorsen. It has many limitations
             that these modules address.
 
+    kea.isc.org
+            "kea.isc.org" a replacement DHCP server from ISC that is
+            high-performance and supports an API and on-line configuration
+            directly.
+
 BUGS
     Please report any bugs or feature requests to "bug-net-isc-dhcpd at
     rt.cpan.org", or through the web interface at
