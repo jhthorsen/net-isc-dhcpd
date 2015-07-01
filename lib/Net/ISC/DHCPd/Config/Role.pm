@@ -285,6 +285,12 @@ sub parse {
                 push @comments, $1;
                 next LINE;
             }
+            # lines with statements and comment, reprocess the statement and add the comment to comments array
+            if($line =~ /^(.*)\s*\#\s*(.*)/) {
+                push @comments, $2;
+                push @{$linebuf}, $1;
+                next LINE;
+            }
 
             # after semicolon or braces if there isn't a semicolon or return insert a newline
             if ($line =~ s/([;\{\}])([^;\n\r])/$1\n$2/g) {
