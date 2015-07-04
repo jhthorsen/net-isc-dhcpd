@@ -41,7 +41,7 @@ use Moose::Util::TypeConstraints;
 use MooseX::Types::Path::Class 0.05 qw(File);
 use Net::ISC::DHCPd::Types ':all';
 use File::Temp 0.20;
-use v5.12.5;
+use v5.10.1;
 
 our $VERSION = eval '0.1708';
 
@@ -275,6 +275,8 @@ Patrick
 napetrov
 
 zoffixznet
+
+Bossi
 
 =cut
 __PACKAGE__->meta->make_immutable;

@@ -22,10 +22,8 @@ DESCRIPTION
     a lease or any other thing.
 
     The distribution as a whole is targeted an audience who configure and/or
-    analyze the Internet Systems Consortium DHCP Server
-    <http://www.isc.org/software/dhcp>. If you are not familiar with the
-    server, check out the man pages
-    <http://www.google.com/search?q=man+dhcpd>.
+    analyze the <Internet Systems Consortium DHCP Server>. If you are not
+    familiar with the server, check out <the man pages>.
 
 ATTRIBUTES
   config
@@ -111,4 +109,6 @@ CONTRIBUTORS
     napetrov
 
     zoffixznet
+
+    Bossi
 
