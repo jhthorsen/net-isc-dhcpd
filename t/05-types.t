@@ -5,7 +5,7 @@ use warnings;
 use lib './lib';
 use Test::More;
 
-plan tests => 21;
+plan tests => 23;
 
 use Net::ISC::DHCPd::Types qw/:all/;
 
@@ -31,6 +31,8 @@ is(to_Time("aa:12"), 43538, "valid coerced Time");
 
 ok(!is_Mac("qwerty"), "invalid Mac");
 ok(is_Mac("11:22:33:44:55:66"), "valid Mac");
+ok(is_Mac("0:0:c0:5d:bd:95"), "valid mac with single digits");  # gh#18
+ok(is_Mac("0:0:c0:5d:BD:95"), "valid mac (uppercase)");
 is(to_Mac("1122.3344.5566"), "11:22:33:44:55:66", "valid coerced Mac");
 is(to_Mac("11-22-33-44-55-66"), "11:22:33:44:55:66", "valid coerced Mac");
 is(to_Mac("112233445566"), "11:22:33:44:55:66", "valid coerced Mac");

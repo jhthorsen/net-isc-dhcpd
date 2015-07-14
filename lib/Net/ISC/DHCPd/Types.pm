@@ -36,6 +36,8 @@ BEGIN {
     /]);
 }
 
+my $MAC_REGEX = '^'. join(':', (q{[0-9a-f]{1,2}}) x 6) . '$';
+
 =head1 TYPES
 
 =head2 HexInt
@@ -58,7 +60,7 @@ subtype HexInt, as Int;
 subtype Ip, as Str,
     where { /^[\d.]+$/ };
 subtype Mac, as Str,
-    where { /^[a-f0-9:]{17}$/i };
+    where { /$MAC_REGEX/i };
 
 subtype Time, as Int;
 
