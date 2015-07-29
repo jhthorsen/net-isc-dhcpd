@@ -8,10 +8,10 @@ sub strip_ws {
     return $_[0];
 }
 
-my $output = 'if substring (option vendor-class-identifier, 0, 4) = "MSFT" { option domain-name "inn.example.com"; } elsif 1 == 0 { } else { foo bar; } # test condition without else if substring (option vendor-class-identifier, 0, 4) = "YUFN" { option domain-name "example.com"; } if 1 == 0 { } elsif 1 == 1 { } else { } ';
+my $output = 'if substring (option vendor-class-identifier, 0, 4) = "MSFT" { option domain-name "inn.example.com"; } elsif 1 == 0 { } else { foo bar; } # test condition without else if substring (option vendor-class-identifier, 0, 4) = "YUFN" { option domain-name "example.com"; } if 1 == 0 { } elsif 1 == 1 { } else { } # gh#19 conditions should be allowed in subnets subnet 192.168.1.0 netmask 255.255.255.0 { option routers 192.168.1.1; range 192.168.1.100 192.168.1.200; nex-server 192.168.1.11; if exists user-class and option user-class = "iPXE" { filename "http://192.168.1.11/genese/ipxe/file.ipxe"; } else { filename "file2.kpxe; } } ';
 
 my $config = Net::ISC::DHCPd::Config->new(fh => \*DATA);
-is($config->parse, 16, 'Parsed 16 lines?');
+is($config->parse, 28, 'Parsed 28 lines?');
 is(scalar(@_=$config->conditionals), 7, 'config file contains seven conditions');
 is(scalar(@_=$config->conditionals->[0]->options), 1, 'one option inside condition');
 is($config->conditionals->[0]->type, 'if', 'got "if" condition');
@@ -44,3 +44,15 @@ if substring (option vendor-class-identifier, 0, 4) = "YUFN" {
 }
 
 if 1 == 0 {  } elsif 1 == 1 {   } else {    }
+
+# gh#19 conditions should be allowed in subnets
+subnet 192.168.1.0 netmask 255.255.255.0 {
+    option routers 192.168.1.1;
+    range 192.168.1.100 192.168.1.200;
+    nex-server 192.168.1.11;
+    if exists user-class and option user-class = "iPXE" {
+        filename "http://192.168.1.11/genese/ipxe/file.ipxe";
+    } else {
+        filename "file2.kpxe;
+    }
+}

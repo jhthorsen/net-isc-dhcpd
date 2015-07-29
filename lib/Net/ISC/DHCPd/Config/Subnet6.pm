@@ -37,6 +37,7 @@ See L<Net::ISC::DHCPd::Config::Role/children>.
 =cut
 sub children {
     return qw/
+        Net::ISC::DHCPd::Config::Conditional
         Net::ISC::DHCPd::Config::Host
         Net::ISC::DHCPd::Config::Pool
         Net::ISC::DHCPd::Config::Range6
