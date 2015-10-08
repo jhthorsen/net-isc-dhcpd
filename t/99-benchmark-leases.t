@@ -11,18 +11,21 @@ use File::Temp;
 plan skip_all => 'set environment variable DHCP_TORTURE_TEST to run this test' unless ($ENV{'DHCP_TORTURE_TEST'});
 
 my $count  = $ENV{'COUNT'} || 1;
-plan tests => 1 + 2 * $count;
-
+plan tests => 2 + 2 * $count;
 
 my $fh = File::Temp->new();
 my $data = do {local $/;<DATA>};
 
-my $data_repeat = 5000;
+my $data_repeat = $ENV{'DHCP_TORTURE_TEST'} > 1 ? $ENV{'DHCP_TORTURE_TEST'} : 5000;
 my $lines = ($data =~ tr/\n// + $data !~ /\n\z/) * $data_repeat;
+my $file_size = length($data) * $data_repeat;
 
 for(1..$data_repeat) {
     print $fh $data;
 }
+
+seek $fh, 0, 0;
+is(($fh->stat)[7], $file_size, 'Is file size correct?');
 
 use_ok("Net::ISC::DHCPd::Leases");
 

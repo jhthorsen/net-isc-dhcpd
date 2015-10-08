@@ -41,8 +41,8 @@ instead.
 
 use Moose;
 use Net::ISC::DHCPd::Leases::Lease;
-use POE::Filter::DHCPd::Lease 0.0701;
 use MooseX::Types::Path::Class 0.05 qw(File);
+use Time::Local;
 
 =head1 ATTRIBUTES
 
@@ -100,12 +100,6 @@ __PACKAGE__->meta->add_method(filehandle => sub {
     shift->_filehandle;
 });
 
-has _parser => (
-    is => 'ro',
-    isa => 'Object',
-    default => sub { POE::Filter::DHCPd::Lease->new },
-);
-
 =head1 METHODS
 
 =head2 parse
@@ -116,19 +110,85 @@ L</leases>.
 
 =cut
 
+our $DATE    = qr# (\d{4})/(\d\d)/(\d\d) \s (\d\d):(\d\d):(\d\d) #mxo;
+our $START   = qr#^ lease \s ([\d\.]+) \s \{ #mxo;
+our $END     = qr# } [\n\r]+ #mxo;
+our $PARSER  = qr / (?| (starts) \s\d+\s (.+?)
+                    | (ends)    \s\d+\s (.+?)
+                    | ^\s*binding \s (state) \s (\S+)
+                    | ^\s*(next) \s binding \s state \s (\S+)
+                    | hardware \s (ethernet) \s (\S+)
+                    | option \s agent.(remote-id) \s (.+?)
+                    | option \s agent.(circuit-id) \s (.+?)
+                    | client-(hostname) \s "([^"]+)"
+                    ) /mxo;
+
+
+sub _done {
+    my ($self, $lease) = @_;
+
+    for my $k (qw/starts ends/) {
+        next unless($lease->{$k});
+        if(my @values = $lease->{$k} =~ $DATE) {
+            $values[1]--; # decrease month
+            $lease->{$k} = timelocal(reverse @values);
+        }
+    }
+
+    # rather than doing this map, we need to see if we can make Moose use
+    # aliases and accept the alternate names on instantiation.  We also should
+    # be able to do the mac address cleanup and validation in the
+    # Net::ISC::DHCPd::Leases::Lease->new
+
+    my %map = (
+        'circuit-id' => 'circuit_id',
+        'remote-id'  => 'remote_id',
+        ip           => 'ip_address',
+        hostname     => 'client_hostname',
+        ethernet     => 'hardware_address',
+    );
+
+    for my $key (keys %map) {
+        if(defined $lease->{$key}) {
+            $lease->{ $map{$key} } = delete $lease->{$key};
+        }
+    }
+    return $lease;
+
+}
+
 sub parse {
     my $self = shift;
     my $fh = $self->_filehandle;
-    my $parser = $self->_parser;
 
-    read $fh, my $buffer, -s $fh or die "Couldn't read file: $!";
-    $parser->get_one_start([$buffer]);
+    sysread $fh, my $buffer, -s $fh or die "Couldn't read file: $!";
+    my $lines = 0;
+    my $lease;
     while(1) {
-        my $leases = $parser->get_one;
-        last unless (@$leases);
-        $self->add_lease($leases->[0]);
+        my $string;
+        # look for lines with \r\n endings
+        if($buffer =~ /^(.*?\x0d?\x0a)/s) {
+            my $length = length $1;
+            $string = substr($buffer,0,$length,'');
+        }
+
+        last unless $string;
+        ++$lines;
+
+        if ($lease) {
+            if ($string =~ /$PARSER;/) {
+                $lease->{$1} =  $2;
+            } elsif($string =~ /.*?$END/) {
+                push @{$self->leases}, Net::ISC::DHCPd::Leases::Lease->new($self->_done($lease));
+                $lease = undef;
+                next;
+            }
+        } elsif(!$lease and $string =~ /$START/) {
+            $lease = { ip => $1 };
+        }
     }
-    return ($buffer =~ tr/\n// + $buffer !~ /\n\z/);
+
+    return $lines;
 }
 
 =head2 find_leases
@@ -153,37 +213,6 @@ sub find_leases {
     }
 
     return @leases;
-}
-
-=head2 add_lease
-
-This method does not make much sense, and will probably get removed.
-See L</DESCRIPTION> for more details.
-
-=cut
-
-sub add_lease {
-    my $self  = shift;
-
-    if(ref $_[0] eq 'Net::ISC::DHCPd::Leases::Lease') {
-        return push @{$self->leases}, $_[0];
-    }
-
-    my %lease = %{ $_[0] }; # shallow copy
-    my %map = (
-        ip      => 'ip_address',
-        binding => 'state',
-        hostname => 'client_hostname',
-        hw_ethernet => 'hardware_address',
-    );
-
-    for my $key (keys %map) {
-        if(defined $lease{$key}) {
-            $lease{ $map{$key} } = delete $lease{$key};
-        }
-    }
-
-    return push @{$self->leases}, Net::ISC::DHCPd::Leases::Lease->new(\%lease);
 }
 
 =head1 COPYRIGHT & LICENSE

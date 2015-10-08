@@ -13,9 +13,10 @@ requires q(MooseX::Types) => 0.12;
 requires q(MooseX::Types::Path::Class) => 0.05;
 requires q(NetAddr::IP) => 4.0;
 requires q(Path::Class) => 0.19;
-requires q(POE::Filter::DHCPd::Lease) => 0.0701;
 requires q(Time::HiRes) => 1.90;
 requires q(Class::Load) => 0.20;
+requires q(Class::Load) => 0.20;
+requires q(Time::Local) => 1.18;
 
 test_requires q(Benchmark) => 1.0;
 test_requires q(Test::More) => 0.90;
