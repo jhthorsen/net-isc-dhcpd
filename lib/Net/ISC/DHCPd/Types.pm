@@ -90,8 +90,6 @@ declare LeasesObject,
     as InstanceOf['Net::ISC::DHCPd::Leases'];
 declare OMAPIObject,
     as InstanceOf['Net::ISC::DHCPd::OMAPI'];
-declare ProcessObject,
-    as InstanceOf['Net::ISC::DHCPd::Process'];
 
 # these are strictly needed for their coercions
 declare HexInt, as Int;
@@ -143,11 +141,6 @@ coerce LeasesObject, from HashRef, q{
 coerce OMAPIObject, from HashRef, q{
     eval "require Net::ISC::DHCPd::OMAPI" or confess $@;
     Net::ISC::DHCPd::OMAPI->new($_);
-};
-
-coerce ProcessObject, from HashRef, q{
-    eval "require Net::ISC::DHCPd::Process" or confess $@;
-    Net::ISC::DHCPd::Process->new($_);
 };
 
 # these need to be converted to overloads so that we output the correct
