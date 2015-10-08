@@ -5,17 +5,9 @@ use warnings;
 use lib './lib';
 use Test::More;
 
-plan tests => 23;
+plan tests => 22;
 
 use Net::ISC::DHCPd::Types qw/:all/;
-
-my @required_types = qw/
-    HexInt Ip Mac State Time Statements FailoverState
-    ConfigObject LeasesObject OMAPIObject ProcessObject
-/;
-my @types = Net::ISC::DHCPd::Types->get_type_list;
-
-is_deeply(\@required_types, \@types, "all types defined");
 
 ok(!is_State(""), "invalid State");
 ok(is_State("expired"), "valid State");
