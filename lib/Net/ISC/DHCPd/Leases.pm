@@ -31,12 +31,6 @@ The object has one important attribute, which is L</leases>. This
 attribute holds a list of L<Net::ISC::DHCPd::Leases::Lease> objects
 constructed from all the leases found in the leases file.
 
-To parse the leases file, this module use L<POE::Filter::DHCPd::Lease>,
-but this can be customized by setting C<_parser> in the constructor.
-Even though it is possible, it is recommended to add features/
-bugfixes to L<POE::Filter::DHCPd::Lease|https://rt.cpan.org/Public/Dist/Display.html?Name=POE-Filter-DHCPd-Lease>
-instead.
-
 =cut
 
 use Moose;
@@ -179,7 +173,10 @@ sub parse {
             if ($string =~ /$PARSER;/) {
                 $lease->{$1} =  $2;
             } elsif($string =~ /.*?$END/) {
+                # just removing this class object cuts our time in half..
+                # the coercion checks and things slow us down a bunch.
                 push @{$self->leases}, Net::ISC::DHCPd::Leases::Lease->new($self->_done($lease));
+                #push @{$self->leases}, $self->_done($lease);
                 $lease = undef;
                 next;
             }
