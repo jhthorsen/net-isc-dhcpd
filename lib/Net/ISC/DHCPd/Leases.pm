@@ -35,8 +35,8 @@ constructed from all the leases found in the leases file.
 
 use Moo;
 use Net::ISC::DHCPd::Leases::Lease;
-use Types::Path::Tiny qw (Path);
-use MooX::Types::MooseLike::Base qw(:all); # for ArrayRef
+use Types::Path::Tiny qw ( Path );
+use Types::Standard qw ( ArrayRef FileHandle );
 use Time::Local;
 
 =head1 ATTRIBUTES
@@ -50,8 +50,6 @@ Holds a list of all the leases found after reading the leases file.
 has leases => (
     is => 'ro',
     isa => ArrayRef,
-    # this is our current issue.  Moo doesn't support auto_deref
-    auto_deref => 1,
     default => sub { [] },
 );
 
@@ -65,10 +63,8 @@ It is read-write and the default value is "/var/lib/dhcp3/dhcpd.leases".
 has file => (
     is => 'rw',
     isa => Path,
-    coerce => Path->coercion,
-    default => sub {
-        Types::Path::Tiny->new('var/lib/dhcp3/dhcpd.leases');
-    },
+    coerce => 1,
+    default => sub { '/var/lib/dhcp3/dhcpd.leases' }
 );
 
 has fh => (

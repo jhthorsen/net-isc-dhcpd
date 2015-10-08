@@ -20,14 +20,14 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose;
+use Moo;
 use Net::ISC::DHCPd::Types 'Mac';
 
-with 'Net::ISC::DHCPd::Config::Role';
+with('Net::ISC::DHCPd::Config::Role');
 
 # not sure how I feel about the overload.  I would rather coerce the values
 # into a Mac type, but I want case preserved from input to output.  I only
-# want comparisions to be insensitive.
+# want comparisons to be insensitive.
 
 use overload '==' => \&myequals,
              'eq' => \&myequals,
@@ -37,7 +37,7 @@ use overload '==' => \&myequals,
 
 =head2 myequals
 
-equality check overload for case insensitive comparision
+equality check overload for case insensitive comparison
 
 =cut
 
@@ -62,7 +62,7 @@ Value of the option - See L</DESCRIPTION> for details.
 has value => (
     is => 'ro',
     isa => Mac,
-    coerce => 1,
+    coerce => Mac->coercion,
 );
 
 =head2 regex
@@ -82,11 +82,7 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 =cut
 
 sub captured_to_args {
-    my $value  = shift;
-
-    return {
-        value  => $value,
-    };
+    { value => $_[0] };
 }
 
 =head2 generate
@@ -107,5 +103,5 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
+
 1;

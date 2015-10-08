@@ -5,7 +5,7 @@ use warnings;
 use lib './lib';
 use Test::More;
 
-plan tests => 23;
+plan tests => 24;
 
 use Net::ISC::DHCPd::Types qw/:all/;
 
@@ -39,5 +39,20 @@ is(to_Statements([qw/foo bar/]), "foo,bar", "valid coerced Statements");
 
 use Net::ISC::DHCPd::Config;
 my $config = Net::ISC::DHCPd::Config->new();
-
 ok(is_ConfigObject($config), 'valid ConfigObject');
+
+my $lease = {
+          'ends' => 1218879891,
+          'ip_address' => '10.19.83.198',
+          'starts' => 1218850831,
+          'hardware_address' => '00:12:f0:50:06:48',
+          'state' => 'free'
+        };
+
+# I need to find out why this is returning an empty leases value..
+my $result = {
+                 'leases' => [],
+                 'file' => '/var/lib/dhcp3/dhcpd.leases',
+               };
+
+is_deeply(to_LeasesObject($lease), $result, 'valid coerced LeaseObject');

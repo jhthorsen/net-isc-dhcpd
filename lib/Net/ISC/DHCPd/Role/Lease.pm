@@ -11,7 +11,8 @@ and L<Net::ISC::DHCPd::OMAPI::Actions>.
 
 =cut
 
-use Moose::Role;
+use Moo::Role;
+use Types::Standard -types;
 use Net::ISC::DHCPd::OMAPI::Sugar;
 
 =head1 ATTRIBUTES
@@ -46,7 +47,7 @@ Actions: none.
 =cut
 
 omapi_attr billing_class => (
-    isa => 'Any',
+    isa => Any,
 );
 
 =head2 circuit_id
@@ -60,7 +61,7 @@ Circuit ID from Relay Agent Option 82.
 
 omapi_attr circuit_id => (
     is => 'rw',
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 client_hostname
@@ -75,7 +76,7 @@ Actions: examine, modify.
 =cut
 
 omapi_attr client_hostname => (
-    isa => 'Str',
+    isa => Str,
     actions => [qw/examine modify/],
 );
 
@@ -91,7 +92,7 @@ Actions: examine.
 =cut
 
 omapi_attr cltt => (
-    isa => Time,
+    isa => 'Time',
     actions => [qw/examine/],
 );
 
@@ -108,7 +109,7 @@ Actions: examine, lookup, modify.
 =cut
 
 omapi_attr dhcp_client_identifier => (
-    isa => 'Str',
+    isa => Str,
     actions => [qw/examine lookup modify/],
 );
 
@@ -127,7 +128,7 @@ Note: This attribute can only be modified from ISC-DHCP-4.1.0.
 =cut
 
 omapi_attr ends => (
-    isa => Time,
+    isa => 'Time',
     actions => [qw/examine modify/],
 );
 
@@ -141,7 +142,7 @@ Actions: none.
 =cut
 
 omapi_attr flags => (
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 host
@@ -174,7 +175,7 @@ Actions: examine, lookup.
 =cut
 
 omapi_attr ip_address => (
-    isa => Ip,
+    isa => 'Ip',
     actions => [qw/examine lookup/],
 );
 
@@ -191,7 +192,7 @@ Actions: examine.
 =cut
 
 omapi_attr pool => (
-    isa => 'Any',
+    isa => Any,
     actions => [qw/examine/],
 );
 
@@ -206,7 +207,7 @@ Remote ID from Relay Agent Option 82.
 
 omapi_attr remote_id => (
     is => 'rw',
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 starts
@@ -221,7 +222,7 @@ Actions: examine.
 =cut
 
 omapi_attr starts => (
-    isa => Time,
+    isa => 'Time',
     actions => [qw/examine/],
 );
 
@@ -238,7 +239,7 @@ Actions: examine, lookup.
 =cut
 
 omapi_attr state => (
-    isa => State,
+    isa => 'State',
     actions => [qw/examine lookup/],
 );
 
@@ -255,7 +256,7 @@ Actions: examine.
 =cut
 
 omapi_attr subnet => (
-    isa => 'Any',
+    isa => Any,
     actions => [qw/examine/],
 );
 
@@ -275,7 +276,7 @@ Actions: examine.
 =cut
 
 omapi_attr tsfp => (
-    isa => Time,
+    isa => 'Time',
     actions => [qw/examine/],
 );
 
@@ -291,7 +292,7 @@ Actions: examine.
 =cut
 
 omapi_attr tstp => (
-    isa => Time,
+    isa => 'Time',
     actions => [qw/examine/],
 );
 
@@ -308,7 +309,7 @@ Actions: examine, modify.
 =cut
 
 omapi_attr hardware_address => (
-    isa => Mac,
+    isa => 'Mac',
     actions => [qw/examine lookup modify/],
 );
 
@@ -325,7 +326,7 @@ Actions: examine, modify.
 =cut
 
 omapi_attr hardware_type => (
-    isa => HexInt,
+    isa => 'HexInt',
     actions => [qw/examine modify/],
 );
 

@@ -3,7 +3,7 @@ use Test::More;
 use warnings;
 use strict;
 
-my $config = Net::ISC::DHCPd::Config->new(fh => \*DATA, , file => "./t/data/dhcpd.conf");
+my $config = Net::ISC::DHCPd::Config->new(fh => \*DATA, file => "./t/data/dhcpd.conf");
 is($config->parse, 3, 'Parsed 3 lines?');
 
 my $include = $config->includes->[0];

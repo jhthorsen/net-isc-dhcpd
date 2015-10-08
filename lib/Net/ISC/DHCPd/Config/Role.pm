@@ -19,7 +19,8 @@ This can be turned off by adding the line below before calling L</parse>.
 =cut
 
 use Class::Load;
-use Moose::Role;
+use Moo::Role;
+use Types::Standard qw( Object Int ArrayRef FileHandle CodeRef );
 
 requires 'generate';
 
@@ -46,7 +47,7 @@ The root node in the config tree.
 
 has root => (
     is => 'ro',
-    isa => 'Object',
+    isa => Object,
     weak_ref => 1,
     default => sub { $_[0] },
 );
@@ -59,7 +60,7 @@ Integer value that counts how far this node is from the root node.
 
 has depth => (
     is => 'ro',
-    isa => 'Int',
+    isa => Int,
     lazy => 1,
     builder => '_build_depth',
 );
@@ -136,7 +137,7 @@ sub children { }
 # actual children
 has _children => (
     is => 'ro',
-    isa => 'ArrayRef',
+    isa => ArrayRef,
     default => sub { [] },
 );
 
@@ -172,6 +173,7 @@ THIS IS A STATIC METHOD.  SELF is not used.
 
 has _filehandle => (
     is => 'ro',
+    isa => FileHandle,
     lazy_build => 1,
 );
 
@@ -242,7 +244,7 @@ Callback for changing file paths when include files are on different relative pa
 
 has filename_callback => (
     is => 'rw',
-    isa => 'CodeRef',
+    isa => CodeRef,
 );
 
 =head2 parse

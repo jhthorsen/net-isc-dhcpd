@@ -12,11 +12,12 @@ Net::ISC::DHCPd::OMAPI::Sugar - Moose sugar for omapi classes
 
 =cut
 
-use Moose;
+use Moo;
+use Carp;
 use Net::ISC::DHCPd::Types ':all';
 use Moose::Exporter;
 
-my @types = Net::ISC::DHCPd::Types->get_type_list;
+my @types = @Net::ISC::DHCPd::Types::types;
 
 =head1 FUNCTIONS
 
@@ -68,6 +69,7 @@ sub omapi_attr {
     }
 }
 
+# needs to be converted to Exporter::Tiny or something..
 Moose::Exporter->setup_import_methods(
     with_caller => [qw/omapi_attr/],
     as_is => \@types,
@@ -80,5 +82,5 @@ Moose::Exporter->setup_import_methods(
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
+
 1;

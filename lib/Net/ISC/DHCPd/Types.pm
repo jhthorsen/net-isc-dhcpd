@@ -11,12 +11,7 @@ Net::ISC::DHCPd::Types - Moo type constraint declaration
 
 =cut
 
-use strict;
-use warnings;
-use Sub::Quote qw(quote_sub);
-use Types::Standard -all;
-use Type::Utils qw(declare as where inline_as coerce from);
-use Type::Library -base, -declare => qw(
+our @types = qw(
     State
     HexInt
     FailoverState
@@ -26,12 +21,15 @@ use Type::Library -base, -declare => qw(
     ConfigObject
     LeasesObject
     OMAPIObject
-    ProcessObject
     Statements
 );
 
+use Type::Library -base, -declare => @types;
+use Types::Standard -types;
+use Type::Utils -all;
+use Sub::Quote qw( quote_sub );
 
-my @failover_states = (
+our @failover_states = (
     'na',                     'partner down',
     'normal',                 'communications interrupted',
     'resolution interrupted', 'potential conflict',
@@ -39,12 +37,12 @@ my @failover_states = (
     'shutdown',               'paused',
     'startup',                'recover wait',
 );
-my @states = qw/
+our @states = qw/
     na free active expired released
     abandoned reset backup reserved bootp
 /;
 
-my $MAC_REGEX = '^'. join(':', (q{[0-9a-f]{2}}) x 6) . '$';
+my $MAC_REGEX = '^'. join(':', (q{[0-9a-f]{1,2}}) x 6) . '$';
 
 =head1 TYPES
 
@@ -66,22 +64,19 @@ my $MAC_REGEX = '^'. join(':', (q{[0-9a-f]{2}}) x 6) . '$';
 
 =head2 OMAPIObject
 
-=head2 ProcessObject
-
 =head2 Statements
 
 =cut
 
-
 declare State,
     as Str,
-    constraint => quote_sub q{ our $s = $_; return grep { $s eq $_ } @Net::ISC::DHCPd::Types::states };
+    constraint => quote_sub q{ my $s = $_; grep { $s eq $_ } @Net::ISC::DHCPd::Types::states };
 
 declare FailoverState,
     as Str,
-    constraint => quote_sub q{ our $s = $_; return grep { $s eq $_ } @Net::ISC::DHCPd::Types::failover_states };
+    constraint => quote_sub q{ my $s = $_; grep { $s eq $_ } @Net::ISC::DHCPd::Types::failover_states };
 
-declare Mac, as StrMatch[qr/$MAC_REGEX/];
+declare Mac, as StrMatch[qr/$MAC_REGEX/i];
 declare Ip, as StrMatch[qr/^[\d.]+$/];
 declare Statements, as StrMatch[qr/^[\w,]+$/];
 declare ConfigObject,
@@ -100,8 +95,7 @@ declare Time, as Int;
 # them electively later.
 
 coerce State,
-    from Str, q{ /(\d+)$/ ? $Net::ISC::DHCP::Types::states[$1] : undef };
-    from Int, q{ $Net::ISC::DHCP::Types::states[$_[0]] };
+    from Int, q{ $Net::ISC::DHCPd::Types::states[$_] };
 
 coerce HexInt,
     from Str, q{ s/://g; hex $_ };
@@ -118,7 +112,7 @@ coerce Mac,
             # the following line handles mac addresses in the format of 123456789101
             # or any other weirdness the above didn't take care of.
             $_ = $str;
-            return join ':', /(\w\w)/g; # rejoin with colons
+            join ':', /(\w\w)/g; # rejoin with colons
     };
 
 coerce Time,
@@ -142,9 +136,6 @@ coerce OMAPIObject, from HashRef, q{
     eval "require Net::ISC::DHCPd::OMAPI" or confess $@;
     Net::ISC::DHCPd::OMAPI->new($_);
 };
-
-# these need to be converted to overloads so that we output the correct
-# values?
 
 =head2 from_State
 

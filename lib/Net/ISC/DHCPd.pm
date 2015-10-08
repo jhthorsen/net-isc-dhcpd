@@ -35,12 +35,12 @@ L<the man pages|http://www.google.com/search?q=man+dhcpd>.
 
 =cut
 
-use Class::Load 0.20;
-use Moose 0.90;
-use Moose::Util::TypeConstraints;
-use MooseX::Types::Path::Class 0.05 qw(File);
+use Moo;
+use Types::Standard -types;
+use Types::Path::Tiny qw ( Path );
 use Net::ISC::DHCPd::Types ':all';
 use File::Temp 0.20;
+use Class::Load 0.20;
 use v5.10.1;
 
 our $VERSION = eval '0.1708';
@@ -107,7 +107,7 @@ It is read-only and the default is "dhcpd3".
 
 has binary => (
     is => 'ro',
-    isa => File,
+    isa => Path,
     coerce => 1,
     default => 'dhcpd3',
 );
@@ -120,7 +120,7 @@ Holds the last know error as a plain string.  This only applies to OMAPI.
 
 has errstr => (
     is => 'rw',
-    isa => 'Str',
+    isa => Str,
     default => '',
 );
 
@@ -208,8 +208,7 @@ sub _run {
         close $reader;
         open STDERR, '>&', $writer or confess $!;
         open STDOUT, '>&', $writer or confess $!;
-        { exec $self->binary, @args }
-        confess "Exec() failed";
+        { exec $self->binary, @args }; confess $!;
     }
 
     return ''; # fork failed. check $!
@@ -279,5 +278,5 @@ zoffixznet
 Bossi
 
 =cut
-__PACKAGE__->meta->make_immutable;
+
 1;
