@@ -11,16 +11,23 @@ use File::Temp;
 plan skip_all => 'set environment variable DHCP_TORTURE_TEST to run this test' unless ($ENV{'DHCP_TORTURE_TEST'});
 
 my $count  = $ENV{'COUNT'} || 1;
-plan tests => 1 + 3 * $count;
+plan tests => 2 + 3 * $count;
 
 use_ok("Net::ISC::DHCPd::Config");
 
 my $fh = File::Temp->new();
 my $data = do {local $/;<DATA>};
 
-for(1..20000) {
+my $data_repeat = $ENV{'DHCP_TORTURE_TEST'} > 1 ? $ENV{'DHCP_TORTURE_TEST'} : 20000;
+my $file_size = length($data) * $data_repeat;
+my $subnet_count = $data_repeat;
+
+for(1..$data_repeat) {
     print $fh $data;
 }
+
+seek $fh, 0, 0;
+is(($fh->stat)[7], $file_size, 'Is file size correct?');
 
 my $time = timeit($count, sub {
 
@@ -28,9 +35,9 @@ my $time = timeit($count, sub {
     my $config = Net::ISC::DHCPd::Config->new(fh => $fh);
     $config->parse();
 
-    is(scalar(@_=$config->subnets), 20000, 'Are there 20000 distinct subnets?');
-    is(scalar(@_=$config->groups), 20000, 'Are there 20000 distinct groups?');
-    is(scalar(@_=$config->includes), 20000, 'Are there 20000 distinct includes?');
+    is(scalar(@_=$config->subnets), $subnet_count, 'Are there xxx distinct subnets?');
+    is(scalar(@_=$config->groups), $subnet_count, 'Are there xxx distinct groups?');
+    is(scalar(@_=$config->includes), $subnet_count, 'Are there xxx distinct includes?');
 });
 
 __DATA__
@@ -77,7 +84,7 @@ group "Cats" {
 
         host hostything
         {
-            hardware ethernet 00:xx:xx:xx:xx:xx;
+            hardware ethernet 00:ff:ff:ff:ff:ff;
             fixed-address 127.0.0.1;
         }
 

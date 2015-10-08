@@ -109,11 +109,19 @@ coerce HexInt, (
 );
 
 coerce Ip, (
-    from Str, via { join ".", map { hex $_ } split /:/ },
+    from Str, via { join '.', map { hex $_ } split /:/ },
 );
 
 coerce Mac, (
-    from Str, via { s/[\-\.:]//g; join ":", /(\w\w)/g },
+    from Str, via {
+            my @mac = split /[\-\.:]/;
+            my $format = scalar @mac == 3 ? '%04s' : '%02s';
+            my $str = join '', map { sprintf $format, $_ } @mac; # fix single digits 0:x:ff:00:00:01
+            # the following line handles mac addresses in the format of 123456789101
+            # or any other weirdness the above didn't take care of.
+            $_ = $str;
+            return join ':', /(\w\w)/g; # rejoin with colons
+    },
 );
 
 coerce Time, (
