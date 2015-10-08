@@ -36,7 +36,7 @@ BEGIN {
     /]);
 }
 
-my $MAC_REGEX = '^'. join(':', (q{[0-9a-f]{1,2}}) x 6) . '$';
+my $MAC_REGEX = '^'. join(':', (q{[0-9a-f]{2}}) x 6) . '$';
 
 =head1 TYPES
 
