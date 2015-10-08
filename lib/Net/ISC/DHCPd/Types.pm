@@ -13,6 +13,7 @@ Net::ISC::DHCPd::Types - Moo type constraint declaration
 
 use strict;
 use warnings;
+use Sub::Quote qw(quote_sub);
 use Types::Standard -all;
 use Type::Utils qw(declare as where inline_as coerce from);
 use Type::Library -base, -declare => qw(
@@ -74,27 +75,27 @@ my $MAC_REGEX = '^'. join(':', (q{[0-9a-f]{2}}) x 6) . '$';
 
 declare State,
     as Str,
-    where { our $s = $_; return grep { $s eq $_ } @states };
+    constraint => quote_sub q{ our $s = $_; return grep { $s eq $_ } @Net::ISC::DHCPd::Types::states };
 
 declare FailoverState,
     as Str,
-    where { our $s = $_; return grep { $s eq $_ } @failover_states };
+    constraint => quote_sub q{ our $s = $_; return grep { $s eq $_ } @Net::ISC::DHCPd::Types::failover_states };
 
 declare Mac, as StrMatch[qr/$MAC_REGEX/];
 declare Ip, as StrMatch[qr/^[\d.]+$/];
 declare Statements, as StrMatch[qr/^[\w,]+$/];
+declare ConfigObject,
+    as InstanceOf['Net::ISC::DHCPd::Config'];
+declare LeasesObject,
+    as InstanceOf['Net::ISC::DHCPd::Leases'];
+declare OMAPIObject,
+    as InstanceOf['Net::ISC::DHCPd::OMAPI'];
+declare ProcessObject,
+    as InstanceOf['Net::ISC::DHCPd::Process'];
 
 # these are strictly needed for their coercions
 declare HexInt, as Int;
 declare Time, as Int;
-declare ConfigObject,
-    as Object;
-declare LeasesObject,
-    as Object;
-declare OMAPIObject,
-    as Object;
-declare ProcessObject,
-    as Object;
 
 # coercions
 # we will probably want to change these to declare_coercion so that we can use

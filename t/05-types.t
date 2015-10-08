@@ -5,7 +5,7 @@ use warnings;
 use lib './lib';
 use Test::More;
 
-plan tests => 22;
+plan tests => 23;
 
 use Net::ISC::DHCPd::Types qw/:all/;
 
@@ -37,3 +37,7 @@ ok(!is_Statements("hello-world"), "invalid Statements");
 ok(is_Statements("foo,bar"), "valid Statements");
 is(to_Statements([qw/foo bar/]), "foo,bar", "valid coerced Statements");
 
+use Net::ISC::DHCPd::Config;
+my $config = Net::ISC::DHCPd::Config->new();
+
+ok(is_ConfigObject($config), 'valid ConfigObject');
