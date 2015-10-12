@@ -54,7 +54,10 @@ This variable will enable debug output.
 
 =cut
 
-use Moose;
+use Moo;
+use Types::Standard qw ( Str Int FileHandle );
+use namespace::autoclean 0.16;
+use Carp qw ( confess );
 use IO::Pty;
 use Time::HiRes qw/usleep/;
 use Net::ISC::DHCPd::OMAPI::Control;
@@ -77,7 +80,7 @@ remote dhcpd server address. Default value is "127.0.0.1".
 
 has server => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
     default => '127.0.0.1',
 );
 
@@ -90,7 +93,7 @@ the remote dhcpd server port. Default value is "7911".
 
 has port => (
     is => 'ro',
-    isa => 'Int',
+    isa => Int,
     default => 7911,
 );
 
@@ -105,7 +108,7 @@ servers without a secret to log in.
 
 has key => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
     default => '',
 );
 
@@ -117,13 +120,14 @@ Holds the last know error as a plain string.
 
 has errstr => (
     is => 'rw',
-    isa => 'Str',
+    isa => Str,
     default => '',
 );
 
 # meant for internal usage
 has _fh => (
-    is => 'ro',
+    is => 'lazy',
+    isa => FileHandle,
     lazy => 1,
     builder => '_build__fh',
     clearer => '_clear__fh',
@@ -131,7 +135,7 @@ has _fh => (
 
 has _pid => (
     is => 'rw',
-    isa => 'Int',
+    isa => Int,
 );
 
 # fork omshell and return an IO::Pty object
@@ -324,5 +328,4 @@ sub new_object {
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;
