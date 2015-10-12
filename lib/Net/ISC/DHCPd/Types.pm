@@ -88,7 +88,7 @@ declare OMAPIObject,
 
 # these are strictly needed for their coercions
 declare HexInt, as Int;
-declare Time, as Int;
+declare 'Time', as Int;
 
 # coercions
 # we will probably want to change these to declare_coercion so that we can use
@@ -115,7 +115,7 @@ coerce Mac,
             join ':', /(\w\w)/g; # rejoin with colons
     };
 
-coerce Time,
+coerce 'Time',
     from Str, q{ s/://g; hex $_ };
 
 coerce Statements,

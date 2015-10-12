@@ -55,7 +55,7 @@ has leases => (
 
 =head2 file
 
-This attribute holds a L<Path::Class::File> object to the leases file.
+This attribute holds a L<Types::Path::Tiny> object to the leases file.
 It is read-write and the default value is "/var/lib/dhcp3/dhcpd.leases".
 
 =cut

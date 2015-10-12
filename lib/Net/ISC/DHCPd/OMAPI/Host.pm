@@ -22,8 +22,9 @@ L<Net::ISC::DHCPd::OMAPI::Meta::Attribute>.
 
 =cut
 
+use Moo;
 use Net::ISC::DHCPd::OMAPI::Sugar;
-use Moose;
+use Types::Standard qw ( Bool );
 
 with 'Net::ISC::DHCPd::OMAPI::Actions';
 
@@ -122,7 +123,7 @@ omapi_attr ip_address => (
 =cut
 
 omapi_attr known => (
-    isa => 'Bool',
+    isa => Bool,
     actions => [qw/examine modify/],
 );
 

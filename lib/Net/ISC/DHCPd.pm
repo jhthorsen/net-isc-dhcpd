@@ -58,7 +58,7 @@ The hash-ref will then be passed on to the constructor.
 has config => (
     is => 'ro',
     isa => ConfigObject,
-    coerce => 1,
+    coerce => ConfigObject->coercion,
     lazy_build => 1,
 );
 
@@ -75,7 +75,7 @@ The hash-ref will then be passed on to the constructor.
 has leases => (
     is => 'ro',
     isa => LeasesObject,
-    coerce => 1,
+    coerce => LeasesObject->coercion,
     lazy_build => 1,
 );
 
@@ -92,7 +92,7 @@ The hash-ref will then be passed on to the constructor.
 has omapi => (
     is => 'ro',
     isa => OMAPIObject,
-    coerce => 1,
+    coerce => OMAPIObject->coercion,
     lazy_build => 1,
 );
 
@@ -108,7 +108,7 @@ It is read-only and the default is "dhcpd3".
 has binary => (
     is => 'ro',
     isa => Path,
-    coerce => 1,
+    coerce => Path->coercion,
     default => 'dhcpd3',
 );
 

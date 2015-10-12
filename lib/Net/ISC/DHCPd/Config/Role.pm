@@ -20,24 +20,12 @@ This can be turned off by adding the line below before calling L</parse>.
 
 use Class::Load;
 use Moo::Role;
+use Path::Tiny;
 use Types::Standard qw( Object Int ArrayRef FileHandle CodeRef );
 
 requires 'generate';
 
 =head1 ATTRIBUTES
-
-=head2 parent
-
-The parent node in the config tree. This must be an object which does
-this role.
-
-=cut
-
-has parent => (
-    is => 'rw',
-    does => 'Net::ISC::DHCPd::Config::Role',
-    weak_ref => 1,
-);
 
 =head2 root
 
@@ -193,7 +181,7 @@ sub _build__filehandle {
     $file = $self->file;
 
     if($file->is_relative and !-e $file) {
-        $file = Path::Class::File->new($self->root->file->dir, $file);
+        $file = Path::Tiny->new($self->root->file->dir . $file);
     }
 
     return $file->openr;

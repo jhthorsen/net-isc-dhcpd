@@ -14,7 +14,7 @@ This class does the role L<Net::ISC::DHCPd::Role::Lease>.
 
 =cut
 
-use Moose;
+use Moo;
 
 with qw/Net::ISC::DHCPd::Role::Lease/;
 

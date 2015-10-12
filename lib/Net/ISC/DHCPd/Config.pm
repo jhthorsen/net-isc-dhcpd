@@ -105,7 +105,7 @@ This class does the role L<Net::ISC::DHCPd::Config::Root>.
 
 =cut
 
-use Moose;
+use Moo;
 
 with 'Net::ISC::DHCPd::Config::Root';
 
@@ -164,21 +164,6 @@ See L<Net::ISC::DHCPd::Config::Role/parent>.
 =head2 root
 
 See L<Net::ISC::DHCPd::Config::Role/root>.
-
-=head2 parent
-
-This attribute is different from L<Net::ISC::DHCPd::Config::Role/parent>:
-It holds an undefined value, which is used to indicate that this object
-is the top node in the tree. See L<Net::ISC::DHCPd::Config::Include>
-if you want a different behavior.
-
-=cut
-
-has parent => (
-    is => 'ro',
-    isa => 'Undef',
-    default => sub { undef },
-);
 
 =head2 children
 
@@ -261,5 +246,4 @@ See L<Net::ISC::DHCPd::Config::Root/generate>.
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

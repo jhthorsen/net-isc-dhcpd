@@ -24,10 +24,11 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose;
+use Moo;
+use Types::Standard qw ( Str );
+use Net::ISC::DHCPd::Config;
 with 'Net::ISC::DHCPd::Config::Role';
 
-use Net::ISC::DHCPd::Config;
 
 =head1 ATTRIBUTES
 
@@ -52,7 +53,7 @@ of the function. Example: "commit".
 
 has name => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 
@@ -99,5 +100,4 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

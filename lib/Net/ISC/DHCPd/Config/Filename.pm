@@ -19,9 +19,9 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose 0.90;
-use Path::Class::File 0.19;
-use MooseX::Types::Path::Class 0.05 qw(File);
+use Moo 0.90;
+use Path::Tiny;
+use Types::Path::Tiny qw ( Path );
 
 with 'Net::ISC::DHCPd::Config::Role';
 
@@ -29,13 +29,13 @@ with 'Net::ISC::DHCPd::Config::Role';
 
 =head2 file
 
-This attribute hold a L<Path::Class::File> object.
+This attribute holds L<Types::Path::Tiny> object.
 
 =cut
 
 has file => (
     is => 'rw',
-    isa => File,
+    isa => Path,
     coerce => 1,
 );
 
@@ -56,7 +56,7 @@ See L<Net::ISC::DHCPd::Config::Role/captured_to_args>.
 =cut
 
 sub captured_to_args {
-    return { file => Path::Class::File->new($_[0]) };
+    return { file => Path::Tiny->new($_[0]) };
 }
 
 =head2 generate
@@ -76,5 +76,4 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

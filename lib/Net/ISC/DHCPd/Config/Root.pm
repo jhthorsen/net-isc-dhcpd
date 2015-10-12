@@ -11,8 +11,9 @@ and L<Net::ISC::DHCPd::Config::Include>.
 
 =cut
 
-use Moose::Role;
-use MooseX::Types::Path::Class 0.05 qw(File);
+use Moo::Role;
+use Types::Path::Tiny qw ( Path );
+use Types::Standard qw( FileHandle Undef );
 
 with 'Net::ISC::DHCPd::Config::Role';
 
@@ -20,23 +21,37 @@ with 'Net::ISC::DHCPd::Config::Role';
 
 =head2 file
 
-This attribute holds a L<Path::Class::File> object representing
+This attribute holds a L<Types::Path::Tiny> object representing
 path to a config file. Default value is "/etc/dhcp3/dhcpd.conf".
+
+=head2 parent
+
+This attribute is different from L<Net::ISC::DHCPd::Config::Role/parent>:
+It holds an undefined value, which is used to indicate that this object
+is the top node in the tree. See L<Net::ISC::DHCPd::Config::Include>
+if you want a different behavior.
 
 =cut
 
+has parent => (
+    is => 'lazy',
+    lazy_build => 1,
+    isa => Undef,
+);
+
+sub _build_parent { undef };
 
 has fh => (
     is => 'rw',
-    isa => 'FileHandle',
+    isa => FileHandle,
     required => 0,
 );
 
 has file => (
     is => 'rw',
-    isa => File,
+    isa => Path,
     coerce => 1,
-    default => sub { Path::Class::File->new('', 'etc', 'dhcp3', 'dhcpd.conf') },
+    default => sub { 'etc/dhcp3/dhcpd.conf' },
 );
 
 =head1 METHODS

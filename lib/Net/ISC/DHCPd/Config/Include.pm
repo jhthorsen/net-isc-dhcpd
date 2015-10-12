@@ -24,9 +24,10 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose;
-use Path::Class::File;
-use  Net::ISC::DHCPd::Config;
+use Moo;
+use Path::Tiny;
+use Types::Standard qw ( Bool );
+use Net::ISC::DHCPd::Config;
 
 with 'Net::ISC::DHCPd::Config::Root';
 
@@ -61,7 +62,7 @@ Example:
 
 has generate_with_include => (
     is => 'rw',
-    isa => 'Bool',
+    isa => Bool,
     default => 0,
 );
 
@@ -78,11 +79,11 @@ sub _build__filehandle {
     my $file = $self->file;
 
     if ($self->root->filename_callback) {
-        $file = Path::Class::File->new(&{$self->root->filename_callback}($file));
+        $file = Path::Tiny->new(&{$self->root->filename_callback}($file));
     }
 
     if($file->is_relative and !-e $file) {
-        $file = Path::Class::File->new($self->root->file->dir, $file);
+        $file = Path::Tiny->new($self->root->file->dir . $file);
         $self->file($file);  # needed so dir stays updated with recursive includes
     }
 
