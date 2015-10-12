@@ -41,6 +41,7 @@ use Types::Path::Tiny qw ( Path );
 use Net::ISC::DHCPd::Types ':all';
 use File::Temp 0.20;
 use Class::Load 0.20;
+use namespace::autoclean 0.16;
 use v5.10.1;
 
 our $VERSION = eval '0.1708';

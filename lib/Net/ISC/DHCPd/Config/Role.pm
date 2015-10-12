@@ -21,7 +21,7 @@ This can be turned off by adding the line below before calling L</parse>.
 use Class::Load;
 use Moo::Role;
 use Path::Tiny;
-use Types::Standard qw( Object Int ArrayRef FileHandle CodeRef );
+use Types::Standard qw( Object Int ArrayRef FileHandle CodeRef Str );
 
 requires 'generate';
 
@@ -155,12 +155,11 @@ The comments will not contain leading hash symbol spaces, nor trailing newline.
 
 has _comments => (
     is => 'ro',
-    isa => ArrayRef,
+    traits => ['Array'],
+    isa => ArrayRef[Str],
     init_arg => 'comments',
     default => sub { [] },
-    handles => {
-        comments => 'elements',
-    },
+    handles => { 'comments' => 'elements' },
 );
 
 =head1 CHILD METHODS
