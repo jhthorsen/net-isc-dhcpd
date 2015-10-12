@@ -24,10 +24,10 @@ our @types = qw(
     Statements
 );
 
+use Sub::Quote qw( quote_sub );
 use Type::Library -base, -declare => @types;
 use Types::Standard -types;
 use Type::Utils -all;
-use Sub::Quote qw( quote_sub );
 
 our @failover_states = (
     'na',                     'partner down',
@@ -77,7 +77,7 @@ declare FailoverState,
     constraint => quote_sub q{ my $s = $_; grep { $s eq $_ } @Net::ISC::DHCPd::Types::failover_states };
 
 declare Mac, as StrMatch[qr/$MAC_REGEX/i];
-declare Ip, as StrMatch[qr/^[\d.]+$/];
+declare Ip, as StrMatch[qr/^[\d\.]+$/];
 declare Statements, as StrMatch[qr/^[\w,]+$/];
 declare ConfigObject,
     as InstanceOf['Net::ISC::DHCPd::Config'];
@@ -123,17 +123,17 @@ coerce Statements,
     from ArrayRef, q{ join ",", @$_ };
 
 coerce ConfigObject, from HashRef, q{
-    eval "require Net::ISC::DHCPd::Config" or confess $@;
+    eval "require Net::ISC::DHCPd::Config" or die $@;
     Net::ISC::DHCPd::Config->new($_);
 };
 
 coerce LeasesObject, from HashRef, q{
-    eval "require Net::ISC::DHCPd::Leases" or confess $@;
+    eval "require Net::ISC::DHCPd::Leases" or die $@;
     Net::ISC::DHCPd::Leases->new($_);
 };
 
 coerce OMAPIObject, from HashRef, q{
-    eval "require Net::ISC::DHCPd::OMAPI" or confess $@;
+    eval "require Net::ISC::DHCPd::OMAPI" or die $@;
     Net::ISC::DHCPd::OMAPI->new($_);
 };
 

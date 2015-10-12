@@ -24,22 +24,7 @@ with 'Net::ISC::DHCPd::Config::Role';
 This attribute holds a L<Types::Path::Tiny> object representing
 path to a config file. Default value is "/etc/dhcp3/dhcpd.conf".
 
-=head2 parent
-
-This attribute is different from L<Net::ISC::DHCPd::Config::Role/parent>:
-It holds an undefined value, which is used to indicate that this object
-is the top node in the tree. See L<Net::ISC::DHCPd::Config::Include>
-if you want a different behavior.
-
 =cut
-
-has parent => (
-    is => 'lazy',
-    lazy_build => 1,
-    isa => Undef,
-);
-
-sub _build_parent { undef };
 
 has fh => (
     is => 'rw',

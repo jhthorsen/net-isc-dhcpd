@@ -66,6 +66,21 @@ sub _build_depth {
     return $i;
 }
 
+=head2 parent
+
+Holds a reference to the parent object.
+
+=cut
+
+has parent => (
+    is => 'lazy',
+    does => 'Net::ISC::DHCPd::Config::Role',
+    weak_ref => 1,
+);
+
+sub _build_parent { undef };
+
+
 =head2 children
 
 Holds a list of possible child objects as objects. This list is used
@@ -140,7 +155,7 @@ The comments will not contain leading hash symbol spaces, nor trailing newline.
 
 has _comments => (
     is => 'ro',
-    traits => ['Array'],
+    isa => ArrayRef,
     init_arg => 'comments',
     default => sub { [] },
     handles => {
@@ -160,25 +175,23 @@ THIS IS A STATIC METHOD.  SELF is not used.
 =cut
 
 has _filehandle => (
-    is => 'ro',
+    is => 'lazy',
     isa => FileHandle,
-    lazy_build => 1,
 );
 
 sub _build__filehandle {
     my $self = shift;
-    my $file;
 
     # get filehandle from parent to prevent seeking file from beginning
-    if(my $parent = $self->parent) {
-        return $parent->_filehandle;
+    if($self->parent) {
+        return $self->parent->_filehandle;
     }
 
     if ($self->fh) {
         return $self->fh;
     }
 
-    $file = $self->file;
+    my $file = $self->file;
 
     if($file->is_relative and !-e $file) {
         $file = Path::Tiny->new($self->root->file->dir . $file);

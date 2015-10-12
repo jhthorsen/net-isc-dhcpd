@@ -56,10 +56,9 @@ The hash-ref will then be passed on to the constructor.
 =cut
 
 has config => (
-    is => 'ro',
+    is => 'lazy',
     isa => ConfigObject,
     coerce => ConfigObject->coercion,
-    lazy_build => 1,
 );
 
 __PACKAGE__->meta->add_method(_build_config => sub { _build_child_obj(Config => @_) });
@@ -73,10 +72,9 @@ The hash-ref will then be passed on to the constructor.
 =cut
 
 has leases => (
-    is => 'ro',
+    is => 'lazy',
     isa => LeasesObject,
     coerce => LeasesObject->coercion,
-    lazy_build => 1,
 );
 
 __PACKAGE__->meta->add_method(_build_leases => sub { _build_child_obj(Leases => @_) });
@@ -90,10 +88,9 @@ The hash-ref will then be passed on to the constructor.
 =cut
 
 has omapi => (
-    is => 'ro',
+    is => 'lazy',
     isa => OMAPIObject,
     coerce => OMAPIObject->coercion,
-    lazy_build => 1,
 );
 
 __PACKAGE__->meta->add_method(_build_omapi => sub { _build_child_obj(OMAPI => @_) });

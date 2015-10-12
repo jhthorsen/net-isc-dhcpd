@@ -83,7 +83,7 @@ sub _build__filehandle {
     }
 
     if($file->is_relative and !-e $file) {
-        $file = Path::Tiny->new($self->root->file->dir . $file);
+        $file = Path::Tiny->new($self->root->file->dirname . $file);
         $self->file($file);  # needed so dir stays updated with recursive includes
     }
 
