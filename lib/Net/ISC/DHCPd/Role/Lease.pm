@@ -14,7 +14,7 @@ and L<Net::ISC::DHCPd::OMAPI::Actions>.
 use Moo::Role;
 use Types::Standard -types;
 use Net::ISC::DHCPd::Types;
-use Net::ISC::DHCPd::OMAPI::Sugar;
+use Net::ISC::DHCPd::OMAPI::Sugar; # for omapi_attr
 
 =head1 ATTRIBUTES
 
@@ -31,7 +31,7 @@ Actions: examine.
 =cut
 
 omapi_attr atsfp => (
-    isa => Time,
+    isa => Timei,
     actions => [qw/examine/],
 );
 
@@ -93,7 +93,7 @@ Actions: examine.
 =cut
 
 omapi_attr cltt => (
-    isa => 'Time',
+    isa => Timei,
     actions => [qw/examine/],
 );
 
@@ -129,7 +129,7 @@ Note: This attribute can only be modified from ISC-DHCP-4.1.0.
 =cut
 
 omapi_attr ends => (
-    isa => 'Time',
+    isa => Timei,
     actions => [qw/examine modify/],
 );
 
@@ -223,7 +223,7 @@ Actions: examine.
 =cut
 
 omapi_attr starts => (
-    isa => 'Time',
+    isa => Timei,
     actions => [qw/examine/],
 );
 
@@ -240,7 +240,7 @@ Actions: examine, lookup.
 =cut
 
 omapi_attr state => (
-    isa => 'State',
+    isa => State,
     actions => [qw/examine lookup/],
 );
 
@@ -277,7 +277,7 @@ Actions: examine.
 =cut
 
 omapi_attr tsfp => (
-    isa => 'Time',
+    isa => Timei,
     actions => [qw/examine/],
 );
 
@@ -293,7 +293,7 @@ Actions: examine.
 =cut
 
 omapi_attr tstp => (
-    isa => 'Time',
+    isa => Timei,
     actions => [qw/examine/],
 );
 
@@ -310,7 +310,7 @@ Actions: examine, modify.
 =cut
 
 omapi_attr hardware_address => (
-    isa => 'Mac',
+    isa => Mac,
     actions => [qw/examine lookup modify/],
 );
 
@@ -327,7 +327,7 @@ Actions: examine, modify.
 =cut
 
 omapi_attr hardware_type => (
-    isa => 'HexInt',
+    isa => HexInt,
     actions => [qw/examine modify/],
 );
 

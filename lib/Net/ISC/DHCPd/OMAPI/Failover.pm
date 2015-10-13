@@ -248,7 +248,7 @@ Actions: examine.
 =cut
 
 omapi_attr [qw/local_stos partner_stos/] => (
-    isa => Time,
+    isa => Timei,
     actions => [qw/examine/],
 );
 
@@ -284,7 +284,7 @@ Actions: examine.
 =cut
 
 omapi_attr last_packet_sent => (
-    isa => Time,
+    isa => Timei,
     actions => [qw/examine/],
 );
 
@@ -301,7 +301,7 @@ Actions: examine.
 =cut
 
 omapi_attr last_timestamp_received => (
-    isa => Time,
+    isa => Timei,
     actions => [qw/examine/],
 );
 

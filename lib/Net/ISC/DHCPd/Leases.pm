@@ -38,6 +38,7 @@ use Net::ISC::DHCPd::Leases::Lease;
 use Types::Path::Tiny qw ( Path );
 use Types::Standard qw ( ArrayRef FileHandle );
 use Time::Local;
+use namespace::autoclean 0.16;
 
 =head1 ATTRIBUTES
 

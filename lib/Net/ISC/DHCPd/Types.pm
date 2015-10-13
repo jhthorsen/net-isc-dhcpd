@@ -15,7 +15,7 @@ our @types = qw(
     State
     HexInt
     FailoverState
-    Time
+    Timei
     Ip
     Mac
     ConfigObject
@@ -28,6 +28,7 @@ use Sub::Quote qw( quote_sub );
 use Type::Library -base, -declare => @types;
 use Types::Standard -types;
 use Type::Utils -all;
+use namespace::autoclean 0.16;
 
 our @failover_states = (
     'na',                     'partner down',
@@ -56,7 +57,7 @@ my $MAC_REGEX = '^'. join(':', (q{[0-9a-f]{1,2}}) x 6) . '$';
 
 =head2 FailoverState
 
-=head2 Time
+=head2 Timei
 
 =head2 ConfigObject
 
@@ -88,7 +89,7 @@ declare OMAPIObject,
 
 # these are strictly needed for their coercions
 declare HexInt, as Int;
-declare 'Time', as Int;
+declare Timei, as Int;
 
 # coercions
 # we will probably want to change these to declare_coercion so that we can use
@@ -115,7 +116,7 @@ coerce Mac,
             join ':', /(\w\w)/g; # rejoin with colons
     };
 
-coerce 'Time',
+coerce Timei,
     from Str, q{ s/://g; hex $_ };
 
 coerce Statements,
