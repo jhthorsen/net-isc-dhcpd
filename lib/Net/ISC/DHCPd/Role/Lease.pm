@@ -15,7 +15,6 @@ use Moo::Role;
 use Types::Standard -types;
 use Net::ISC::DHCPd::Types;
 use Net::ISC::DHCPd::OMAPI::Sugar; # for omapi_attr
-use namespace::autoclean 0.16;
 
 =head1 ATTRIBUTES
 

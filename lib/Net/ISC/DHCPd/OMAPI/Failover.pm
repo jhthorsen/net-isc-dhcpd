@@ -26,7 +26,6 @@ use Net::ISC::DHCPd::OMAPI::Sugar;
 use Moo;
 use Types::Standard qw ( Str Int );
 use Carp;
-use namespace::autoclean 0.16;
 
 with 'Net::ISC::DHCPd::OMAPI::Actions';
 
