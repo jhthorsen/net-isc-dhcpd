@@ -11,11 +11,15 @@ Net::ISC::DHCPd::Types - Moo type constraint declaration
 
 =cut
 
+use strict;
+use warnings;
+no strict 'subs';
+
 our @types = qw(
     State
     HexInt
     FailoverState
-    Timei
+    Time
     Ip
     Mac
     ConfigObject
@@ -57,7 +61,7 @@ my $MAC_REGEX = '^'. join(':', (q{[0-9a-f]{1,2}}) x 6) . '$';
 
 =head2 FailoverState
 
-=head2 Timei
+=head2 Time
 
 =head2 ConfigObject
 
@@ -89,7 +93,7 @@ declare OMAPIObject,
 
 # these are strictly needed for their coercions
 declare HexInt, as Int;
-declare Timei, as Int;
+declare 'Time', as Int;
 
 # coercions
 # we will probably want to change these to declare_coercion so that we can use
@@ -116,7 +120,7 @@ coerce Mac,
             join ':', /(\w\w)/g; # rejoin with colons
     };
 
-coerce Timei,
+coerce 'Time',
     from Str, q{ s/://g; hex $_ };
 
 coerce Statements,

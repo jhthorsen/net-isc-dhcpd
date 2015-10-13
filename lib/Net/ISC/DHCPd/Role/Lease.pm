@@ -15,6 +15,7 @@ use Moo::Role;
 use Types::Standard -types;
 use Net::ISC::DHCPd::Types;
 use Net::ISC::DHCPd::OMAPI::Sugar; # for omapi_attr
+use namespace::autoclean 0.16;
 
 =head1 ATTRIBUTES
 
@@ -31,7 +32,7 @@ Actions: examine.
 =cut
 
 omapi_attr atsfp => (
-    isa => Timei,
+    isa => Time,
     actions => [qw/examine/],
 );
 
@@ -93,7 +94,7 @@ Actions: examine.
 =cut
 
 omapi_attr cltt => (
-    isa => Timei,
+    isa => Time,
     actions => [qw/examine/],
 );
 
@@ -129,7 +130,7 @@ Note: This attribute can only be modified from ISC-DHCP-4.1.0.
 =cut
 
 omapi_attr ends => (
-    isa => Timei,
+    isa => Time,
     actions => [qw/examine modify/],
 );
 
@@ -223,7 +224,7 @@ Actions: examine.
 =cut
 
 omapi_attr starts => (
-    isa => Timei,
+    isa => Time,
     actions => [qw/examine/],
 );
 
@@ -277,7 +278,7 @@ Actions: examine.
 =cut
 
 omapi_attr tsfp => (
-    isa => Timei,
+    isa => Time,
     actions => [qw/examine/],
 );
 
@@ -293,7 +294,7 @@ Actions: examine.
 =cut
 
 omapi_attr tstp => (
-    isa => Timei,
+    isa => Time,
     actions => [qw/examine/],
 );
 

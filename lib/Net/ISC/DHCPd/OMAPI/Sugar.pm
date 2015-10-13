@@ -46,8 +46,8 @@ sub omapi_attr {
 
     if(my $type = $opts{'isa'}) {
         if($type =~ /^Net::ISC::DHCPd::Types/ and $type->coercion) {
-            $type =~ s/Net::ISC::DHCPd::Types:://;
             $opts{'coerce'} = $type->coercion;
+            $type =~ s/Net::ISC::DHCPd::Types:://;
             $to_raw = Net::ISC::DHCPd::Types->can("from_$type");
         }
     }

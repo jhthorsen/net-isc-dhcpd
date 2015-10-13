@@ -60,11 +60,7 @@ use namespace::autoclean 0.16;
 use Carp qw ( confess );
 use IO::Pty;
 use Time::HiRes qw/usleep/;
-use Net::ISC::DHCPd::OMAPI::Control;
-use Net::ISC::DHCPd::OMAPI::Failover;
-use Net::ISC::DHCPd::OMAPI::Group;
-use Net::ISC::DHCPd::OMAPI::Host;
-use Net::ISC::DHCPd::OMAPI::Lease;
+
 use constant DEBUG => $ENV{DHCP_OMAPI_DEBUG} ? 1 : 0;
 
 our $OMSHELL = 'omshell';
@@ -308,17 +304,24 @@ Example, with C<$type='host'>:
 
 =cut
 
+{
+# new_object is the only thing that uses these.  We could either include them
+# here or require them on use.
+use Net::ISC::DHCPd::OMAPI::Control;
+use Net::ISC::DHCPd::OMAPI::Failover;
+use Net::ISC::DHCPd::OMAPI::Group;
+use Net::ISC::DHCPd::OMAPI::Host;
+use Net::ISC::DHCPd::OMAPI::Lease;
+
 sub new_object {
     my $self = shift;
     my $type = shift or return;
     my %args = @_;
+    return if $type !~ /^(?:control|failover|group|host|lease)$/i);
     my $class = 'Net::ISC::DHCPd::OMAPI::' .ucfirst(lc $type);
-
-    unless($type =~ /^(?:control|failover|group|host|lease)$/i) {
-        return;
-    }
-
     return $class->new(parent => $self, %args);
+}
+
 }
 
 =head1 COPYRIGHT & LICENSE

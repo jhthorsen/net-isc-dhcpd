@@ -26,6 +26,7 @@ use Net::ISC::DHCPd::OMAPI::Sugar;
 use Moo;
 use Types::Standard qw ( Str Int );
 use Carp;
+use namespace::autoclean 0.16;
 
 with 'Net::ISC::DHCPd::OMAPI::Actions';
 
@@ -248,7 +249,7 @@ Actions: examine.
 =cut
 
 omapi_attr [qw/local_stos partner_stos/] => (
-    isa => Timei,
+    isa => Time,
     actions => [qw/examine/],
 );
 
@@ -284,7 +285,7 @@ Actions: examine.
 =cut
 
 omapi_attr last_packet_sent => (
-    isa => Timei,
+    isa => Time,
     actions => [qw/examine/],
 );
 
@@ -301,7 +302,7 @@ Actions: examine.
 =cut
 
 omapi_attr last_timestamp_received => (
-    isa => Timei,
+    isa => Time,
     actions => [qw/examine/],
 );
 
