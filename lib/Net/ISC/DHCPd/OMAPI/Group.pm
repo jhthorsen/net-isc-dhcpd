@@ -23,7 +23,8 @@ L<Net::ISC::DHCPd::OMAPI::Meta::Attribute>.
 =cut
 
 use Net::ISC::DHCPd::OMAPI::Sugar;
-use Moose;
+use Moo;
+use Types::Standard qw ( Str );
 
 with 'Net::ISC::DHCPd::OMAPI::Actions';
 
@@ -42,7 +43,7 @@ Actions: examine lookup modify.
 =cut
 
 omapi_attr name => (
-    isa => 'Str',
+    isa => Str,
     actions => [qw/examine lookup modify/],
 );
 
@@ -76,5 +77,4 @@ Most of the documentation is taken from C<dhcpd(8)>.
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

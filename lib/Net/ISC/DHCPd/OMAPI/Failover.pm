@@ -23,7 +23,9 @@ L<Net::ISC::DHCPd::OMAPI::Meta::Attribute>.
 =cut
 
 use Net::ISC::DHCPd::OMAPI::Sugar;
-use Moose;
+use Moo;
+use Types::Standard qw ( Str Int );
+use Carp;
 
 with 'Net::ISC::DHCPd::OMAPI::Actions';
 
@@ -42,7 +44,7 @@ Actions: examine.
 =cut
 
 omapi_attr name => (
-    isa => 'Str',
+    isa => Str,
     actions => [qw/examine/],
 );
 
@@ -95,7 +97,7 @@ Actions: examine.
 =cut
 
 omapi_attr [qw/partner_port local_port/] => (
-    isa => 'Int',
+    isa => Int,
     actions => [qw/examine/],
 );
 
@@ -128,7 +130,7 @@ Actions: examine.
 =cut
 
 omapi_attr mclt => (
-    isa => 'Int',
+    isa => Int,
     actions => [qw/examine/],
 );
 
@@ -145,7 +147,7 @@ Actions: examine.
 =cut
 
 omapi_attr load_balance_mac_secs => (
-    isa => 'Int',
+    isa => Int,
     actions => [qw/examine/],
 );
 
@@ -161,7 +163,7 @@ Actions: examine.
 =cut
 
 omapi_attr load_balance_hba => (
-    isa => 'Str',
+    isa => Str,
     actions => [qw/examine/],
 );
 
@@ -265,7 +267,7 @@ See L</is_primary>.
 =cut
 
 omapi_attr hierarchy => (
-    isa => 'Int',
+    isa => Int,
     actions => [qw/examine/],
 );
 
@@ -316,7 +318,7 @@ Actions: examine.
 =cut
 
 omapi_attr skew => (
-    isa => 'Int',
+    isa => Int,
     actions => [qw/examine/],
 );
 
@@ -333,7 +335,7 @@ Actions: examine.
 =cut
 
 omapi_attr max_response_delay => (
-    isa => 'Int',
+    isa => Int,
     actions => [qw/examine/],
 );
 
@@ -350,7 +352,7 @@ Actions: examine.
 =cut
 
 omapi_attr cur_unacked_updates => (
-    isa => 'Int',
+    isa => Int,
     actions => [qw/examine/],
 );
 
@@ -377,5 +379,4 @@ Most of the documentation is taken from C<dhcpd(8)>.
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

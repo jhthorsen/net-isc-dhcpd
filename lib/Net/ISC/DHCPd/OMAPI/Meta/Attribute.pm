@@ -6,7 +6,8 @@ Net::ISC::DHCPd::OMAPI::Meta::Attribute - Attribute role for OMAPI attributes
 
 =cut
 
-use Moose::Role;
+use Moo::Role;
+use Types::Standard qw ( ArrayRef );
 
 =head1 ATTRIBUTES
 
@@ -24,7 +25,7 @@ Actions possible to execute on attribute. Can be:
 
 has actions => (
     is => 'ro',
-    isa => 'ArrayRef',
+    isa => ArrayRef,
     default => sub { [] },
 );
 

@@ -127,7 +127,7 @@ sub _done {
         }
     }
 
-    # rather than doing this map, we need to see if we can make Moose use
+    # rather than doing this map, we need to see if we can make Moo use
     # aliases and accept the alternate names on instantiation.  We also should
     # be able to do the mac address cleanup and validation in the
     # Net::ISC::DHCPd::Leases::Lease->new

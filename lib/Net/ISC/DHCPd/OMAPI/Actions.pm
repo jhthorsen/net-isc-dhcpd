@@ -14,7 +14,8 @@ so use L</write> to update the server.
 
 =cut
 
-use Moose::Role;
+use Moo::Role;
+use Types::Standard qw ( Str HashRef );
 
 my $ATTR_ROLE = "Net::ISC::DHCPd::OMAPI::Meta::Attribute";
 
@@ -30,7 +31,7 @@ Returns the parent L<Net::ISC::DHCPd::OMAPI> object.
 
 has parent => (
     is => 'ro',
-    isa => 'Net::ISC::DHCPd::OMAPI',
+    does => 'Net::ISC::DHCPd::OMAPI',
     required => 1,
 );
 
@@ -44,7 +45,7 @@ Holds the latest error. Check this if a method returns empty list.
 
 has errstr => (
     is => 'rw',
-    isa => 'Str',
+    isa => Str,
     default => '',
 );
 
@@ -61,13 +62,13 @@ means something is missing.
 
 has extra_attributes => (
     is => 'ro',
-    isa => 'HashRef',
+    isa => HashRef,
     default => sub { {} },
 );
 
 =head1 METHODS
 
-=head2 read 
+=head2 read
 
  $int = $self->read;
 
@@ -208,7 +209,7 @@ sub unset {
     my $self = shift;
     my @attr = @_;
     my(@out, $success);
-    
+
     @out = $self->_cmd(map { local $_ = $_; s/_/-/g; "unset $_" } @attr);
 
     # read @out:

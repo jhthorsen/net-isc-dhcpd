@@ -2,11 +2,11 @@ package Net::ISC::DHCPd::OMAPI::Sugar;
 
 =head1 NAME
 
-Net::ISC::DHCPd::OMAPI::Sugar - Moose sugar for omapi classes
+Net::ISC::DHCPd::OMAPI::Sugar - Moo sugar for omapi classes
 
 =head1 SYNOPSIS
 
- use Net::ISC::DHCPd::OMAPI::Sugar; # not use Moose
+ use Net::ISC::DHCPd::OMAPI::Sugar; # not use Moo
 
  omapi_attr foo => ( isa => State, ... );
 
@@ -33,7 +33,7 @@ C<%attr> is by default:
    traits => [qw/Net::ISC::DHCPd::OMAPI::Meta::Attribute/],
  )
 
-It will also set "coerce => 1", when "isa" is one of L<Moose>
+It will also set "coerce => 1", when "isa" is one of L<Type::Tiny>
 types from L<Net::ISC::DHCPd::Types>.
 
 =cut
@@ -47,7 +47,7 @@ sub omapi_attr {
     if(my $type = $opts{'isa'}) {
         if($type =~ /^Net::ISC::DHCPd::Types/ and $type->coercion) {
             $type =~ s/Net::ISC::DHCPd::Types:://;
-            $opts{'coerce'} = 1;
+            $opts{'coerce'} = $type->coercion;
             $to_raw = Net::ISC::DHCPd::Types->can("from_$type");
         }
     }

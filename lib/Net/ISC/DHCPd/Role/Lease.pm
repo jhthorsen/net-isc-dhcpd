@@ -13,6 +13,7 @@ and L<Net::ISC::DHCPd::OMAPI::Actions>.
 
 use Moo::Role;
 use Types::Standard -types;
+use Net::ISC::DHCPd::Types;
 use Net::ISC::DHCPd::OMAPI::Sugar;
 
 =head1 ATTRIBUTES
@@ -157,7 +158,7 @@ Actions: examine.
 =cut
 
 omapi_attr host => (
-    isa => 'Any',
+    isa => Any,
     actions => [qw/examine/],
 );
 
@@ -175,7 +176,7 @@ Actions: examine, lookup.
 =cut
 
 omapi_attr ip_address => (
-    isa => 'Ip',
+    isa => Ip,
     actions => [qw/examine lookup/],
 );
 

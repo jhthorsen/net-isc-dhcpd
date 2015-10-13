@@ -23,8 +23,9 @@ L<Net::ISC::DHCPd::OMAPI::Meta::Attribute>.
 
 =cut
 
+use Moo;
+use namespace::autoclean 0.16;
 use Net::ISC::DHCPd::OMAPI::Sugar;
-use Moose;
 
 with qw/
     Net::ISC::DHCPd::Role::Lease
@@ -38,5 +39,4 @@ with qw/
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

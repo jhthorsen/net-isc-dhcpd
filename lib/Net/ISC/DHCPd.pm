@@ -25,7 +25,7 @@ See the tests bundled to this distribution for more examples.
 This namespace contains three semi-separate projects, which this module
 binds together: L<dhcpd.conf|Net::ISC::DHCPd::Config>,
 L<dhcpd.leases|Net::ISC::DHCPd::Leases> and L<omapi|Net::ISC::DHCPd::OMAPI>.
-It is written with L<Moose> which provides classes and roles to represents
+It is written with L<Moo> which provides classes and roles to represents
 things like a host, a lease or any other thing.
 
 The distribution as a whole is targeted an audience who configure and/or
