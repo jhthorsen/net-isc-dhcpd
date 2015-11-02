@@ -32,9 +32,9 @@ See L<Net::ISC::DHCPd::Config> for synopsis.
 
 =cut
 
-use Moose;
-
+use Moo;
 with 'Net::ISC::DHCPd::Config::Role';
+use Types::Standard qw ( Str Int Bool );
 
 =head1 ATTRIBUTES
 
@@ -46,7 +46,7 @@ Human readable prefix of this option.  This is the parent of the option.
 
 has prefix => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 name
@@ -57,7 +57,7 @@ Human readable name of this option, without parent name prefix
 
 has name => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 code
@@ -68,7 +68,7 @@ Computer readable code for this option.
 
 has code => (
     is => 'ro',
-    isa => 'Int',
+    isa => Int,
 );
 
 =head2 value
@@ -79,7 +79,7 @@ Value of the option, as a string.
 
 has value => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 quoted
@@ -90,7 +90,7 @@ This flag tells if the option value should be quoted or not.
 
 has quoted => (
     is => 'ro',
-    isa => 'Bool',
+    isa => Bool,
 );
 
 =head2 regex
@@ -162,5 +162,4 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-
 1;

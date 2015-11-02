@@ -13,8 +13,9 @@ Net::ISC::DHCPd::OMAPI::Sugar - Moo sugar for omapi classes
 =cut
 
 use Moo;
-use Carp;
+use Carp qw ( confess );
 use Net::ISC::DHCPd::Types ':all';
+use Types::Standard -types;
 use Moose::Exporter;
 
 my @types = @Net::ISC::DHCPd::Types::types;

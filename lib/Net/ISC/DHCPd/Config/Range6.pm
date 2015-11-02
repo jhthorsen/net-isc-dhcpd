@@ -28,10 +28,11 @@ plain strings in the future.
 
 =cut
 
-use Moose;
+use Moo;
+with 'Net::ISC::DHCPd::Config::Role';
+use Types::Standard qw ( Bool Object );
 use NetAddr::IP qw(:lower);
 
-with 'Net::ISC::DHCPd::Config::Role';
 
 =head1 ATTRIBUTES
 
@@ -44,7 +45,7 @@ highest IP address in the range.
 
 has upper => (
     is => 'ro',
-    isa => 'Object',
+    isa => Object,
 );
 
 =head2 lower
@@ -56,7 +57,7 @@ lowest IP address in the range.
 
 has lower => (
     is => 'ro',
-    isa => 'Object',
+    isa => Object,
 );
 
 =head2 temporary
@@ -68,7 +69,7 @@ temporary addresses and it will be used like RFC4941
 
 has temporary => (
     is => 'ro',
-    isa => 'Bool',
+    isa => Bool,
 );
 
 =head2 regex
@@ -118,7 +119,5 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-
-__PACKAGE__->meta->make_immutable;
 
 1;

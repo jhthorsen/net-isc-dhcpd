@@ -24,10 +24,11 @@ plain strings in the future.
 
 =cut
 
-use Moose;
-use NetAddr::IP;
-
+use Moo;
 with 'Net::ISC::DHCPd::Config::Role';
+use NetAddr::IP;
+use Types::Standard qw ( Object );
+
 
 =head1 ATTRIBUTES
 
@@ -40,7 +41,7 @@ highest IP address in the range.
 
 has upper => (
     is => 'ro',
-    isa => 'Object',
+    isa => Object,
 );
 
 =head2 lower
@@ -52,7 +53,7 @@ lowest IP address in the range.
 
 has lower => (
     is => 'ro',
-    isa => 'Object',
+    isa => Object,
 );
 
 =head2 regex
@@ -105,5 +106,4 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

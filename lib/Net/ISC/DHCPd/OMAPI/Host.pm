@@ -23,10 +23,10 @@ L<Net::ISC::DHCPd::OMAPI::Meta::Attribute>.
 =cut
 
 use Moo;
-use Net::ISC::DHCPd::OMAPI::Sugar;
-use Types::Standard qw ( Bool );
-
 with 'Net::ISC::DHCPd::OMAPI::Actions';
+use Net::ISC::DHCPd::OMAPI::Sugar;
+use Types::Standard qw ( Bool Str Any );
+
 
 =head1 ATTRIBUTES
 
@@ -43,7 +43,7 @@ Actions: examine, lookup, modify.
 =cut
 
 omapi_attr dhcp_client_identifier => (
-    isa => 'Str',
+    isa => Str,
     actions => [qw/examine lookup modify/],
 );
 
@@ -59,7 +59,7 @@ Actions: examine, modify.
 =cut
 
 omapi_attr group => (
-    isa => 'Any',
+    isa => Any,
     actions => [qw/examine modify/],
 );
 
@@ -140,7 +140,7 @@ Actions: examine, lookup, modify.
 =cut
 
 omapi_attr name => (
-    isa => 'Str',
+    isa => Str,
     actions => [qw/examine lookup modify/],
 );
 
@@ -173,5 +173,4 @@ Most of the documentation is taken from C<dhcpd(8)>.
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

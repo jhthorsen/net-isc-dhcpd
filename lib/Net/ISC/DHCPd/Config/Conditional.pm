@@ -24,9 +24,9 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose;
-
+use Moo;
 with 'Net::ISC::DHCPd::Config::Role';
+use Types::Standard qw ( Str );
 
 =head2 children
 
@@ -54,7 +54,7 @@ __PACKAGE__->create_children(__PACKAGE__->children());
 
 has type => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 logic
@@ -63,7 +63,7 @@ has type => (
 
 has logic => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 regex
@@ -115,5 +115,4 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

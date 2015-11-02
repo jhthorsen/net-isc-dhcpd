@@ -32,9 +32,9 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose;
-
+use Moo;
 with 'Net::ISC::DHCPd::Config::Role';
+use Types::Standard qw ( HashRef ArrayRef Int Str );
 
 =head1 ATTRIBUTES
 
@@ -51,7 +51,7 @@ This is an array of arguments supplied to the failover peer.
 has arguments => (
     traits => ['Hash'],
     is => 'ro',
-    isa => 'HashRef',
+    isa => HashRef,
     default => sub {
         {
         port      => { "text" => "port %s", regex => qr/^ \s+ port \s+ (\d+);/x },
@@ -71,18 +71,18 @@ has arguments => (
 has _order => (
     traits => ['Array'],
     is => 'rw',
-    isa => 'ArrayRef',
+    isa => ArrayRef,
     default => sub { [] },
 );
 
 has [qw/ peer_port port mclt split lb_max_seconds max_response_delay max_unacked_updates /] => (
     is => 'rw',
-    isa => 'Int',
+    isa => Int,
 );
 
 has [qw/ name type address peer_address /] => (
     is => 'rw',
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 regex
@@ -155,5 +155,4 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

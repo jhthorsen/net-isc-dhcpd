@@ -29,9 +29,9 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose;
-
+use Moo;
 with 'Net::ISC::DHCPd::Config::Role';
+use Types::Standard qw ( Str Bool ArrayRef Int );
 
 =head1 ATTRIBUTES
 
@@ -47,7 +47,7 @@ See L</SYNOPSIS>.
 
 has [qw/ type name /] => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 quoted
@@ -58,7 +58,7 @@ This flag tells if the name should be quoted or not.
 
 has quoted => (
     is => 'ro',
-    isa => 'Bool',
+    isa => Bool,
 );
 
 =head2 body
@@ -70,7 +70,7 @@ This text is not parsed, so the containing text can be anything.
 
 has _body => (
     is => 'rw',
-    isa => 'ArrayRef',
+    isa => ArrayRef,
     default => sub { [] },
 );
 
@@ -86,7 +86,7 @@ our $regex = qr/^\s* ([\w-]+) \s+ (\S*) \s* { /x;
 
 has _depth => (
     is => 'ro',
-    isa => 'Int',
+    isa => Int,
     traits => ['Counter'],
     default => 1,
     handles => {
@@ -171,7 +171,4 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-
-__PACKAGE__->meta->make_immutable;
-
 1;

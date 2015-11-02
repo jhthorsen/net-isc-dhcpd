@@ -88,10 +88,10 @@ sub _build__filehandle {
     $self->file->filehandle;
 }
 
-__PACKAGE__->meta->add_method(filehandle => sub {
+sub filehandle {
     Carp::cluck('->filehandle is replaced with private attribute _filehandle');
     shift->_filehandle;
-});
+}
 
 =head1 METHODS
 

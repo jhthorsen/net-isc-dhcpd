@@ -62,7 +62,9 @@ has config => (
     coerce => ConfigObject->coercion,
 );
 
-__PACKAGE__->meta->add_method(_build_config => sub { _build_child_obj(Config => @_) });
+sub _build_config {
+    _build_child_obj(Config => @_);
+}
 
 =head2 leases
 
@@ -78,7 +80,9 @@ has leases => (
     coerce => LeasesObject->coercion,
 );
 
-__PACKAGE__->meta->add_method(_build_leases => sub { _build_child_obj(Leases => @_) });
+sub _build_leases {
+    _build_child_obj(Leases => @_);
+}
 
 =head2 omapi
 
@@ -94,7 +98,9 @@ has omapi => (
     coerce => OMAPIObject->coercion,
 );
 
-__PACKAGE__->meta->add_method(_build_omapi => sub { _build_child_obj(OMAPI => @_) });
+sub _build_omapi {
+    _build_child_obj(OMAPI => @_);
+}
 
 =head2 binary
 

@@ -146,10 +146,10 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 sub regex { qr{\x00} } # should not be used
 
-__PACKAGE__->meta->add_method(filehandle => sub {
+sub filehandle {
     Carp::cluck('->filehandle is replaced with private attribute _filehandle');
     shift->_filehandle;
-});
+}
 
 =head1 ATTRIBUTES
 

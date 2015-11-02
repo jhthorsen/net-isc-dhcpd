@@ -25,10 +25,12 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose;
-use NetAddr::IP qw(:lower);
-
+use Moo;
 with 'Net::ISC::DHCPd::Config::Role';
+use Types::Standard qw ( Object );
+use NetAddr::IP qw(:lower);
+use Carp qw ( confess );
+
 
 =head2 children
 
@@ -91,7 +93,7 @@ the ip address of this subnet.
 
 has address => (
     is => 'ro',
-    isa => 'Object',
+    isa => Object,
 );
 
 =head2 regex
@@ -138,5 +140,4 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

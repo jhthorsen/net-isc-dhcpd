@@ -19,9 +19,10 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose;
-
+use Moo;
 with 'Net::ISC::DHCPd::Config::Role';
+use Types::Standard qw ( Str );
+
 
 =head1 ATTRIBUTES
 
@@ -33,7 +34,7 @@ Name of the option namespace as a string.
 
 has name => (
     is => 'rw',
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 regex
@@ -72,5 +73,4 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

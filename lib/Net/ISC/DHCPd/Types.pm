@@ -11,10 +11,6 @@ Net::ISC::DHCPd::Types - Moo type constraint declaration
 
 =cut
 
-use strict;
-use warnings;
-no strict 'subs';
-
 our @types = qw(
     State
     HexInt
@@ -29,10 +25,9 @@ our @types = qw(
 );
 
 use Sub::Quote qw( quote_sub );
-use Type::Library -base, -declare => @types;
 use Types::Standard -types;
 use Type::Utils -all;
-use namespace::autoclean 0.16;
+use Type::Library -base, -declare => @types;
 
 our @failover_states = (
     'na',                     'partner down',
@@ -81,35 +76,35 @@ declare FailoverState,
     as Str,
     constraint => quote_sub q{ my $s = $_; grep { $s eq $_ } @Net::ISC::DHCPd::Types::failover_states };
 
-declare Mac, as StrMatch[qr/$MAC_REGEX/i];
-declare Ip, as StrMatch[qr/^[\d\.]+$/];
-declare Statements, as StrMatch[qr/^[\w,]+$/];
-declare ConfigObject,
+declare 'Mac', as StrMatch[qr/$MAC_REGEX/i];
+declare 'Ip', as StrMatch[qr/^[\d\.]+$/];
+declare 'Statements', as StrMatch[qr/^[\w,]+$/];
+declare 'ConfigObject',
     as InstanceOf['Net::ISC::DHCPd::Config'];
-declare LeasesObject,
+declare 'LeasesObject',
     as InstanceOf['Net::ISC::DHCPd::Leases'];
-declare OMAPIObject,
+declare 'OMAPIObject',
     as InstanceOf['Net::ISC::DHCPd::OMAPI'];
 
 # these are strictly needed for their coercions
-declare HexInt, as Int;
+declare 'HexInt', as Int;
 declare 'Time', as Int;
 
 # coercions
 # we will probably want to change these to declare_coercion so that we can use
 # them electively later.
 
-coerce State,
+coerce 'State',
     from Int, q{ $Net::ISC::DHCPd::Types::states[$_] };
 
-coerce HexInt,
+coerce 'HexInt',
     from Str, q{ s/://g; hex $_ };
 
-coerce Ip,
+coerce 'Ip',
     from Str, q{ join '.', map { hex $_ } split /:/ };
 
 
-coerce Mac,
+coerce 'Mac',
     from Str, q{
             my @mac = split /[\-\.:]/;
             my $format = scalar @mac == 3 ? '%04s' : '%02s';
@@ -123,21 +118,21 @@ coerce Mac,
 coerce 'Time',
     from Str, q{ s/://g; hex $_ };
 
-coerce Statements,
+coerce 'Statements',
     from Str, q{ s/\s+/,/g; $_; },
     from ArrayRef, q{ join ",", @$_ };
 
-coerce ConfigObject, from HashRef, q{
+coerce 'ConfigObject', from HashRef, q{
     eval "require Net::ISC::DHCPd::Config" or die $@;
     Net::ISC::DHCPd::Config->new($_);
 };
 
-coerce LeasesObject, from HashRef, q{
+coerce 'LeasesObject', from HashRef, q{
     eval "require Net::ISC::DHCPd::Leases" or die $@;
     Net::ISC::DHCPd::Leases->new($_);
 };
 
-coerce OMAPIObject, from HashRef, q{
+coerce 'OMAPIObject', from HashRef, q{
     eval "require Net::ISC::DHCPd::OMAPI" or die $@;
     Net::ISC::DHCPd::OMAPI->new($_);
 };
@@ -181,7 +176,4 @@ sub from_FailoverState {
 See L<Net::ISC::DHCPd>.
 
 =cut
-
-__PACKAGE__->meta->make_immutable;
-
 1;

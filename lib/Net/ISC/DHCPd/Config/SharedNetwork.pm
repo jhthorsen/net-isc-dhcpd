@@ -28,9 +28,10 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose;
-
+use Moo;
 with 'Net::ISC::DHCPd::Config::Role';
+use Types::Standard qw ( Str Bool );
+
 
 =head2 children
 
@@ -66,7 +67,7 @@ Will be omitted if it contains an empty string.
 
 has name => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 quoted
@@ -77,7 +78,7 @@ This flag tells if the shared-network name should be quoted or not.
 
 has quoted => (
     is => 'ro',
-    isa => 'Bool',
+    isa => Bool,
 );
 
 =head2 regex
@@ -134,5 +135,4 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

@@ -21,9 +21,9 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose;
-
+use Moo;
 with 'Net::ISC::DHCPd::Config::Role';
+use Types::Standard qw ( Str Bool );
 
 =head1 ATTRIBUTES
 
@@ -35,7 +35,7 @@ A plain string representing the name of the option.
 
 has name => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 value
@@ -46,7 +46,7 @@ A plain string representing the value of the option.
 
 has value => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 quoted
@@ -57,7 +57,7 @@ This flag tells if the option value should be quoted or not.
 
 has quoted => (
     is => 'ro',
-    isa => 'Bool',
+    isa => Bool,
 );
 
 =head2 regex
@@ -110,5 +110,4 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

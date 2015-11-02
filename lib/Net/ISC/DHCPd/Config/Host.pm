@@ -23,9 +23,11 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose;
-
+use Moo;
 with 'Net::ISC::DHCPd::Config::Role';
+use Types::Standard qw ( Str );
+use Carp qw ( confess );
+
 
 =head2 children
 
@@ -104,7 +106,7 @@ This attribute holds a string describing the host.
 
 has name => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 regex
@@ -150,5 +152,4 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

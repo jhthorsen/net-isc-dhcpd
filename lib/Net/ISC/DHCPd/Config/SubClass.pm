@@ -20,9 +20,9 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose;
-
+use Moo;
 with 'Net::ISC::DHCPd::Config::Role';
+use Types::Standard qw ( Str Bool );
 
 =head1 ATTRIBUTES
 
@@ -34,7 +34,7 @@ Name of the subclass - See L</DESCRIPTION> for details.
 
 has name => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 value
@@ -45,7 +45,7 @@ Value of the subclass - See L</DESCRIPTION> for details.
 
 has value => (
     is => 'ro',
-    isa => 'Str',
+    isa => Str,
 );
 
 =head2 quoted
@@ -56,7 +56,7 @@ This flag tells if the subclass value should be quoted or not.
 
 has quoted => (
     is => 'ro',
-    isa => 'Bool',
+    isa => Bool,
 );
 
 =head2 namequoted
@@ -67,7 +67,7 @@ This flag tells if the subclass name should be quoted or not.
 
 has namequoted => (
     is => 'ro',
-    isa => 'Bool',
+    isa => Bool,
 );
 
 =head2 regex
@@ -125,5 +125,4 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

@@ -24,9 +24,9 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 
 =cut
 
-use Moose;
-
+use Moo;
 with 'Net::ISC::DHCPd::Config::Role';
+use Types::Standard qw ( Bool Str );
 
 =head1 ATTRIBUTES
 
@@ -38,7 +38,7 @@ This flag tells if the group name should be quoted or not.
 
 has quoted => (
     is => 'ro',
-    isa => 'Bool',
+    isa => Bool,
 );
 
 =head2 name
@@ -52,8 +52,8 @@ Name of the key - See L</DESCRIPTION> for details.
 =cut
 
 has [qw/ name algorithm secret /] => (
-    is => 'rw', # TODO: WILL PROBABLY CHANGE!
-    isa => 'Str',
+    is => 'rw',
+    isa => Str,
 );
 
 =head2 regex
@@ -121,5 +121,4 @@ sub generate {
 See L<Net::ISC::DHCPd>.
 
 =cut
-__PACKAGE__->meta->make_immutable;
 1;

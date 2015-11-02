@@ -18,8 +18,8 @@ SYNOPSIS
 DESCRIPTION
     This namespace contains three semi-separate projects, which this module
     binds together: dhcpd.conf, dhcpd.leases and omapi. It is written with
-    Moose which provides classes and roles to represents things like a host,
-    a lease or any other thing.
+    Moo which provides classes and roles to represents things like a host, a
+    lease or any other thing.
 
     The distribution as a whole is targeted an audience who configure and/or
     analyze the Internet Systems Consortium DHCP Server
