@@ -1,5 +1,8 @@
 Revision history for Net-ISC-DHCPd
 
+0.1709   Wed Feb  3 18:47:29 UTC 2016
+       - shared-network with periods now parses correctly
+
 0.1707   Thu Feb 19 05:05:07 UTC 2015
        - dropped LazyInit because I don't like the way it works
 
