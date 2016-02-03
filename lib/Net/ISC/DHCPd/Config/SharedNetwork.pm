@@ -87,7 +87,7 @@ See L<Net::ISC::DHCPd::Config::Role/regex>.
 
 =cut
 
-our $regex = qr{^\s* shared-network \s+ ([\w-]+|".*?")? }x;
+our $regex = qr{^\s* shared-network \s+ ([\w\.-]+|".*?")? }x;
 
 =head1 METHODS
 
