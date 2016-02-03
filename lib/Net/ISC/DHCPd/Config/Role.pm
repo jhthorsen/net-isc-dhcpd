@@ -47,10 +47,8 @@ Integer value that counts how far this node is from the root node.
 =cut
 
 has depth => (
-    is => 'ro',
+    is => 'lazy',
     isa => Int,
-    lazy => 1,
-    builder => '_build_depth',
 );
 
 sub _build_depth {
@@ -229,7 +227,13 @@ sub BUILD {
 
 =head2 filename_callback
 
-Callback for changing file paths when include files are on different relative paths.
+Callback for changing file paths when include files are on different relative
+paths.  You might need this if you're parsing dhcpd.conf files that have
+absolute references for their include paths, but the files have been moved to
+a different location.
+
+For instance, if you were parsing dhcpd.conf on a deployment server in the
+~dhcp/server directory and the live server expected the files to be in /etc/dhcpd
 
     # here is an example:
     my $cb = sub {
@@ -285,29 +289,29 @@ sub parse {
             # From here we need to preprocess the line to see if it can be broken
             # into multiple lines.  Something like group { option test; }
             # lines with comments can't be handled by this so we do them first
-            if($line =~ /^\s*\#\s*(.*)/) {
+            if($line =~ /^\s*\#\s*(.*)/o) {
                 push @comments, $1;
                 next LINE;
             }
             # lines with statements and comment, reprocess the statement and add the comment to comments array
-            if($line =~ /^(.*)\s*\#\s*(.*)/) {
+            if($line =~ /^(.*)\s*\#\s*(.*)/o) {
                 push @comments, $2;
                 push @{$linebuf}, $1;
                 next LINE;
             }
 
             # after semicolon or braces if there isn't a semicolon or return insert a newline
-            if ($line =~ s/([;\{\}])([^;\n\r])/$1\n$2/g) {
+            if ($line =~ s/([;\{\}])([^;\n\r])/$1\n$2/og) {
                 push(@{$linebuf}, reverse split(/\n/, $line));
                 next LINE;
             }
         }
 
 
-        if ($line =~ /^(?:\s*|\s*\{\s*)$/) {
+        if ($line =~ /^(?:\s*|\s*\{\s*)$/o) {
             next LINE;
         }
-        elsif($line =~ /^\s*\}\s*$/) {
+        elsif($line =~ /^\s*\}\s*$/o) {
             next LINE if($self->root == $self);
             last LINE;
         }
@@ -349,7 +353,7 @@ sub parse {
         # we could do this with Slurp but then everything would need to
         # support slurp and odd semicolon handling.  If we figure out a way to
         # merge the lines then the normal parser should be able to cover it.
-        if ($lines !~ /;/) {
+        if ($lines !~ /;/o) {
             next LINE;
         }
 
