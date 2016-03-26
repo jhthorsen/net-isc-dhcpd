@@ -9,7 +9,7 @@ is($config->failoverpeers->[1]->name, 'failover-partner', 'secondary');
 is($config->failoverpeers->[2]->name, 'one-line', 'secondary');
 is($config->failoverpeers->[1]->type, 'secondary', 'is type for second failover secondary?');
 is($config->failoverpeers->[2]->type, undef, 'is type for third failover undef?');
-is($config->failoverpeers->[0]->peer_port, 520, 'is peer port for first failver 520?');
+is($config->failoverpeers->[0]->peer_port, 520, 'is peer port for first failover 520?');
 is($config->subnets->[0]->pools->[0]->keyvalues->[0]->name, 'failover', 'does the failover peer option work');
 done_testing();
 
@@ -35,8 +35,8 @@ failover peer "failover-partner" {
     port 520;
     peer address dhcp-primary.example.com;
     peer port 519;
-    max‐response‐delay 60;
-    max‐unacked‐updates 10;
+    max-response-delay 60;
+    max-unacked-updates 10;
     load balance max seconds 3;
 }
 
