@@ -64,6 +64,12 @@ has arguments => (
         lb_max_seconds => { "text" => "load balance max seconds %s", regex => qr/^ \s+ load\s+balance\s+max\s+seconds \s+ (\d+);/x },
         mclt => { "text" => "mclt %s", regex => qr/^ \s+ mclt \s+ (\d+);/x },
         split => { "text" => "split %s", regex => qr/^ \s+ split \s+ (\d+);/x },
+        auto_partner_down => { "text" => "auto-partner-down %s", regex => qr/^ \s+ auto-partner-down (\d+);/x },
+        max_lease_misbalance => { "text" => "max-lease-misbalance %s", regex => qr/^ \s+ max-lease-misbalance (\d+);/x },
+        max_lease_ownership => { "text" => "max-lease-ownership %s", regex => qr/^ \s+ max-lease-ownership (\d+);/x },
+        min_balance => { "text" => "min-balance %s", regex => qr/^ \s+ min-balance (\d+);/x },
+        max_balance => { "text" => "max-balance %s", regex => qr/^ \s+ max-balance (\d+);/x },
+
         }
     },
 );
@@ -75,7 +81,8 @@ has _order => (
     default => sub { [] },
 );
 
-has [qw/ peer_port port mclt split lb_max_seconds max_response_delay max_unacked_updates /] => (
+has [qw/ peer_port port mclt split lb_max_seconds max_response_delay max_unacked_updates auto_partner_down
+         max_lease_misbalance max_lease_ownership min_balance max_balance /] => (
     is => 'rw',
     isa => 'Int',
 );
