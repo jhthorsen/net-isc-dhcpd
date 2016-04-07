@@ -382,12 +382,32 @@ sub _parse_slurp {
         my $line;
         if (defined($linebuf->[0])) {
             $line = pop(@{$linebuf});
-        } else {
+    } else {
             defined($line = readline $fh) or last LINE;
             $n++;
             chomp $line;
         }
+        # hacked these lines in to support multiple statements on one line in
+        # slurp.  The parser is pretty jacked up now and I don't like it.  I
+        # attempted to fix this a better way but decided it probably needs a
+        # rewrite that I don't really have time for.
+        if($line =~ /^\s*\#\s*(.*)/) {
+            push @comments, $1;
+            next LINE;
+        }
+        # lines with statements and comment, reprocess the statement and add the comment to comments array
+        if($line =~ /^(.*)\s*\#\s*(.*)/) {
+            push @comments, $2;
+            push @{$linebuf}, $1;
+            next LINE;
+        }
 
+        # after semicolon or braces if there isn't a semicolon or return insert a newline
+        if ($line =~ s/([;\{\}])([^;\n\r])/$1\n$2/g) {
+            push(@{$linebuf}, reverse split(/\n/, $line));
+            next LINE;
+        }
+        # end of hack
 
         if($self->can('slurp')) {
             my $action = $self->slurp($line); # next or last
