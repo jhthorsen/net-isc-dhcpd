@@ -33,6 +33,7 @@ See L<Net::ISC::DHCPd::Config/SYNOPSIS>.
 =cut
 
 use Moose;
+use MooseX::WhatTheTrig;
 
 with 'Net::ISC::DHCPd::Config::Role';
 
@@ -69,27 +70,36 @@ has arguments => (
         max_lease_ownership => { "text" => "max-lease-ownership %s", regex => qr/^ \s+ max-lease-ownership \s+ (\d+)\s*;/x },
         min_balance => { "text" => "min-balance %s", regex => qr/^ \s+ min-balance \s+ (\d+)\s*;/x },
         max_balance => { "text" => "max-balance %s", regex => qr/^ \s+ max-balance \s+ (\d+)\s*;/x },
-
         }
     },
 );
 
+sub _push__order {
+    my ($self, $value) = @_;
+    my $attr = Moose::Util::find_meta($self)->triggered_attribute;
+    push(@{$self->_order}, $attr) unless ($attr eq 'name');
+}
+
 has _order => (
     traits => ['Array'],
     is => 'rw',
-    isa => 'ArrayRef',
-    default => sub { [] },
+    isa => 'ArrayRef[Str]',
+    default => sub { [ ] },
 );
 
 has [qw/ peer_port port mclt split lb_max_seconds max_response_delay max_unacked_updates auto_partner_down
          max_lease_misbalance max_lease_ownership min_balance max_balance /] => (
+    traits => [ WhatTheTrig ],
     is => 'rw',
     isa => 'Int',
+    trigger => \&_push__order,
 );
 
 has [qw/ name type address peer_address /] => (
+    traits => [ WhatTheTrig ],
     is => 'rw',
     isa => 'Str',
+    trigger => \&_push__order,
 );
 
 =head2 regex
@@ -116,7 +126,6 @@ sub slurp {
         my $regex = $value->{regex};
         if ($line =~ $regex) {
             $self->$name($1);
-            push(@{$self->_order}, $name);
         }
     }
 

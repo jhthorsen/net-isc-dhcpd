@@ -1,34 +1,31 @@
 #!perl
-
 use warnings;
 use strict;
 use lib q(lib);
-use Benchmark;
-use NetAddr::IP;
 use Test::More;
 
-my $text = do { local $/; <DATA> };
+my @text = <DATA>;
+for(@text) { chomp; }
 
-use_ok("Net::ISC::DHCPd::Config::FailoverPeer");
+use Net::ISC::DHCPd::Config::FailoverPeer;
 
 my $failoverpeer = Net::ISC::DHCPd::Config::FailoverPeer->new(
     name => 'testgroup',
-    type => 'primay',
+    type => 'primary',
     address => '198.51.100.1',
     peer_address => '198.51.100.2',
-    port => 647,
-    peer_port => 647,
+    port => 519,
+    peer_port => 520,
     max_response_delay => 60,
     max_unacked_updates => 10,
     mclt => 3600,
-    split => 128, 
+    split => 128,
     lb_max_seconds => 3,
 );
 
- is($failoverpeer->generate(), $text, "config generated");
+my @test = split(/\n/,$failoverpeer->generate());
 
-print $failoverpeer->generate();
-
+is_deeply([sort @test], [sort @text], "config generated");
 done_testing();
 
 __DATA__

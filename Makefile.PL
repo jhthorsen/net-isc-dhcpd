@@ -17,6 +17,7 @@ requires q(Time::HiRes) => 1.90;
 requires q(Class::Load) => 0.20;
 requires q(Class::Load) => 0.20;
 requires q(Time::Local) => 1.18;
+requires q(MooseX::WhatTheTrig) => 0.001;
 
 test_requires q(Benchmark) => 1.0;
 test_requires q(Test::More) => 0.90;
