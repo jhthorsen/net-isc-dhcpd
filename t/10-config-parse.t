@@ -8,9 +8,9 @@ use Test::More;
 
 my $count  = $ENV{'COUNT'} || 1;
 my $config = "./t/data/dhcpd.conf";
-my $lines  = 57;
+my $lines  = 61;
 
-plan tests => 1 + 36 * $count;
+plan tests => 1 + 40 * $count;
 
 use_ok("Net::ISC::DHCPd::Config");
 
@@ -32,7 +32,7 @@ my $time = timeit($count, sub {
     is($included->parse, 6, 'included file got parsed');
     is(scalar(@_=$included->hosts), 1, 'included file contains one hosts');
 
-    is(scalar(@_=$config->optioncodes), 3, 'option space options');
+    is(scalar(@_=$config->optioncodes), 5, 'option space options');
     my $space = $config->optioncodes->[0];
     is($space->name, 'bar', 'option space name');
     is($space->code, 1, 'option space code');
@@ -44,6 +44,12 @@ my $time = timeit($count, sub {
     is($subnet_opt->name, 'domain-name', 'subnet option name');
     is($subnet_opt->value, 'isc.org', 'subnet option value');
     ok($subnet_opt->quoted, 'subnet option is quoted');
+    $subnet_opt = $subnet->options->[3];
+    is($subnet_opt->name, 'Nortel-a-string', 'subnet option name');
+    is($subnet_opt->value, 'Nortel-i2004-A,10.10.20.1:4100:10.10.25.22:4100,1,5,10.100.25.3:4100,1,5', 'subnet option value');
+    $subnet_opt = $subnet->options->[4];
+    is($subnet_opt->name, 'Nortel-b-string', 'subnet option name');
+    is($subnet_opt->value, 'Nortel-i2004-B,s1ip=10.1.29.8;p1=4100;a1=1;r1=2;s2ip=10.120.235.13;p2=4100;a2=1;r2=2;zone=4FON;', 'subnet option value');
     is(scalar(@_=$subnet->pools), 3, 'three subnet pools found');
 
     is($config->find_subnets({ address => 'foo' }), 0, 'could not find subnets with "foo" as network address');

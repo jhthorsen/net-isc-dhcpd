@@ -295,7 +295,7 @@ sub parse {
             }
 
             # after semicolon or braces if there isn't a semicolon or return insert a newline
-            if ($line =~ s/([;\{\}])([^;\n\r])/$1\n$2/g) {
+            if ($line =~ s/([;\{\}])([^;\n\r\w\d"])/$1\n$2/g) {
                 push(@{$linebuf}, reverse split(/\n/, $line));
                 next LINE;
             }
