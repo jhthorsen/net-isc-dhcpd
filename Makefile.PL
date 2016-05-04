@@ -15,7 +15,6 @@ requires q(NetAddr::IP) => 4.0;
 requires q(Path::Class) => 0.19;
 requires q(Time::HiRes) => 1.90;
 requires q(Class::Load) => 0.20;
-requires q(Class::Load) => 0.20;
 requires q(Time::Local) => 1.18;
 requires q(MooseX::WhatTheTrig) => 0.001;
 
