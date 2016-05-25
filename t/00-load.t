@@ -1,6 +1,6 @@
 use lib qw(lib);
 use Test::More;
-plan tests => 42;
+plan tests => 43;
 use_ok('Net::ISC::DHCPd');
 use_ok('Net::ISC::DHCPd::Leases::Lease');
 use_ok('Net::ISC::DHCPd::Leases');
@@ -10,7 +10,8 @@ use_ok('Net::ISC::DHCPd::Config::Block');
 use_ok('Net::ISC::DHCPd::Config::Zone');
 use_ok('Net::ISC::DHCPd::Config::Key');
 use_ok('Net::ISC::DHCPd::Config::Subnet6');
-use_ok('Net::ISC::DHCPd::Config::Function');
+use_ok('Net::ISC::DHCPd::Config::Event');
+use_ok('Net::ISC::DHCPd::Config::Subroutine');
 use_ok('Net::ISC::DHCPd::Config::Pool');
 use_ok('Net::ISC::DHCPd::Config::Group');
 use_ok('Net::ISC::DHCPd::Config::Conditional');

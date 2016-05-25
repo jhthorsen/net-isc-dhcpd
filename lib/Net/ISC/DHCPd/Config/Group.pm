@@ -45,6 +45,7 @@ sub children {
         Net::ISC::DHCPd::Config::Group
         Net::ISC::DHCPd::Config::Host
         Net::ISC::DHCPd::Config::Option
+        Net::ISC::DHCPd::Config::Event
         Net::ISC::DHCPd::Config::KeyValue
     /;
 }

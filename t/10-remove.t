@@ -10,12 +10,12 @@ use Test::More;
 
 my $config = Net::ISC::DHCPd::Config->new(fh => \*DATA);
 $config->parse;
-is(scalar $config->remove_functions( { name => 'update' } ), 0, 'Removed zero on update functions');
+is(scalar $config->remove_events( { name => 'update' } ), 0, 'Removed zero on update events');
 is(scalar $config->remove_hosts( { name => 'foo2' } ), 1, 'remove host foo2');
 is(scalar $config->remove_hosts( { name => 'foo' } ), 1, 'remove host foo');
 is(scalar $config->remove_subnets( { address => '10.0.0.96/27' } ), 1, 'removing subnet');
 is(scalar $config->remove_keyvalues( { name => 'ddns-update-style' } ), 1, 'removing ddns-update-style');
-is(scalar $config->remove_functions( { name => 'commit' } ), 2, 'Removed 2 on commit functions');
+is(scalar $config->remove_events( { name => 'commit' } ), 2, 'Removed 2 on commit events');
 is(scalar $config->remove_optionspaces( { name => 'foo' } ), 1, 'Removed optionspace');
 is(scalar $config->remove_keyvalues( { name => 'domain-name-servers' } ), 1, 'removed option domain-name-servers');
 is(scalar $config->remove_optioncodes( {} ), 2, 'Removed all (2) optioncodes');

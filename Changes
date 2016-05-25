@@ -1,5 +1,17 @@
 Revision history for Net-ISC-DHCPd
 
+0.1800   Wed May 25 00:57:52 EDT 2016
+
+       - BREAKING CHANGE
+         Config::Function has been renamed to Config::Event.  These data
+         structures are much more like events than functions, so that will
+         make more sense logicly.
+
+         Added support for functions (Subroutines) like log(), execute() and concat()
+          (see t/30-gh26-commit-bug.t for details)
+
+
+
 0.1709   Wed Feb  3 18:47:29 UTC 2016
        - shared-network with periods now parses correctly
 

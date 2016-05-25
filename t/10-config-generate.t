@@ -28,7 +28,7 @@ my $time = timeit($count, sub {
     $config->add_optioncode('prefix' => 'foo', 'name' => 'bar', 'code' => 1, 'value' => 'ip-address');
     $config->add_optioncode('name' => 'foo-enc', 'code' => 122, 'value' => 'encapsulate foo');
 
-    $config->add_function(
+    $config->add_event(
         name => "commit",
         keyvalues => [{ name => 'set', 'value' => 'leasetime = encode-int(lease-time, 32)' }],
     );

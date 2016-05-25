@@ -1,8 +1,8 @@
-package Net::ISC::DHCPd::Config::Function;
+package Net::ISC::DHCPd::Config::Event;
 
 =head1 NAME
 
-Net::ISC::DHCPd::Config::Function - Function config parameters
+Net::ISC::DHCPd::Config::Event - Event config parameters
 
 =head1 DESCRIPTION
 
@@ -17,6 +17,12 @@ An instance from this class, comes from / will produce:
         if conditional {
         }
     }
+
+An example of this might look something like this:
+
+    on commit { log(info, concat("global commit: ", option dhcp6.client-id)); }
+    on expiry { log(info, concat("global expiry: ", option dhcp6.client-id)); }
+    on release { log(info, concat("global release: ", option dhcp6.client-id)); }
 
 =head1 SYNOPSIS
 

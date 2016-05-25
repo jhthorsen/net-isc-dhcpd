@@ -73,7 +73,7 @@ my $time = timeit($count, sub {
     my $shared_subnets = $config->sharednetworks->[0]->subnets;
     is(int(@$shared_subnets), 2, 'shared subnets found');
 
-    my $function = $config->functions->[0];
+    my $function = $config->events->[0];
     ok($function, 'function defined');
     is($function->name, 'commit', 'commit function found');
     is($function->keyvalues->[0]->name, 'set', 'function first keyvalue found');

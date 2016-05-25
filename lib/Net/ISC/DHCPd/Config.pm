@@ -99,7 +99,8 @@ This class does the role L<Net::ISC::DHCPd::Config::Root>.
   |
   |- Config::Option
   |- Config::Declaration *
-  |- Config::Function
+  |- Config::Subroutine
+  |- Config::Event
   |- Config::KeyValue
   '- Config::Single      *
 
@@ -121,7 +122,7 @@ sub children {
         Net::ISC::DHCPd::Config::Subnet6
         Net::ISC::DHCPd::Config::Include
         Net::ISC::DHCPd::Config::SharedNetwork
-        Net::ISC::DHCPd::Config::Function
+        Net::ISC::DHCPd::Config::Event
         Net::ISC::DHCPd::Config::OptionSpace
         Net::ISC::DHCPd::Config::OptionCode
         Net::ISC::DHCPd::Config::Option
@@ -130,6 +131,7 @@ sub children {
         Net::ISC::DHCPd::Config::Zone
         Net::ISC::DHCPd::Config::FailoverPeer
         Net::ISC::DHCPd::Config::Authoritative
+        Net::ISC::DHCPd::Config::Subroutine
         Net::ISC::DHCPd::Config::Block
         Net::ISC::DHCPd::Config::KeyValue/;
 }
@@ -196,15 +198,21 @@ List of parsed L<Net::ISC::DHCPd::Config::Subnet> objects.
 See L<Net::ISC::DHCPd::Config::Role/children> for details on how to
 add, update or remove these objects.
 
+=head2 subroutines
+
+List of parsed L<Net::ISC::DHCPd::Config::Subroutine> objects.
+See L<Net::ISC::DHCPd::Config::Role/children> for details on how to
+add, update or remove these objects.
+
 =head2 sharednetworks
 
 List of parsed L<Net::ISC::DHCPd::Config::SharedNetwork> objects.
 See L<Net::ISC::DHCPd::Config::Role/children> for details on how to
 add, update or remove these objects.
 
-=head2 functions
+=head2 events
 
-List of parsed L<Net::ISC::DHCPd::Config::Function> objects.
+List of parsed L<Net::ISC::DHCPd::Config::Event> objects.
 See L<Net::ISC::DHCPd::Config::Role/children> for details on how to
 add, update or remove these objects.
 
