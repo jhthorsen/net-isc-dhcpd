@@ -256,10 +256,77 @@ when possible.
 
 =cut
 
+=head2 _parse_line
+
+This is from Text::ParseWords.  I would have just called it from there but we
+need to do a little bit of custom work that is easier to monkey patch than to
+use the original. :(
+
+=cut
+
+sub _parse_line {
+    my $line = shift;
+    my $delimiter ='[;\{\}]';
+    my($word, @pieces);
+
+    no warnings 'uninitialized';    # we will be testing undef strings
+
+    while (length($line)) {
+        # This pattern is optimised to be stack conservative on older perls.
+        # Do not refactor without being careful and testing it on very long
+        # strings.
+        # See Perl bug #42980 for an example of a stack busting input.
+        $line =~ s/^
+                    (?:
+                        # double quoted string
+                        (")                             # $quote
+                        ((?>[^\\"]*(?:\\.[^\\"]*)*))"   # $quoted
+            |   # --OR--
+                        # singe quoted string
+                        (')                             # $quote
+                        ((?>[^\\']*(?:\\.[^\\']*)*))'   # $quoted
+                    |   # --OR--
+                        # unquoted string
+                (                               # $unquoted
+                            (?:\\.|[^\"'])*?
+                        )
+                        # followed by
+                (                               # $delim
+                            \Z(?!\n)                    # EOL
+                        |   # --OR--
+                            (?-x:$delimiter)            # delimiter
+                        |   # --OR--
+                            (?!^)(?=["'])               # a quote
+                        )
+            )//xs or return;        # extended layout
+        my ($quote, $quoted, $unquoted, $delim) = (($1 ? ($1,$2) : ($3,$4)), $5, $6);
+
+        return() unless( defined($quote) || length($unquoted) || length($delim));
+
+        $quoted = "$quote$quoted$quote";
+        $word .= substr($line, 0, 0);   # leave results tainted
+        $word .= defined $quote ? $quoted : $unquoted;
+
+        if (length($delim)) {
+            $word .= $delim if ($delim eq ';');
+            push(@pieces, $word);
+            push(@pieces, $delim) if ($delim ne ';');
+            undef $word;
+        } elsif (!length($line)) {
+            push(@pieces, $word);
+        }
+    }
+    return(@pieces);
+}
+
 sub parse {
     my $self = shift;
     my $fh = $_[1];
     my $linebuf = $_[2];
+
+    # consider changing $n to a "linecount" value.  We could try again to
+    # break the linebuf into a different function.  The important thing being
+    # to return the proper line count if there is a parse failure on a line.
     my($n, @comments);
     my $lines;
     my $line_from_array=0;
@@ -295,12 +362,13 @@ sub parse {
             }
 
             # after semicolon or braces if there isn't a semicolon or return insert a newline
-            if ($line =~ s/([;\{\}])([^;\n\r\w\d"])/$1\n$2/g) {
-                push(@{$linebuf}, reverse split(/\n/, $line));
+            # match unless semicolon is inside quotes...
+            my @lines = _parse_line($line);
+            if ($#lines) {
+                push(@{$linebuf}, reverse(@lines));
                 next LINE;
             }
         }
-
 
         if ($line =~ /^(?:\s*|\s*\{\s*)$/) {
             next LINE;
@@ -403,8 +471,10 @@ sub _parse_slurp {
         }
 
         # after semicolon or braces if there isn't a semicolon or return insert a newline
-        if ($line =~ s/([;\{\}])([^;\n\r])/$1\n$2/g) {
-            push(@{$linebuf}, reverse split(/\n/, $line));
+        # match unless semicolon is inside quotes...
+        my @lines = _parse_line('[;\{\}]','delimiters',$line);
+        if ($#lines) {
+            push(@{$linebuf}, reverse(@lines));
             next LINE;
         }
         # end of hack
