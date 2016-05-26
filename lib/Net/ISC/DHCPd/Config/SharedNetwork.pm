@@ -43,6 +43,8 @@ sub children {
         Net::ISC::DHCPd::Config::Subnet
         Net::ISC::DHCPd::Config::Subnet6
         Net::ISC::DHCPd::Config::KeyValue
+        Net::ISC::DHCPd::Config::Conditional
+        Net::ISC::DHCPd::Config::Group
     /;
 }
 __PACKAGE__->create_children(__PACKAGE__->children());
