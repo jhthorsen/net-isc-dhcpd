@@ -4,7 +4,7 @@ name q(Net-ISC-DHCPd);
 all_from q(lib/Net/ISC/DHCPd.pm);
 # requires Module::Install::ReadmeFromPod, comment out if you don't have it.
 # This is mainly to keep the github README current.
-readme_from q(lib/Net/ISC/DHCPd.pm);
+#readme_from q(lib/Net/ISC/DHCPd.pm);
 
 requires q(File::Temp) => 0.20;
 requires q(IO::Pty) => 1.00;
