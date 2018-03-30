@@ -16,6 +16,7 @@ is($config->optioncodes->[1]->code, 4, 'code parsed correctly?');
 is($config->optioncodes->[1]->value, '{  unsigned integer 32, unsigned integer 32, unsigned integer 32 }', 'value parsed correctly');
 is($config->optioncodes->[2]->value, '{  unsigned integer 32, unsigned integer 32, unsigned integer 32 }', 'value parsed correctly');
 is($config->optioncodes->[2]->name, 'tsp-ap-backoff-retry', 'name parsed correctly?');
+is(defined($config->groups->[1]->hosts->[1]->options->[0]), 1, 'Checking option without space at the beginning');
 
 # I should note that I found that nested hosts break this.  It's an invalid
 # config anyway, but it's not caught and shown as a parse error.  I think this
@@ -44,7 +45,6 @@ is($config->optioncodes->[2]->name, 'tsp-ap-backoff-retry', 'name parsed correct
 # when I was rewriting the parser it was failing on this entry.  I checked it
 # with dhcpd and it won't allow an option without a semicolon even if it's the
 # only thing in the braces.
-
 
 done_testing();
 

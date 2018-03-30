@@ -294,6 +294,10 @@ sub parse {
                 next LINE;
             }
 
+            # if line contains a brace then another character (without space)
+            # then insert a space.  Example:  host box1 {option hello
+            $line =~ s/\{(\S)/\{ $1/g;
+
             # after semicolon or braces if there isn't a semicolon or return insert a newline
             if ($line =~ s/([;\{\}])([^;\n\r\w\d"])/$1\n$2/g) {
                 push(@{$linebuf}, reverse split(/\n/, $line));
