@@ -109,11 +109,14 @@ our $START   = qr#^ lease \s ([\d\.]+) \s \{ #mxo;
 our $END     = qr# } [\n\r]+ #mxo;
 our $PARSER  = qr / (?| (starts) \s\d+\s (.+?)
                     | (ends)    \s\d+\s (.+?)
+                    | (cltt)    \s\d+\s (.+?)
                     | ^\s*binding \s (state) \s (\S+)
                     | ^\s*(next) \s binding \s state \s (\S+)
                     | hardware \s (ethernet) \s (\S+)
                     | option \s agent.(remote-id) \s (.+?)
                     | option \s agent.(circuit-id) \s (.+?)
+                    | (uid) \s \"([^"]+)\"
+                    | set \s (vendor-class-identifier) \s \= \s \"([^"]+)\"
                     | client-(hostname) \s "([^"]+)"
                     ) /mxo;
 
@@ -140,6 +143,7 @@ sub _done {
         ip           => 'ip_address',
         hostname     => 'client_hostname',
         ethernet     => 'hardware_address',
+        'vendor-class-identifier' => 'vendor_class_identifier',
     );
 
     for my $key (keys %map) {
