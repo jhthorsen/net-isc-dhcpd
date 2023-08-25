@@ -124,7 +124,7 @@ our $PARSER  = qr / (?| (starts) \s\d+\s (.+?)
 sub _done {
     my ($self, $lease) = @_;
 
-    for my $k (qw/starts ends/) {
+    for my $k (qw/starts ends cltt/) {
         next unless($lease->{$k});
         if(my @values = $lease->{$k} =~ $DATE) {
             $values[1]--; # decrease month
