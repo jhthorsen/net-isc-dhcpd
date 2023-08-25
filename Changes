@@ -1,5 +1,8 @@
 Revision history for Net-ISC-DHCPd
 
+0.1710   ?
+       - add vendor-class-identifier, cltt, and uid parsing for leases
+
 0.1709   Wed Feb  3 18:47:29 UTC 2016
        - shared-network with periods now parses correctly
 
