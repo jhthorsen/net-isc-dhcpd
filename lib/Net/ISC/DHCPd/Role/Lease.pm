@@ -329,6 +329,38 @@ omapi_attr hardware_type => (
     actions => [qw/examine modify/],
 );
 
+=head2 uid
+
+ $int = $self->uid;
+ $self->uid($int);
+
+The UID for the client that made the transaction.
+
+Actions: examine.
+
+=cut
+
+omapi_attr uid => (
+    isa => 'Any',
+    actions => [qw/examine/],
+);
+
+=head2 vendor_class_identifier
+
+ $int = $self->uid;
+ $self->uid($int);
+
+The vendor class identifier for the client that made the transaction.
+
+Actions: examine.
+
+=cut
+
+omapi_attr vendor_class_identifier => (
+    isa => 'Any',
+    actions => [qw/examine/],
+);
+
 =head1 ACKNOWLEDGEMENTS
 
 Most of the documentation is taken from C<dhcpd(8)>.
